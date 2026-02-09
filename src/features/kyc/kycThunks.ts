@@ -20,3 +20,24 @@ export const submitLandlordKYC = createAsyncThunk(
     }
   }
 );
+
+
+export const fetchKycStatusAsync = createAsyncThunk(
+  'kyc/fetchKycStatus',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      console.log('Fetching KYC status for:', email);
+      const result = await kycService.fetchKycStatus(email);
+      console.log("ooooo00",result)
+      return result;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        return rejectWithValue({
+          success: false,
+          message: error.response?.data?.message || 'Failed to fetch KYC status',
+        });
+      }
+      return rejectWithValue({ success: false, message: 'Network error' });
+    }
+  }
+);

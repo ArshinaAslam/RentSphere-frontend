@@ -13,9 +13,21 @@
 export interface User {
   id: string;
   email: string;
-  role: 'TENANT' | 'LANDLORD';
-  firstName: string;
+  role: 'TENANT' | 'LANDLORD'| 'ADMIN';
+  fullName: string;
+  avatar:string; 
+  phone : string; 
+  //   kycStatus: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
+
+  //   aadharNumber:string;
+  //   panNumber:string;
+   
+  //   aadharFrontUrl: string;
+  //   aadharBackUrl: string;
+  //   panFrontUrl: string;
+  //   selfie?: string;
   
+  // kycRejectedReason?: string;
 }
 
 export interface Tokens {
@@ -24,8 +36,8 @@ export interface Tokens {
 }
 
 export interface AuthState {
-  userData: User | null;    // ✅ Fixed syntax
-  tokens: Tokens | null;    // ✅ Fixed syntax
+  userData: User | null;    
+   tokens: Tokens | null;   
   loading: boolean;
   error: string | null;
 }

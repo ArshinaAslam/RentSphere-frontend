@@ -1,14 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AuthState, ErrorPayload } from "./types";
 import {
+  changeLandlordPasswordAsync,
+  changePasswordAsync,
+  editLandlordProfileAsync,
+  editTenantProfileAsync,
+  fetchCurrentUserAsync,
   forgotPasswordLandlordAsync,
   forgotPasswordTenantAsync,
   googleAuthAsync,
+  loginAdminAsync,
   loginLandlordAsync,
   loginTenantAsync,
   logoutAsync,
   resendOtpAsync,
-  resetTenantPasswordAsync,
+  resetPasswordAsync,
   signupAsync,
  
   verifyLandlordOtpAsync,
@@ -18,7 +24,7 @@ import {
 
 const initialState: AuthState = {
   userData: null,
-  tokens: null,
+   tokens: null,
   loading: false,
   error: null,
 };
@@ -33,7 +39,7 @@ const authSlice = createSlice({
     },
     clearUser: (state) => {
       state.userData = null;
-      state.tokens = null;
+      // state.tokens = null;
       state.error = null;
     },
     clearError: (state) => {
@@ -67,7 +73,7 @@ const authSlice = createSlice({
   ...state,
   loading: false,
   userData: action.payload.user,
-  tokens: action.payload.tokens,
+  // tokens: action.payload.tokens,
 }))
 .addCase(googleAuthAsync.rejected, (state, action) => ({
   ...state,
@@ -134,7 +140,7 @@ const authSlice = createSlice({
         ...state,
         loading: false,
         userData: action.payload.user,
-        tokens: action.payload.tokens,
+        // tokens: action.payload.tokens,
       }))
       .addCase(loginTenantAsync.rejected, (state, action) => ({
         ...state,
@@ -152,7 +158,7 @@ const authSlice = createSlice({
       ...state,
       loading: false,
       userData: action.payload.user,
-      tokens: action.payload.tokens,
+      // tokens: action.payload.tokens,
     }))
     .addCase(loginLandlordAsync.rejected, (state, action) => ({
       ...state,
@@ -191,17 +197,17 @@ const authSlice = createSlice({
       error: (action.payload as ErrorPayload)?.message || 'Failed to send reset link',
     }))
 
-    .addCase(resetTenantPasswordAsync.pending, (state) => ({
+    .addCase(resetPasswordAsync.pending, (state) => ({
   ...state,
   loading: true,
   error: null,
 }))
-.addCase(resetTenantPasswordAsync.fulfilled, (state) => ({
+.addCase(resetPasswordAsync.fulfilled, (state) => ({
   ...state,
   loading: false,
   error: null,
 }))
-.addCase(resetTenantPasswordAsync.rejected, (state, action) => ({
+.addCase(resetPasswordAsync.rejected, (state, action) => ({
   ...state,
   loading: false,
   error: (action.payload as ErrorPayload)?.message || "Password reset failed",
@@ -210,14 +216,117 @@ const authSlice = createSlice({
       .addCase(logoutAsync.fulfilled, (state) => {
         state.userData = null;
         state.loading = false;
+        // state.tokens = null;
         state.error = null;
       })
       .addCase(logoutAsync.rejected, (state) => {
         state.userData = null;
         state.loading = false;
         state.error = null;
-        localStorage.removeItem("rememberMe");
-      });
+        // state.tokens=null;
+       
+      })
+
+       .addCase(editTenantProfileAsync.pending, (state) => ({
+      ...state,
+      loading: true,
+      error: null,
+    }))
+  
+    .addCase(editTenantProfileAsync.fulfilled, (state, action) => ({
+      ...state,
+      loading: false,
+      userData: action.payload.data.user , 
+      error: null,
+    }))
+    .addCase(editTenantProfileAsync.rejected, (state, action) => ({
+      ...state,
+      loading: false,
+      error: (action.payload as ErrorPayload)?.message || 'Profile update failed',
+    }))
+
+      .addCase(editLandlordProfileAsync.pending, (state) => ({
+      ...state,
+      loading: true,
+      error: null,
+    }))
+  
+    .addCase(editLandlordProfileAsync.fulfilled, (state, action) => ({
+      ...state,
+      loading: false,
+      userData: action.payload.data.user , 
+      error: null,
+    }))
+    .addCase(editLandlordProfileAsync.rejected, (state, action) => ({
+      ...state,
+      loading: false,
+      error: (action.payload as ErrorPayload)?.message || 'Profile update failed',
+    }))
+    .addCase(changePasswordAsync.pending, (state) => ({
+  ...state,
+  loading: true,
+  error: null,
+}))
+.addCase(changePasswordAsync.fulfilled, (state) => ({
+  ...state,
+  loading: false,
+  
+}))
+.addCase(changePasswordAsync.rejected, (state, action) => ({
+  ...state,
+  loading: false,
+  error: (action.payload as any)?.message || "Password change failed",
+}))
+ .addCase(changeLandlordPasswordAsync.pending, (state) => ({
+  ...state,
+  loading: true,
+  error: null,
+}))
+.addCase(changeLandlordPasswordAsync.fulfilled, (state) => ({
+  ...state,
+  loading: false,
+  
+}))
+.addCase(changeLandlordPasswordAsync.rejected, (state, action) => ({
+  ...state,
+  loading: false,
+  error: (action.payload as any)?.message || "Password change failed",
+}))
+.addCase(loginAdminAsync.pending, (state) => ({
+  ...state,
+  loading: true,
+  error: null,
+}))
+.addCase(loginAdminAsync.fulfilled, (state, action) => ({
+  ...state,
+  loading: false,
+  userData: action.payload.user,
+  token : action.payload.token
+ 
+}))
+.addCase(loginAdminAsync.rejected, (state, action) => ({
+  ...state,
+  loading: false,
+  error: (action.payload as ErrorPayload)?.message || "Admin login failed",
+}))
+
+.addCase(fetchCurrentUserAsync.pending, (state) => ({
+  ...state,
+  loading: true,
+  error: null,
+}))
+.addCase(fetchCurrentUserAsync.fulfilled, (state, action) => ({
+  ...state,
+  loading: false,
+  userData: action.payload.user,  // ✅ Same as loginTenantAsync
+}))
+.addCase(fetchCurrentUserAsync.rejected, (state, action) => ({
+  ...state,
+  loading: false,
+  error: (action.payload as ErrorPayload)?.message || "Failed to fetch user",
+}))
+
+
   },
 });
 

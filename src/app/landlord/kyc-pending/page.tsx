@@ -1,202 +1,162 @@
-// pages/landlord/KycPending.tsx
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import axios from 'axios';
-import { CheckCircleIcon, ClockIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
-const KycPending = () => {
+'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Clock, ShieldCheck, AlertCircle, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useEffect } from 'react';
+import { fetchKycStatusAsync } from '@/features/kyc/kycThunks';
+
+const KycPendingPage = () => {
   const router = useRouter();
-    const storedKycId = sessionStorage.getItem('kycId');
-    const storedEmail = sessionStorage.getItem('userEmail');
+  const { kycId, kycStatus,kycRejectedReason } = useAppSelector((state) => state.kyc);
+const dispatch = useAppDispatch()
 
 
-  const [status, setStatus] = useState<'PENDING' | 'APPROVED' | 'REJECTED'>('PENDING');
-  const [loading, setLoading] = useState(true);
-  const [submittedAt, setSubmittedAt] = useState('');
-  const [message, setMessage] = useState('');
-
-  // ✅ Check KYC status every 10 seconds
   useEffect(() => {
+  const email = sessionStorage.getItem('signupEmail');
+  if (email) {
+    dispatch(fetchKycStatusAsync(email));
+  }
+}, [dispatch]);
 
-   if (!storedKycId || !storedEmail) {
-     
-      return;
-    }
-
-    const checkStatus = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`/api/auth/kyc-status?email=${storedEmail}&kycId=${storedKycId}`);
-        const data = response.data.data;
-        
-        setStatus(data.status);
-        setSubmittedAt(new Date(data.submittedAt).toLocaleString());
-        setMessage(data.message);
-        
-        // Auto redirect on approval
-        if (data.status === 'APPROVED') {
-          setTimeout(() => router.push('/landlord/login'), 2000);
-        }
-      } catch (error) {
-        console.error('Status check failed:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkStatus();
-    const interval = setInterval(checkStatus, 10000); // Check every 10s
-
-    return () => clearInterval(interval);
-  }, [storedKycId, storedEmail, router]);
-
-  const handleManualCheck = async () => {
-    // Trigger manual status check
-    window.location.reload();
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100">
-        {/* Header */}
-        <div className="p-8 text-center border-b border-gray-100">
-          <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl mx-auto mb-6 flex items-center justify-center">
-            {status === 'PENDING' ? (
-              <ClockIcon className="w-10 h-10 text-white animate-spin-slow" />
-            ) : status === 'APPROVED' ? (
-              <CheckCircleIcon className="w-10 h-10 text-white" />
-            ) : (
-              <ExclamationTriangleIcon className="w-10 h-10 text-white" />
-            )}
+  // ✅ Show different UI based on kycStatus
+  if (kycStatus === 'APPROVED') {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white flex items-center justify-center py-12 px-4">
+        <div className="max-w-md w-full text-center">
+          {/* ✅ APPROVED - Green success */}
+          <div className="w-24 h-24 bg-emerald-100 rounded-full mx-auto mb-8 flex items-center justify-center">
+            <CheckCircle className="w-16 h-16 text-emerald-600" />
           </div>
-          
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {status === 'PENDING' ? 'KYC Under Review' : 
-             status === 'APPROVED' ? 'KYC Approved! 🎉' : 'KYC Rejected'}
+
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            ✅ KYC Approved!
           </h1>
           
-          <p className="text-gray-600 mb-1">
-            {status === 'PENDING' 
-              ? 'Your documents are being verified by our team.' 
-              : message}
+          <p className="text-emerald-700 mb-8 text-sm leading-relaxed">
+            Your identity has been verified. You can now login to your landlord dashboard.
           </p>
-          
-          <p className="text-sm text-gray-500">
-            ID: <span className="font-mono font-medium text-indigo-600">{storedKycId}</span>
-          </p>
+
+          <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 mb-8">
+            <p className="text-emerald-800 text-sm font-medium">
+              KYC ID: <code className="bg-emerald-100 px-2 py-1 rounded text-xs font-mono">{kycId}</code>
+            </p>
+            <p className="text-emerald-800 text-xs mt-1">Status: <span className="font-bold text-emerald-700">APPROVED</span></p>
+          </div>
+
+          {/* ✅ LOGIN button only */}
+          <Button 
+            onClick={() => router.push('/landlord/login')}
+            className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-lg font-bold"
+          >
+            Login Now
+          </Button>
         </div>
+      </div>
+    );
+  }
 
-        {/* Timeline */}
-        <div className="p-8">
-          <div className="space-y-6">
-            {/* Step 1: Documents Submitted */}
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircleIcon className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Documents Submitted</p>
-                <p className="text-sm text-gray-500">{submittedAt}</p>
-              </div>
-            </div>
+  if (kycStatus === 'REJECTED') {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex items-center justify-center py-12 px-4">
+        <div className="max-w-md w-full text-center">
+          {/* ✅ REJECTED - Red warning */}
+          <div className="w-24 h-24 bg-red-100 rounded-full mx-auto mb-8 flex items-center justify-center">
+            <AlertCircle className="w-16 h-16 text-red-600" />
+          </div>
 
-            {/* Step 2: Under Review */}
-            <div className={`flex items-center space-x-4 ${status !== 'PENDING' ? 'opacity-50' : ''}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                status === 'PENDING' 
-                  ? 'bg-yellow-100 border-2 border-yellow-300' 
-                  : status === 'APPROVED' 
-                    ? 'bg-green-100' 
-                    : 'bg-red-100'
-              }`}>
-                {status === 'PENDING' ? (
-                  <ClockIcon className="w-5 h-5 text-yellow-600" />
-                ) : status === 'APPROVED' ? (
-                  <CheckCircleIcon className="w-5 h-5 text-green-600" />
-                ) : (
-                  <ExclamationTriangleIcon className="w-5 h-5 text-red-600" />
-                )}
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">
-                  {status === 'PENDING' ? 'Under Review' : 
-                   status === 'APPROVED' ? 'Verified' : 'Rejected'}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {status === 'PENDING' 
-                    ? 'Usually takes 24-48 hours' 
-                    : status === 'APPROVED' 
-                      ? 'Identity verified successfully' 
-                      : 'Please resubmit documents'}
-                </p>
-              </div>
-            </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            KYC Rejected
+          </h1>
+          
+          <p className="text-red-700 mb-6 text-sm leading-relaxed">
+            Please review your documents and resubmit KYC.
+          </p>
+
+          
+
+ <div className="bg-red-50 border border-red-100 rounded-2xl p-6 mb-8 text-left">
+  <p className="text-xs text-red-600 mt-2 font-medium">
+              KYC ID: <code className="bg-red-100 px-2 py-1 rounded text-xs font-mono">{kycId}</code>
+            </p>
+              <p className="text-xs text-red-600 mt-2 font-medium">
+              KYC STATUS: <code className="bg-red-100 px-2 py-1 rounded text-xs font-mono">{kycStatus}</code>
+            </p>
+            <p className="text-red-800 text-sm font-semibold mb-2">Reason for Rejection:</p>
+            <p className="text-red-700 text-sm bg-red-100 p-3 rounded-lg">
+              {kycRejectedReason || 'Documents unclear or incomplete'}
+            </p>
+            
+          </div>
+
+
+          <div className="space-y-3">
+            <Button 
+              onClick={() => router.push('/landlord/kyc-details')}
+              className="w-full h-12 bg-red-600 hover:bg-red-700"
+            >
+              Resubmit KYC
+            </Button>
+            {/* <Button 
+              variant="outline"
+              onClick={() => router.push('/login')}
+              className="w-full h-12"
+            >
+              Go to Login
+            </Button> */}
           </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* Action Buttons */}
-        <div className="p-8 pt-0 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
-          {status === 'PENDING' && (
-            <div className="space-y-3">
-              <button
-                onClick={handleManualCheck}
-                disabled={loading}
-                className="w-full bg-indigo-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Checking...</span>
-                  </>
-                ) : (
-                  <>
-                    <ClockIcon className="w-5 h-5" />
-                    <span>Check Status</span>
-                  </>
-                )}
-              </button>
-              
-              <button
-                onClick={() => router.push('/landlord/kyc')}
-                className="w-full bg-white text-indigo-600 py-3 px-4 rounded-xl font-medium border-2 border-indigo-200 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-              >
-                Edit Documents
-              </button>
-            </div>
-          )}
-
-          {status === 'APPROVED' && (
-            <div className="text-center">
-              <button
-                onClick={() => router.push('/landlord/login')}
-                className="w-full bg-green-600 text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200"
-              >
-                Go to Login →
-              </button>
-            </div>
-          )}
-
-          {status === 'REJECTED' && (
-            <div className="space-y-3">
-              <button
-                onClick={() => router.push('/landlord/kyc')}
-                className="w-full bg-orange-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
-              >
-                Resubmit Documents
-              </button>
-            </div>
-          )}
+  // ✅ DEFAULT: PENDING (most common)
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center py-12 px-4">
+      <div className="max-w-md w-full text-center">
+        {/* Clock icon */}
+        <div className="w-24 h-24 bg-yellow-100 rounded-full mx-auto mb-8 flex items-center justify-center">
+          <Clock className="w-12 h-12 text-yellow-600" />
         </div>
 
-        {/* Footer */}
-        <div className="px-8 pb-6 text-center">
-          <p className="text-xs text-gray-500">
-            Need help? Contact support@yourapp.com
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          KYC Under Review
+        </h1>
+        
+        <p className="text-gray-600 mb-6 text-sm leading-relaxed">
+          Your documents are being verified. You'll be notified within 24 hours.
+        </p>
+
+        <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 mb-8">
+          <ShieldCheck className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
+          <p className="text-emerald-800 text-sm font-medium">
+            KYC ID: <code className="bg-emerald-100 px-2 py-1 rounded text-xs font-mono">{kycId}</code>
           </p>
+          <p className="text-emerald-800 text-xs mt-1">
+            Status: <span className="font-bold text-yellow-700">{kycStatus}</span>
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {/* <Button 
+            onClick={() => router.push('/login')}
+            className="w-full h-12 bg-emerald-600 hover:bg-emerald-700"
+          >
+            Go to Login
+          </Button> */}
+          {/* <Link 
+            href="/landlord/dashboard"
+            className="block w-full text-center text-gray-500 hover:text-gray-700 text-sm font-medium underline underline-offset-2 py-2"
+          >
+            Check Dashboard Later
+          </Link> */}
         </div>
       </div>
     </div>
   );
 };
 
-export default KycPending;
+export default KycPendingPage;

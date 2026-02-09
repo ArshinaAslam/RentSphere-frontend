@@ -1,13 +1,12 @@
-// components/auth/ResetPasswordForm.tsx
 'use client';
 
 import React from 'react';
-import { Lock, Eye, EyeOff } from 'lucide-react';
+import { Lock, Eye, EyeOff, Home } from 'lucide-react'; // Added Home icon
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { UseFormReturn } from 'react-hook-form';
-import { ResetPasswordValues } from '@/constants/validation';
+import { ResetPasswordValues } from '@/constants/authValidation';
 
 interface ResetPasswordFormProps {
   form: UseFormReturn<ResetPasswordValues>;
@@ -29,19 +28,18 @@ export default function ResetPasswordForm({
   onConfirmPasswordToggle,
 }: ResetPasswordFormProps) {
   return (
-    <div className="bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-10 flex flex-col items-center border border-slate-50">
-      {/* Header Icon */}
-      <div className="mb-6">
-        <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center">
-          <Lock className="w-6 h-6 text-emerald-600" strokeWidth={2.5} />
+    <div className="bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-slate-100 p-8 md:p-10 flex flex-col items-center">
+      
+      {/* ✅ Brand Logo Section Integrated Here */}
+      <div className="text-center mb-8 flex flex-col items-center">
+        <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-100">
+          <Home className="w-7 h-7 text-white stroke-[2.5]" />
         </div>
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Set New Password</h1>
+        <p className="text-slate-500 text-sm text-center leading-relaxed max-w-[280px]">
+          Enter your new password below. Your password must meet the minimum security requirements.
+        </p>
       </div>
-
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Set New Password</h1>
-
-      <p className="text-slate-400 text-center text-sm leading-relaxed mb-8 max-w-[300px]">
-        Enter your new password below. Your password must meet the minimum security requirements.
-      </p>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-5">
@@ -51,28 +49,23 @@ export default function ResetPasswordForm({
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  New Password
-                </FormLabel>
+                <FormLabel className="text-slate-700 font-semibold">New Password</FormLabel>
                 <FormControl>
                   <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Enter new password"
                       {...field}
                       disabled={loading}
-                      className="h-12 pr-11 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white transition-all text-sm"
+                      className="pl-10 h-12 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white transition-all text-sm"
                     />
                     <button
                       type="button"
                       onClick={onPasswordToggle}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-600 transition-colors"
                     >
-                      {showPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </FormControl>
@@ -87,28 +80,23 @@ export default function ResetPasswordForm({
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Confirm New Password
-                </FormLabel>
+                <FormLabel className="text-slate-700 font-semibold">Confirm Password</FormLabel>
                 <FormControl>
                   <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                       type={showConfirmPassword ? 'text' : 'password'}
                       placeholder="Re-enter new password"
                       {...field}
                       disabled={loading}
-                      className="h-12 pr-11 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white transition-all text-sm"
+                      className="pl-10 h-12 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white transition-all text-sm"
                     />
                     <button
                       type="button"
                       onClick={onConfirmPasswordToggle}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-600 transition-colors"
                     >
-                      {showConfirmPassword ? (
-                        <EyeOff size={18} />
-                      ) : (
-                        <Eye size={18} />
-                      )}
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </FormControl>
@@ -124,15 +112,15 @@ export default function ResetPasswordForm({
             </p>
             <ul className="space-y-2">
               <RequirementItem
-                met={form.watch('password').length >= 8}
+                met={form.watch('password')?.length >= 8}
                 label="At least 8 characters"
               />
               <RequirementItem
-                met={/[0-9]/.test(form.watch('password'))}
+                met={/[0-9]/.test(form.watch('password') || '')}
                 label="Include at least 1 number"
               />
               <RequirementItem
-                met={/[^A-Za-z0-9]/.test(form.watch('password'))}
+                met={/[^A-Za-z0-9]/.test(form.watch('password') || '')}
                 label="Include at least 1 special character"
               />
             </ul>
@@ -143,7 +131,7 @@ export default function ResetPasswordForm({
             disabled={loading}
             className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-100 mt-2"
           >
-            {loading ? 'Resetting...' : 'Reset Password'}
+            {loading ? 'Updating...' : 'Reset Password'}
           </Button>
         </form>
       </Form>

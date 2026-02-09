@@ -1,4 +1,4 @@
-// app/tenant/reset-password/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -6,9 +6,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { resetTenantPasswordAsync } from '@/features/auth/authThunks';
-import { resetPasswordSchema, ResetPasswordValues } from '@/constants/validation';
-import AuthHeader from '@/components/auth/AuthHeader';
+import { resetPasswordAsync } from '@/features/auth/authThunks';
+import { resetPasswordSchema, ResetPasswordValues } from '@/constants/authValidation';
+
 import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
 
 export default function TenantResetPasswordPage() {
@@ -33,7 +33,7 @@ export default function TenantResetPasswordPage() {
     
 
   
-      const result = await dispatch(resetTenantPasswordAsync({email,password:data.password,confirmPassword:data.confirmPassword })).unwrap();
+      const result = await dispatch(resetPasswordAsync({email,password:data.password,confirmPassword:data.confirmPassword })).unwrap();
      sessionStorage.removeItem('Email');
       router.push('/tenant/login');
    
@@ -41,9 +41,9 @@ export default function TenantResetPasswordPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <AuthHeader authAction="login" isAuthPage={true} />
+     
 
-      <main className="flex-1 flex flex-col items-center justify-center py-12 px-4">
+      <main className="flex-1 flex flex-col items-center justify-center py-20 px-4">
         <div className="w-full max-w-lg">
           <ResetPasswordForm
             form={form}
