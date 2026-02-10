@@ -1,73 +1,4 @@
-// // 'use client';
 
-
-// // import React from 'react';
-// // import { useAppSelector } from "@/store/hooks";
-
-// // export default function TenantDashboard() {
- 
-// //   const { userData } = useAppSelector(state => state.auth);
-// //  console.log('Redux userData:', userData);
- 
-// //   return (
-// //     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      
-     
-// //       <main className="flex-1 p-8">
-// //         <div className="max-w-7xl mx-auto">
-// //           <header className="mb-8">
-// //             <h1 className="text-3xl font-bold text-slate-900">
-// //               Welcome back, {userData?.fullName || 'User'}
-// //             </h1>
-// //             <p className="text-slate-500">You have completed login successfully.</p>
-// //           </header>
-
-         
-// //         </div>
-// //       </main>
-// //     </div>
-// //   );
-// //  }
-
-// // TenantDashboard.tsx
-// 'use client';
-
-// import { clearUser } from "@/features/auth/authSlice";
-// import { logoutAsync } from "@/features/auth/authThunks";
-// import { useAppDispatch, useAppSelector } from "@/store/hooks";
-// import { useRouter } from "next/navigation";
-// import { useEffect, useState } from 'react';
-
-// export default function TenantDashboard() {
-//   const { userData, loading } = useAppSelector(state => state.auth); 
-
-
-//    const router = useRouter();
-// const dispatch = useAppDispatch();
-  
-//   if (loading || !userData) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-//         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-slate-50">
-//       <h1>Welcome back, {userData?.fullName || 'User'}</h1>
-//       <button  onClick={async () => {
-//                         await dispatch(logoutAsync());
-//                         dispatch(clearUser());
-//                         router.push('/tenant/login');
-//                       }}>logout</button>
-//     </div>
-//   );
-// }
-
-
-
-// app/tenant/dashboard/page.tsx
 'use client';
 
 import { useAppSelector } from "@/store/hooks";
@@ -173,12 +104,12 @@ export default function TenantDashboard() {
                   </div>
                 </div>
 
-                {/* Simple progress bar */}
+              
                 <div className="mt-4">
                   <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
-                      style={{ width: '65%' }} // ~184/365 ≈ 50%, adjust dynamically later
+                      style={{ width: '65%' }} 
                     />
                   </div>
                   <div className="flex justify-between text-xs text-slate-500 mt-2">

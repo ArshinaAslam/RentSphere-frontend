@@ -3,15 +3,16 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { loginTenantAsync } from '@/features/auth/authThunks';
+import { googleAuthAsync, loginTenantAsync } from '@/features/auth/authThunks';
 import { loginSchema, LoginValues } from '@/constants/authValidation';
 import LoginForm from '@/components/auth/LoginForm';
-
+import { clearError } from '@/features/auth/authSlice';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 export default function TenantLogin() {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -26,13 +27,35 @@ export default function TenantLogin() {
       
     },
   });
-
+    useEffect(() => {
+    dispatch(clearError());  
+  }, [dispatch]);
   const handleLogin = async (data: LoginValues) => {
     const result = await dispatch(loginTenantAsync(data));
     if (loginTenantAsync.fulfilled.match(result)) {
+     
       router.push(result.payload.redirectTo);
     }
   };
+
+  
+     const handleGoogleSuccess = async (
+      credentialResponse: CredentialResponse
+    ) => {
+      if (!credentialResponse.credential) {
+        console.error('No ID token received from Google');
+        return;
+      }
+  
+     const result =  await dispatch(
+        googleAuthAsync({
+          token: credentialResponse.credential, 
+          role: 'TENANT',
+        })
+      );
+      
+     router.push(result.payload.redirectTo)
+    };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans pt-20 pb-20">
@@ -47,7 +70,14 @@ export default function TenantLogin() {
             loading={loading}
             error={error || undefined}
             onSubmit={form.handleSubmit(handleLogin)} 
+             googleButton={
+                          <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => console.error('Google login failed')}
+                          />
+                        }
             forgotPasswordHref="/tenant/forgot-password"
+            signupHref="/tenant/signup"
           />
         </div>
       </main>

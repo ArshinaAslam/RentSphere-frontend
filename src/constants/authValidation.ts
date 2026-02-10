@@ -115,7 +115,7 @@ export const requiredFile = (label: string) =>
   aadhaarFront: requiredFile('Aadhaar front image'),
   aadhaarBack: requiredFile('Aadhaar back image'),
   panCard: requiredFile('PAN card photo'),
-  selfie: requiredFile('Selfie'),
+  // selfie: requiredFile('Selfie'),
 consent: z
   .boolean()
   .refine((val) => val === true, {
@@ -125,31 +125,6 @@ consent: z
 });
 
 
-// export const kycFormSchema = z.object({
-//   email: z.string().email(),
-
-//   aadhaarNumber: z
-//   .string()
-//   .regex(/^\d{12}$/, 'Aadhaar number must be exactly 12 digits'),
-
-//  panNumber: z
-//   .string()
-//   .regex(
-//     /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i,
-//     'PAN must be 10 characters (ABCDE1234F)'
-//   )
-//   .transform((val) => val.toUpperCase()),
-
-
-//   aadhaarFront: requiredFile('Aadhaar front image'),
-//   aadhaarBack: requiredFile('Aadhaar back image'),
-//   panCard: requiredFile('PAN card photo'),
-//   selfie: requiredFile('Selfie'),
-
-//   consent: z.boolean().refine((v) => v === true, {
-//     message: 'You must agree to KYC consent',
-//   }),
-// });
 
 
 

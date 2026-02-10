@@ -13,13 +13,12 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen bg-gray-50 antialiased font-sans">
         <ReduxProvider>
-          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
-            <AuthClientWrapper>
-               
+          {/* <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}> */}
+           
               {children}
               <Toaster position="top-right" richColors /> 
-            </AuthClientWrapper>
-          </GoogleOAuthProvider>
+           
+          {/* </GoogleOAuthProvider> */}
         </ReduxProvider>
       </body>
     </html>

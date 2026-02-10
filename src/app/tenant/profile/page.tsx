@@ -98,7 +98,7 @@ export default function ProfileSettingsPage() {
     <div className="min-h-screen bg-slate-50">
       <Navbar />
       <div className="flex pt-16">
-        {/* ✅ FIXED - Matches ProfileSidebar types */}
+       
         <ProfileSidebar 
           activeTab={activeTab} 
           onTabChange={setActiveTab} 
@@ -134,7 +134,7 @@ export default function ProfileSettingsPage() {
   );
 }
 
-// ✅ FIXED Header type
+
 function Header({ activeTab }: { activeTab: ProfileTab }) {
   const titles: Record<ProfileTab, string> = {
     basic: 'Profile Overview',
@@ -158,14 +158,14 @@ function Header({ activeTab }: { activeTab: ProfileTab }) {
 
 
 function ProfileOverview({ user }: { user: ProfileOverviewUser | null }) {
-  // ✅ Using undefined to fix the 'null is not assignable to string' error
+
   const avatarUrl = user?.avatar 
     ? `${user.avatar}${user.avatar.includes('?') ? '&' : '?'}t=${new Date().getTime()}` 
     : undefined;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      {/* Container for Avatar and Names */}
+     
       <div className="flex items-center gap-6 pb-6 border-b border-slate-100">
         <div className="w-20 h-20 rounded-full overflow-hidden bg-emerald-100 flex items-center justify-center shadow-sm">
           {user?.avatar ? (
@@ -194,14 +194,14 @@ function ProfileOverview({ user }: { user: ProfileOverviewUser | null }) {
             {user?.role || 'Tenant'}
           </p>
         </div>
-      </div> {/* ✅ Correctly closed the header div */}
+      </div> 
 
       {/* Info Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Info label="First Name" value={user?.fullName?.split(' ')[0] || '—'} />
         <Info label="Last Name" value={user?.fullName?.split(' ')[1] || '—'} />
         <Info label="Email Address" value={user?.email} />
-        <Info label="Phone Number" value={user?.phone || '+91 00000 00000'} />
+        <Info label="Phone Number" value={user?.phone || undefined} />
       </div>
     </div>
   );
@@ -215,10 +215,10 @@ interface SettingsProps {
 function Settings({ onPasswordClick }: SettingsProps) {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      {/* ✅ FIXED - Now clickable */}
+      
       <div 
         className="p-6 border border-slate-100 rounded-2xl bg-slate-50/50 hover:shadow-sm transition-all cursor-pointer group"
-        onClick={onPasswordClick}  // 👈 NOW WORKS!
+        onClick={onPasswordClick}  
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

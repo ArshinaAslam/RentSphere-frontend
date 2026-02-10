@@ -1,26 +1,4 @@
-// import AdminNavbar from '@/components/layout/AdminNavbar';
-// import AdminSidebar from '@/components/layout/AdminSidebar';
 
-// export default function AdminLayout({ children }: { children: React.ReactNode }) {
-//   return (
-//     <div className="min-h-screen bg-slate-50">
-//       {/* ✅ The Navbar stays at the top */}
-//       <AdminNavbar />
-      
-//       <div className="flex pt-16">
-//         {/* ✅ The Sidebar stays on the left */}
-//         <AdminSidebar />
-        
-//         {/* ✅ The main content (Dashboard/Tenants) renders here */}
-//         <main className="flex-1 ml-64 p-8 min-h-[calc(100vh-64px)]">
-//           <div className="max-w-7xl mx-auto">
-//             {children}
-//           </div>
-//         </main>
-//       </div>
-//     </div>
-//   );
-// }
 
 'use client';
 
@@ -47,27 +25,26 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
+    
       <div className="mb-8">
         <h1 className="text-2xl font-black text-slate-900">Admin Dashboard</h1>
         <p className="text-sm text-slate-500 mt-1 font-medium">Monitor and manage your rental property platform</p>
       </div>
 
-      {/* Stats Grid - Row 1 */}
+     
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsRow1.map((stat) => (
           <StatCard key={stat.title} {...stat} />
         ))}
       </div>
 
-      {/* Stats Grid - Row 2 */}
+    
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsRow2.map((stat) => (
           <StatCard key={stat.title} {...stat} />
         ))}
       </div>
 
-      {/* Verification Queues Section */}
       <div className="mt-8 bg-white border border-slate-200 rounded-[32px] p-8 h-96 flex flex-col items-center justify-center text-center">
         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
            <Clock className="text-slate-300 w-8 h-8" />

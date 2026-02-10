@@ -45,7 +45,7 @@ export const googleAuthAsync = createAsyncThunk(
   async ({ token, role }: { token: string; role: string }, { rejectWithValue }) => {
     try {
       const result = await authService.googleAuth({ token, role });
-      console.log("reached thunk")
+      console.log("reached ggooglethunk",result)
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
@@ -129,8 +129,17 @@ export const loginTenantAsync = createAsyncThunk(
     try {
 
       const result = await authService.tenatLogin(data)
-    console.log("frontlogin<<<<>>>>",result)
+    console.log("frontlogin<<<<....>>>>>>",result)
       return result
+
+//       frontget<<>>> 
+// {user: {…}}
+// user
+// : 
+// {id: '698716e22f2c8680385c32cd', email: 'hari@gmail.com', role: 'TENANT', fullName: 'Harii Prasadd', avatar: 'https://rentsphere-user-uploads.s3.ap-southeast-2.…-a4c5-435c-b759-69188a051242-Screenshot (263).png', …}
+// [[Prototype]]
+// : 
+// Object
       
     } catch (error: unknown) {
       if (isAxiosError(error)) {
@@ -193,7 +202,7 @@ export const loginLandlordAsync = createAsyncThunk(
   async (data: { email: string; password: string;  }, { rejectWithValue }) => {
     try {
       const result = await authService.landlordLogin(data);  
-     console.log(result)
+     console.log("BIG result:",result)
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
@@ -349,7 +358,9 @@ export const loginAdminAsync = createAsyncThunk(
   'auth/adminLogin',
   async (data: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const result = await authService.adminLogin(data); // No rememberMe
+      const result = await authService.adminLogin(data); 
+      console.log("result from adminlogin",result)
+
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
@@ -371,7 +382,7 @@ export const fetchCurrentUserAsync = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await authService.getCurrentUser()
-      console.log("frontget<<>>>",response.data)
+      console.log("very bigdata",response.data)
       return response.data;  
     } catch (error: unknown) {
       if (isAxiosError(error)) {

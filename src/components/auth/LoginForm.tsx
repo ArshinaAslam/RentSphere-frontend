@@ -20,6 +20,8 @@ interface LoginFormProps {
   error?: string;
   onSubmit: () => void; 
   forgotPasswordHref: string;
+   signupHref:string;
+   googleButton?: React.ReactNode;
 }
 
 export default function LoginForm({
@@ -29,7 +31,9 @@ export default function LoginForm({
   loading,
   error,
   onSubmit,
-  forgotPasswordHref
+  forgotPasswordHref,
+   signupHref,
+   googleButton,
 }: LoginFormProps) {
   return (
     <div className="bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-slate-100 p-8 md:p-10">
@@ -130,8 +134,9 @@ export default function LoginForm({
             <div className="flex-grow border-t border-slate-100"></div>
           </div>
 
+
           {/* Google Button */}
-          <Button
+          {/* <Button
             type="button"
             variant="outline"
             className="w-full h-12 rounded-xl border-slate-100 flex items-center justify-center gap-3 font-semibold text-slate-600 hover:bg-slate-50 transition-all"
@@ -144,27 +149,34 @@ export default function LoginForm({
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
             Google
-          </Button>
+          </Button> */}
 
-          {/* Footer Link */}
-          <div className="text-center pt-2">
-            <p className="text-sm text-slate-500">
-              Don't have an account?{' '}
-              <Link href="/signup" className="text-emerald-600 font-bold hover:underline">
-                Sign up
-              </Link>
-            </p>
-          </div>
 
-          {/* Fine Print */}
-          <div className="flex justify-center gap-4 pt-4 border-t border-slate-50">
-            <Link href="/privacy" className="text-[10px] text-slate-400 hover:text-slate-600">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-[10px] text-slate-400 hover:text-slate-600">
-              Terms of Service
-            </Link>
-          </div>
+          
+{googleButton && (
+  <div className="w-full flex justify-center mb-6">  
+    {googleButton}
+  </div>                                             
+)}
+
+{/* Footer Link */}
+<div className="text-center pt-2">                   
+  <p className="text-sm text-slate-500">
+    Don't have an account?{' '}
+    <Link href={signupHref} className="text-emerald-600 font-bold hover:underline">
+      Sign up
+    </Link>
+  </p>
+</div>  
+
+       <div className="flex justify-center gap-4 pt-4 border-t border-slate-50">  {/* New #2 OPEN */}
+  <Link href="/privacy" className="text-[10px] text-slate-400 hover:text-slate-600">
+    Privacy Policy
+  </Link>
+  <Link href="/terms" className="text-[10px] text-slate-400 hover:text-slate-600">
+    Terms of Service
+  </Link>
+</div> 
         </form>
       </Form>
     </div>

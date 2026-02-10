@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -10,6 +10,7 @@ import { forgotPasswordTenantAsync } from '@/features/auth/authThunks';
 import { forgotPasswordSchema, ForgotPasswordValues } from '@/constants/authValidation';
 // import AuthHeader from '@/components/auth/AuthHeader';
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm'
+import { clearError } from '@/features/auth/authSlice';
 
 
 export default function TenantForgotPassword() {
@@ -17,14 +18,18 @@ export default function TenantForgotPassword() {
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
   
-  const [localError, setLocalError] = useState('');
+   const [localError, setLocalError] = useState('');
 
   const form = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: { email: '' },
   });
 
-  
+    useEffect(() => {
+    dispatch(clearError());  
+  }, [dispatch]);
+
+
   const onSubmit = async (data: ForgotPasswordValues) => {
     const result = await dispatch(forgotPasswordTenantAsync( data )).unwrap();
     
@@ -42,9 +47,9 @@ export default function TenantForgotPassword() {
           <div className="text-center mb-8 flex flex-col items-center">
             
            
-            {error && (
+            {/* {error && (
               <p className="text-red-500 mt-4 text-xs bg-red-50 p-2 rounded-lg border border-red-100 w-full">{error}</p>
-            )}
+            )} */}
           </div>
 
           

@@ -16,6 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from 'next/navigation';
 import { logoutAsync } from '@/features/auth/authThunks';
+import Link from 'next/link';
 
 export default function Navbar() {
     const router = useRouter()
@@ -59,7 +60,7 @@ export default function Navbar() {
       <div className="px-6 md:px-8 h-full flex items-center justify-between mx-auto max-w-7xl">
         
         {/* Brand Section */}
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <div className="relative flex items-center justify-center w-10 h-10">
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-xl rotate-6 blur-sm" />
             <div className="relative w-9 h-9 bg-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -67,7 +68,23 @@ export default function Navbar() {
             </div>
           </div>
           <span className="text-slate-900 font-bold text-xl tracking-tight">RentSphere</span>
-        </div>
+        </div> */}
+
+        {/* Brand Section - NOW LINKS TO DASHBOARD */}
+<Link 
+  href="/tenant/dashboard" 
+  className="flex items-center gap-3 group"
+>
+  <div className="relative flex items-center justify-center w-10 h-10">
+    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-xl rotate-6 blur-sm" />
+    <div className="relative w-9 h-9 bg-emerald-600 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+      <Home className="w-5 h-5 text-white stroke-[2.5]" />
+    </div>
+  </div>
+  <span className="text-slate-900 font-bold text-xl tracking-tight group-hover:text-emerald-600 transition-colors">
+    RentSphere
+  </span>
+</Link>
 
         {/* Unified Navigation & Profile Section */}
         <div className="flex items-center gap-9 h-full">

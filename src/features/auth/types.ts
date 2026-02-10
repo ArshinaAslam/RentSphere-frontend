@@ -1,13 +1,6 @@
 
 
-// export interface AuthState {
-//    userData: {
-//     email: string | null;
-//     role: string | null;
-//   } | null;
-//   loading: boolean;
-//   error: string | null;
-// }
+
 
 
 export interface User {
@@ -17,17 +10,16 @@ export interface User {
   fullName: string;
   avatar:string; 
   phone : string; 
-  //   kycStatus: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
+  // kycStatus?: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
 
-  //   aadharNumber:string;
-  //   panNumber:string;
+  aadharNumber?:string;
+    panNumber?:string;
    
-  //   aadharFrontUrl: string;
-  //   aadharBackUrl: string;
-  //   panFrontUrl: string;
-  //   selfie?: string;
+    aadharFrontUrl?: string;
+    aadharBackUrl?: string;
+    panFrontUrl?: string;
   
-  // kycRejectedReason?: string;
+  
 }
 
 export interface Tokens {

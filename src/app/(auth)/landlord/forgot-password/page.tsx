@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,7 @@ import { forgotPasswordLandlordAsync } from '@/features/auth/authThunks';
 import { forgotPasswordSchema, ForgotPasswordValues } from '@/constants/authValidation';
 
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
+import { clearError } from '@/features/auth/authSlice';
 
 export default function LandlordForgotPassword() {  
   const router = useRouter();
@@ -22,6 +23,12 @@ export default function LandlordForgotPassword() {
     defaultValues: { email: '' },
   });
 
+
+    useEffect(() => {
+      dispatch(clearError());  
+    }, [dispatch]);
+  
+
   const onSubmit = async (data: ForgotPasswordValues) => {
     const result = await dispatch(forgotPasswordLandlordAsync(data)).unwrap();  
     sessionStorage.setItem('Email', result.data.email);
@@ -33,17 +40,17 @@ export default function LandlordForgotPassword() {
       <main className="flex-1 flex flex-col items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg">
          
-          <div className="text-center mb-8 flex flex-col items-center">
+          {/* <div className="text-center mb-8 flex flex-col items-center">
             {error && (
               <p className="text-red-500 mt-4 text-xs bg-red-50 p-2 rounded-lg border border-red-100 w-full">{error}</p>
             )}
-          </div>
+          </div> */}
 
           <ForgotPasswordForm
             form={form}
             loading={loading}
             error={localError || error || undefined}
-            backLink="/landlord/login"  // ← CHANGE #5: /tenant/login → /landlord/login
+            backLink="/landlord/login"  
             backText="Back to Login"
             onSubmit={onSubmit}  
           />

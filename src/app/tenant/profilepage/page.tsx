@@ -201,7 +201,7 @@ function ProfileOverview({ user }: { user: ProfileOverviewUser | null }) {
         <Info label="First Name" value={user?.fullName?.split(' ')[0] || '—'} />
         <Info label="Last Name" value={user?.fullName?.split(' ')[1] || '—'} />
         <Info label="Email Address" value={user?.email} />
-        <Info label="Phone Number" value={user?.phone || '+91 00000 00000'} />
+        <Info label="Phone Number" value={user?.phone || '_'} />
       </div>
     </div>
   );

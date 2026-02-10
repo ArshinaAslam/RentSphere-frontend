@@ -156,8 +156,8 @@ function ProfileOverview({ user }: { user: ProfileOverviewUser | null }) {
         <Info label="First Name" value={user?.fullName?.split(' ')[0] || '—'} />
         <Info label="Last Name" value={user?.fullName?.split(' ')[1] || '—'} />
         <Info label="Email Address" value={user?.email} />
-        <Info label="Phone Number" value={user?.phone || '+91 00000 00000'} />
-        {user?.kycStatus && <Info label="KYC Status" value={user.kycStatus} />}
+        <Info label="Phone Number" value={user?.phone || '_'} />
+        {/* {user?.kycStatus && <Info label="KYC Status" value={user.kycStatus} />} */}
       </div>
     </div>
   );
@@ -172,43 +172,141 @@ function Info({ label, value }: { label: string; value?: string }) {
   );
 }
 
-// ✅ ADD THESE 2 COMPONENTS
 
-// 1. KYC Details Component
+
 function KycDetails({ user }: { user: ProfileOverviewUser | null }) {
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="p-8 bg-gradient-to-r from-slate-50 to-emerald-50 rounded-3xl border border-emerald-100">
-        <h3 className="text-2xl font-bold text-slate-900 mb-2">KYC Verification</h3>
-        <p className="text-slate-600 mb-6 max-w-md">
-          Your identity verification status and documents
-        </p>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Header with Status */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-2xl font-bold text-slate-900 mb-1">KYC Verification</h3>
+          <p className="text-slate-600">Your identity documents and verification status</p>
+        </div>
+        {/* <div className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 ${
+          user?.kycStatus === 'APPROVED' 
+            ? 'bg-emerald-100 text-emerald-800' 
+            : user?.kycStatus === 'PENDING' 
+            ? 'bg-amber-100 text-amber-800' 
+            : 'bg-slate-100 text-slate-800'
+        }`}>
+          {user?.kycStatus === 'APPROVED' && '✅ Verified'}
+          {user?.kycStatus === 'PENDING' && '⏳ Pending Review'}
+          {user?.kycStatus === 'REJECTED' && '❌ Rejected'}
+          {!user?.kycStatus && 'Not Submitted'}
+        </div> */}
+      </div>
+
+     
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-900 uppercase tracking-wide">Status</p>
-              <p className="text-3xl font-bold mt-1">
-                {user?.kycStatus === 'APPROVED' ? '✅ Verified' : 
-                 user?.kycStatus === 'PENDING' ? '⏳ Pending' : 
-                 user?.kycStatus === 'REJECTED' ? '❌ Rejected' : 'Not Started'}
-              </p>
-            </div>
-            <div className="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center">
-              <svg className="w-8 h-8 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
-              </svg>
-            </div>
+        
+        <div className="border rounded-xl overflow-hidden bg-slate-50 group">
+          <div className="h-44 bg-slate-100">
+            {user?.aadharFrontUrl ? (
+              <img
+                src={user.aadharFrontUrl}
+                alt="Aadhaar Front"
+                className="w-full h-full object-cover"  
+                onError={(e) => {
+                  e.currentTarget.src = '/api/placeholder/300/200';
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
           </div>
-          
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-sm text-slate-500">Upload government ID, address proof, and bank details to complete verification.</p>
+          <div className="p-4">
+            <p className="text-sm font-medium text-slate-900 mb-1">Aadhaar Front</p>
+            <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded">
+              {user?.aadharNumber ? `${user.aadharNumber.slice(0,4)}****${user.aadharNumber.slice(-4)}` : 'Not Available'}
+            </span>
+          </div>
+        </div>
+
+        {/* Aadhaar Back - FIXED */}
+        <div className="border rounded-xl overflow-hidden bg-slate-50 group">
+          <div className="h-44 bg-slate-100">
+            {user?.aadharBackUrl ? (
+              <img
+                src={user.aadharBackUrl}
+                alt="Aadhaar Back"
+                className="w-full h-full object-cover"  // ✅ FIXED: object-cover
+                onError={(e) => {
+                  e.currentTarget.src = '/api/placeholder/300/200';
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
+          </div>
+          <div className="p-4">
+            <p className="text-sm font-medium text-slate-900 mb-1">Aadhaar Back</p>
+          </div>
+        </div>
+
+        {/* PAN Card - FIXED */}
+        <div className="border rounded-xl overflow-hidden bg-slate-50 group">
+          <div className="h-44 bg-slate-100">
+            {user?.panFrontUrl ? (
+              <img
+                src={user.panFrontUrl}
+                alt="PAN Card"
+                className="w-full h-full object-cover"  // ✅ FIXED: object-cover
+                onError={(e) => {
+                  e.currentTarget.src = '/api/placeholder/300/200';
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-slate-200 flex items-center justify-center">
+                <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
+          </div>
+          <div className="p-4">
+            <p className="text-sm font-medium text-slate-900 mb-1">PAN Card</p>
+            <span className="px-2 py-1 bg-orange-50 text-orange-700 text-xs font-semibold rounded">
+              {user?.panNumber || 'Not Available'}
+            </span>
           </div>
         </div>
       </div>
+
+      {/* Summary */}
+      {/* <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200">
+        <h4 className="text-lg font-bold text-slate-900 mb-4">Verification Summary</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="text-center p-4 bg-white rounded-xl border">
+            <div className="text-2xl font-bold text-emerald-600 mb-1">3/3</div>
+            <p className="text-xs text-slate-500 uppercase tracking-wider">Documents</p>
+          </div>
+          <div className="text-center p-4 bg-white rounded-xl border">
+            <div className={`text-2xl font-bold mb-1 ${
+              user?.kycStatus === 'APPROVED' ? 'text-emerald-600' : 
+              user?.kycStatus === 'PENDING' ? 'text-amber-600' : 'text-slate-600'
+            }`}>
+              {user?.kycStatus === 'APPROVED' ? '✅' : user?.kycStatus === 'PENDING' ? '⏳' : '⚪'}
+            </div>
+            <p className="text-xs text-slate-500 uppercase tracking-wider">Status</p>
+          </div>
+        </div>
+      </div> */}
     </div>
   );
 }
+
+
+
 
 // 2. Settings Component
 function Settings({ onPasswordClick }: { onPasswordClick: () => void }) {

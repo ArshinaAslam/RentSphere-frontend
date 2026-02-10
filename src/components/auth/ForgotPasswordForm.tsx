@@ -39,11 +39,11 @@ export default function ForgotPasswordForm({
         Enter your registered email. We'll send you instructions to reset your password.
       </p>
 
-      {/* {error && (
+      {error && (
         <div className="w-full mb-6 p-3 bg-red-50 border border-red-100 rounded-xl">
           <p className="text-red-600 text-sm">{error}</p>
         </div>
-      )} */}
+      )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">  {/* ✅ handleSubmit */}

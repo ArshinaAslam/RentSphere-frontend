@@ -52,5 +52,13 @@ export interface ProfileOverviewUser {
   phone?: string;
   role?: 'TENANT' | 'LANDLORD' |'ADMIN';
   avatar?:string;
-  kycStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | null; 
+  // kycStatus?: 'PENDING' | 'APPROVED' | 'REJECTED' | null; 
+    // kycStatus: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | null;
+
+  aadharNumber?:string;
+    panNumber?:string;
+   
+    aadharFrontUrl?: string;
+    aadharBackUrl?: string;
+    panFrontUrl?: string;
 }

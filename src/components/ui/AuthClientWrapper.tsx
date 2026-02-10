@@ -64,7 +64,7 @@ export default function AuthClientWrapper({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    
+
     dispatch(fetchCurrentUserAsync());
   }, [dispatch]);
 

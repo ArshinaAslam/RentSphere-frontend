@@ -3,11 +3,11 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { resendOtpAsync, verifyLandlordOtpAsync} from "@/features/auth/authThunks";  // ← CHANGE #1
+import { resendOtpAsync, verifyLandlordOtpAsync} from "@/features/auth/authThunks";  
 import { toast } from "sonner";
 import OtpForm from "@/components/auth/otpFrom";
 
-export default function LandlordForgotOtpVerification() {  // ← CHANGE #2: Tenant → Landlord
+export default function LandlordForgotOtpVerification() {  
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
@@ -17,9 +17,9 @@ export default function LandlordForgotOtpVerification() {  // ← CHANGE #2: Ten
   const handleVerify = async (otp: string) => {
     if (otp.length !== 6) return;
     
-    const result = await dispatch(verifyLandlordOtpAsync({ email, otp })).unwrap();  // ← CHANGE #3
+    const result = await dispatch(verifyLandlordOtpAsync({ email, otp })).unwrap();  
     toast.success("OTP Verified Successfully!");
-    router.replace("/landlord/reset-password");  // ← CHANGE #4: /tenant/ → /landlord/
+    router.replace("/landlord/reset-password");  
   };
 
   const handleResend = async () => {

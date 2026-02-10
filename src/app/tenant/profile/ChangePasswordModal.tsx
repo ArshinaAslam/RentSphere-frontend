@@ -28,7 +28,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
 
   if (!isOpen) return null;
 
-  // ✅ FIX 1: Complete handler with proper close + reset
+  
   const handlePasswordSubmit = async (data: PasswordValues) => {
     try {
       await dispatch(changePasswordAsync(data)).unwrap();

@@ -18,7 +18,7 @@ import { adminLoginSchema, AdminLoginValues } from '@/constants/authValidation';
 import { loginAdminAsync } from '@/features/auth/authThunks';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-
+import { toast } from 'sonner'; 
 export default function AdminLoginPage() {
     const router  = useRouter()
     const dispatch = useAppDispatch()
@@ -39,34 +39,61 @@ useEffect(() => {
     }
   }, [tokens, userData, router]);
 
-  const onSubmit = async (data: AdminLoginValues) => {
-    try {
-      // Dispatch admin login thunk
-      const result = await dispatch(loginAdminAsync(data)).unwrap();
+  // const onSubmit = async (data: AdminLoginValues) => {
+  //   try {
+  
+  //     const result = await dispatch(loginAdminAsync(data)).unwrap();
       
-      // Success - redirect to admin dashboard
-      router.push('/admin/dashboard');
       
-      // Optional: Show success toast (if you have toast notifications)
-      // toast.success('Admin login successful!');
+  //     router.push('/admin/dashboard');
       
-    } catch (err: any) {
-      // Error handled by Redux slice - displayed automatically
-      console.error('Admin login failed:', err);
       
-      // Optional: Reset form on error
-      form.reset();
+      
+  //   } catch (err: any) {
+      
+  //     console.error('Admin login failed:', err);
+      
+      
+  //     form.reset();
+  //   }
+  // };
+const onSubmit = async (data: AdminLoginValues) => {
+  try {
+    const result = await dispatch(loginAdminAsync(data)).unwrap();
+    router.push('/admin/dashboard');
+  } catch (err: any) {
+   
+    console.error('Admin login failed:', err);
+    
+    let errorMessage = 'Login failed. Please try again.';
+    
+    if (err && typeof err === 'object' && err.message) {
+      errorMessage = err.message;  
+    } else if (err && typeof err === 'string') {
+      errorMessage = err;  
     }
-  };
+    
+  
+    toast.error(errorMessage, {
+      description: "Please check your email and password.",
+      duration: 5000,
+      className: "rounded-xl border shadow-lg",
+    });
+    
+    
+    form.setError('root', { message: errorMessage });
+    form.reset();
+
+}
+}
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-20">
       <div className="w-full max-w-md">
         
-        {/* Login Card */}
         <div className="bg-card rounded-[32px] shadow-2xl border border-border p-10 animate-in fade-in zoom-in duration-500">
           
-          {/* ✅ Logo moved inside the card and centered */}
+       
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-[#6A5ACD] rounded-2xl flex items-center justify-center shadow-xl shadow-[#6A5ACD]/20">
               <Home className="w-9 h-9 text-white stroke-[2.5]" />

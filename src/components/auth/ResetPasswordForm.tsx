@@ -11,6 +11,7 @@ import { ResetPasswordValues } from '@/constants/authValidation';
 interface ResetPasswordFormProps {
   form: UseFormReturn<ResetPasswordValues>;
   loading: boolean;
+  error?: string;
   onSubmit: (data: ResetPasswordValues) => void | Promise<void>;
   showPassword: boolean;
   showConfirmPassword: boolean;
@@ -21,6 +22,7 @@ interface ResetPasswordFormProps {
 export default function ResetPasswordForm({
   form,
   loading,
+ error,  
   onSubmit,
   showPassword,
   showConfirmPassword,
@@ -39,6 +41,12 @@ export default function ResetPasswordForm({
         <p className="text-slate-500 text-sm text-center leading-relaxed max-w-[280px]">
           Enter your new password below. Your password must meet the minimum security requirements.
         </p>
+
+         {error && (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-xl w-full">
+            <p className="text-red-600 text-sm font-medium">{error}</p>
+          </div>
+        )}
       </div>
 
       <Form {...form}>
