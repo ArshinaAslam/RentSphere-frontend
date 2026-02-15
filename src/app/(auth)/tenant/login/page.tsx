@@ -34,7 +34,7 @@ export default function TenantLogin() {
     const result = await dispatch(loginTenantAsync(data));
     if (loginTenantAsync.fulfilled.match(result)) {
      
-      router.push(result.payload.redirectTo);
+      router.replace(result.payload.redirectTo);
     }
   };
 

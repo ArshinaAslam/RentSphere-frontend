@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
       const originalRequest = error.config;
-        if (originalRequest?.url?.includes('/auth/refresh')) {
+        if (originalRequest?.url?.includes('/tenant/auth/refresh')) {
       return Promise.reject(error);
     }
 
@@ -31,7 +31,7 @@ axiosInstance.interceptors.response.use(
       
       try {
         console.log('Token expired → Auto-refreshing...');
-        await axiosInstance.post('/auth/refresh');
+        await axiosInstance.post('/tenant/auth/refresh');
         
         console.log('Token refreshed → Retrying request');
         return axiosInstance(error.config!);
@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
 
         ];
 
-        let isPublic = publicUrl.some(url => window.location.pathname === url);
+      const isPublic = publicUrl.some(url => window.location.pathname === url);
 
         if(!isPublic){
           window.location.href = '/';

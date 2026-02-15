@@ -33,7 +33,7 @@ export default function LandlordLogin() {
   const handleLogin = async (data: LoginValues) => {
     const result = await dispatch(loginLandlordAsync(data));  
     if (loginLandlordAsync.fulfilled.match(result)) {         
-      router.push(result.payload.redirectTo);  
+      router.replace(result.payload.redirectTo);  
     }
   };
 

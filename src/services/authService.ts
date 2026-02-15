@@ -15,7 +15,7 @@ export const authService = {
 
 
      async googleAuth({ token, role }: { token: string; role: string }) {
-        const response = await axiosInstance.post(AUTH_ROUTES.GOOGLE_AUTH, { token, role });
+        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_GOOGLE_AUTH, { token, role });
         console.log("qwerqwer",response.data)
         return response.data;
     },
@@ -34,7 +34,7 @@ export const authService = {
 
 
     async resendOtp(data:{email:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.RESEND_OTP,data)
+        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_RESEND_OTP,data)
         return response.data
     },
 
@@ -50,7 +50,7 @@ export const authService = {
     },
 
     async resetPassword(data:{password:string,confirmPassword:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.RESET_PASSWORD,data)
+        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_RESET_PASSWORD,data)
         return response.data
 
     },
@@ -68,16 +68,16 @@ export const authService = {
      },
 
     async logout() {
-    await axiosInstance.post(AUTH_ROUTES.LOGOUT,{},{withCredentials: true});
+    await axiosInstance.post(AUTH_ROUTES.TENANT_LOGOUT,{},{withCredentials: true});
   },
 
 
   
 
-async getCurrentUser() {
-  const response = await axiosInstance.get('/auth/me');
-  return response.data;
-},
+// async getCurrentUser() {
+//   const response = await axiosInstance.get(AUTH_ROUTES.GET_CURRENT_USER);
+//   return response.data;
+// },
 
 
 async editTenantProfile(formData: FormData) {  

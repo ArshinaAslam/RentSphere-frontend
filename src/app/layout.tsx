@@ -1,5 +1,5 @@
 import "./globals.css";
-import AuthClientWrapper from "@/components/ui/AuthClientWrapper";
+
 import ReduxProvider from "@/providers/ReduxProvider";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from "sonner"

@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
 //   };
 useEffect(() => {
     if (tokens && userData && userData?.role === 'ADMIN') {
-      router.push('/admin/dashboard');
+      router.replace('/admin/dashboard');
     }
   }, [tokens, userData, router]);
 

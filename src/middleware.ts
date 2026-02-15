@@ -15,6 +15,20 @@ export function middleware(request: NextRequest) {
     // '/admin/dashboard',    
     // '/admin/users'         
   ].some(route => pathname.startsWith(route));
+
+  // const isPublic = [
+  //   '/tenant/login',
+  //   '/landlord/login',
+  //   '/admin/login'
+  // ]
+
+   
+ 
+  
+ 
+
+
+
   if (isProtected && !accessToken) {
   
     // if (pathname.startsWith('/admin')) {
