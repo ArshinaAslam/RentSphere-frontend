@@ -11,6 +11,7 @@ const persistConfig = {
   storage,
   whitelist: ["auth"],
 };
+   
 
 const appReducer = combineReducers({
   auth: authReducer,
