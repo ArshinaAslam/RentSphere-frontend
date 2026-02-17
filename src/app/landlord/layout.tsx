@@ -1,11 +1,10 @@
 
+import RouteGuard from "@/providers/routerGuard";
 
 export default function LandlordLayout({ children }: { children: React.ReactNode }) {
   return (
-    
-                  {children}
-                  
-           
-  )
+    <RouteGuard allowedRoles={['LANDLORD']} loginPath="/landlord/login">
+      {children}
+    </RouteGuard>
+  );
 }
-
