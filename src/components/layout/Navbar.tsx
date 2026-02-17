@@ -38,16 +38,9 @@ export default function Navbar() {
     
   };
 
-    const handleLogout = async () => {
-
-      
-      await dispatch(logoutAsync()).unwrap();
-      
-      
-      
-      
-      router.push('/tenant/login');
-      router.refresh(); // Hard refresh for clean state
+ const handleLogout = async () => {
+      await dispatch(logoutAsync());
+      router.replace('/tenant/login');
       
       console.log('Logout successful!');
 

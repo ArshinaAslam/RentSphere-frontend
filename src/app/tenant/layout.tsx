@@ -1,18 +1,10 @@
-
-
+import RouteGuard from "@/providers/routerGuard";
 
 export default function TenantLayout({ children }: { children: React.ReactNode }) {
-  // return (
-  //   //  <AuthClientWrapper>
-                   
-  //                 // {children}
-                  
-  //           // </AuthClientWrapper>
-            
-  // )
-
-
-  return <>{children}</>;
+  return (
+    <RouteGuard allowedRoles={['TENANT']} loginPath="/tenant/login">
+      {children}
+    </RouteGuard>
+  );
 }
-
 

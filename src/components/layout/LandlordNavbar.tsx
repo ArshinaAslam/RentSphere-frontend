@@ -39,22 +39,33 @@ export default function Navbar() {
     
   };
 
-    const handleLogout = async () => {
+  //   const handleLogout = async () => {
 
       
-      await dispatch(logoutAsync()).unwrap();
+  //     await dispatch(logoutAsync()).unwrap();
       
       
       
       
-      router.push('/landlord/login');
-      router.refresh(); // Hard refresh for clean state
+  //     router.push('/landlord/login');
+  //     router.refresh(); // Hard refresh for clean state
+      
+  //     console.log('Logout successful!');
+
+     
+  // };
+
+
+
+
+  const handleLogout = async () => {
+      await dispatch(logoutAsync());
+      router.replace('/landlord/login');
       
       console.log('Logout successful!');
 
      
   };
-
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-slate-100 h-16 shadow-sm">
       <div className="px-6 md:px-8 h-full flex items-center justify-between mx-auto max-w-7xl">
