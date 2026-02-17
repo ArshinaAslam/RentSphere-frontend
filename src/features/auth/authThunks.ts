@@ -371,24 +371,24 @@ export const loginAdminAsync = createAsyncThunk(
 
 
 
-export const fetchCurrentUserAsync = createAsyncThunk(
-  'auth/fetchCurrentUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await authService.getCurrentUser()
-      console.log("very bigdata????",response.data)
-      return response.data;  
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({
-          success: false,
-          message: error.response?.data?.message || 'Failed to fetch user'
-        });
-      }
-      return rejectWithValue({ success: false, message: 'Network error' });
-    }
-  }
-);
+// export const fetchCurrentUserAsync = createAsyncThunk(
+//   'auth/fetchCurrentUser',
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const response = await authService.getCurrentUser()
+//       console.log("very bigdata????",response.data)
+//       return response.data;  
+//     } catch (error: unknown) {
+//       if (isAxiosError(error)) {
+//         return rejectWithValue({
+//           success: false,
+//           message: error.response?.data?.message || 'Failed to fetch user'
+//         });
+//       }
+//       return rejectWithValue({ success: false, message: 'Network error' });
+//     }
+//   }
+// );
 
 
 

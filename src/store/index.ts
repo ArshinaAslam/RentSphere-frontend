@@ -20,7 +20,7 @@ const appReducer = combineReducers({
 });
 
 const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: Action) => {
-  if (action.type === "auth/logoutAsync/fulfilled" || action.type === "auth/logoutAsync/rejected") {
+  if (action.type === "auth/logout/fulfilled" || action.type === "auth/logout/rejected") {
     storage.removeItem("persist:root");
     return appReducer(undefined, action);
   }
@@ -43,3 +43,8 @@ export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+
+
+
+

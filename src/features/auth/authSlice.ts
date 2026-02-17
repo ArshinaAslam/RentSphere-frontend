@@ -5,7 +5,7 @@ import {
   changePasswordAsync,
   editLandlordProfileAsync,
   editTenantProfileAsync,
-  fetchCurrentUserAsync,
+  // fetchCurrentUserAsync,
   forgotPasswordLandlordAsync,
   forgotPasswordTenantAsync,
   googleAuthAsync,
@@ -310,21 +310,21 @@ const authSlice = createSlice({
   error: (action.payload as ErrorPayload)?.message || "Admin login failed",
 }))
 
-.addCase(fetchCurrentUserAsync.pending, (state) => ({
-  ...state,
-  loading: true,
-  error: null,
-}))
-.addCase(fetchCurrentUserAsync.fulfilled, (state, action) => ({
-  ...state,
-  loading: false,
-  userData: action.payload.user,  // ✅ Same as loginTenantAsync
-}))
-.addCase(fetchCurrentUserAsync.rejected, (state, action) => ({
-  ...state,
-  loading: false,
-  error: (action.payload as ErrorPayload)?.message || "Failed to fetch user",
-}))
+// .addCase(fetchCurrentUserAsync.pending, (state) => ({
+//   ...state,
+//   loading: true,
+//   error: null,
+// }))
+// .addCase(fetchCurrentUserAsync.fulfilled, (state, action) => ({
+//   ...state,
+//   loading: false,
+//   userData: action.payload.user,  // ✅ Same as loginTenantAsync
+// }))
+// .addCase(fetchCurrentUserAsync.rejected, (state, action) => ({
+//   ...state,
+//   loading: false,
+//   error: (action.payload as ErrorPayload)?.message || "Failed to fetch user",
+// }))
 
 
   },

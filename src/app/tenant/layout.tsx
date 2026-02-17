@@ -1,14 +1,18 @@
-import AuthClientWrapper from "@/components/ui/AuthClientWrapper";
+
 
 
 export default function TenantLayout({ children }: { children: React.ReactNode }) {
-  return (
-     <AuthClientWrapper>
+  // return (
+  //   //  <AuthClientWrapper>
                    
-                  {children}
+  //                 // {children}
                   
-            </AuthClientWrapper>
-  )
+  //           // </AuthClientWrapper>
+            
+  // )
+
+
+  return <>{children}</>;
 }
 
 

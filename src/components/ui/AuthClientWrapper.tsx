@@ -1,22 +1,22 @@
 
 
-'use client';
+// 'use client';
 
-import { useAppDispatch } from "@/store/hooks";
-import { fetchCurrentUserAsync } from "@/features/auth/authThunks";
-import { useEffect } from "react";
+// import { useAppDispatch } from "@/store/hooks";
+// import { fetchCurrentUserAsync } from "@/features/auth/authThunks";
+// import { useEffect } from "react";
 
-export default function AuthClientWrapper({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const dispatch = useAppDispatch();
+// export default function AuthClientWrapper({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   const dispatch = useAppDispatch();
 
-  useEffect(() => {
+//   useEffect(() => {
 
-    dispatch(fetchCurrentUserAsync());
-  }, [dispatch]);
+//     dispatch(fetchCurrentUserAsync());
+//   }, [dispatch]);
 
-  return <>{children}</>;
-}
+//   return <>{children}</>;
+// }
