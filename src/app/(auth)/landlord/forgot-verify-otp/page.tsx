@@ -1,11 +1,14 @@
 'use client';
 
 import React from "react";
+
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { resendOtpAsync, verifyLandlordOtpAsync} from "@/features/auth/authThunks";  
+
 import { toast } from "sonner";
+
 import OtpForm from "@/components/auth/otpFrom";
+import { resendOtpAsync, verifyLandlordOtpAsync, verifyTenantOtpAsync} from "@/features/auth/authThunks";  
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 export default function LandlordForgotOtpVerification() {  
   const router = useRouter();
@@ -17,13 +20,13 @@ export default function LandlordForgotOtpVerification() {
   const handleVerify = async (otp: string) => {
     if (otp.length !== 6) return;
     
-    const result = await dispatch(verifyLandlordOtpAsync({ email, otp })).unwrap();  
+    const result = await dispatch(verifyTenantOtpAsync({ email, otp,role:"LANDLORD" })).unwrap();  
     toast.success("OTP Verified Successfully!");
     router.replace("/landlord/reset-password");  
   };
 
   const handleResend = async () => {
-    await dispatch(resendOtpAsync({ email })).unwrap();
+    await dispatch(resendOtpAsync({ email,role:"LANDLORD" })).unwrap();
     toast.success("OTP resent! Check your email.");
   };
 

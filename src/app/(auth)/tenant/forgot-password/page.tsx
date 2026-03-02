@@ -2,22 +2,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { forgotPasswordTenantAsync } from '@/features/auth/authThunks';
-import { forgotPasswordSchema, ForgotPasswordValues } from '@/constants/authValidation';
-// import AuthHeader from '@/components/auth/AuthHeader';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm'
+import type { ForgotPasswordValues } from '@/constants/authValidation';
+import { forgotPasswordSchema } from '@/constants/authValidation';
+// import AuthHeader from '@/components/auth/AuthHeader';
 import { clearError } from '@/features/auth/authSlice';
+import { forgotPasswordTenantAsync } from '@/features/auth/authThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 
 export default function TenantForgotPassword() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
-  
+  const role =  typeof window !== 'undefined' ? sessionStorage.getItem('signupEmail') || '' : '';
    const [localError, setLocalError] = useState('');
 
   const form = useForm<ForgotPasswordValues>({
@@ -31,7 +35,7 @@ export default function TenantForgotPassword() {
 
 
   const onSubmit = async (data: ForgotPasswordValues) => {
-    const result = await dispatch(forgotPasswordTenantAsync( data )).unwrap();
+    const result = await dispatch(forgotPasswordTenantAsync( {data,role} )).unwrap();
     
   sessionStorage.setItem('Email', result.data.email);
     

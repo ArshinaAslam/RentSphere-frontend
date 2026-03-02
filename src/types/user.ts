@@ -1,4 +1,4 @@
-import { PasswordValues } from "@/constants/authValidation";
+import type { PasswordValues } from "@/constants/authValidation";
 
 
 export interface User {
@@ -10,17 +10,7 @@ export interface User {
   role: 'TENANT' | 'LANDLORD';  
   isEmailVerified: boolean;
   isActive : boolean
-//   isPhoneVerified?: boolean;
-//   profileImage?: string;
-//   createdAt: string;  // ISO date
-//   updatedAt: string;
-  
-  // Optional tenant/landlord specific fields
-//   preferences?: {
-//     notifications?: boolean;
-//     currency?: string;
-//     language?: string;
-//   };
+
 }
 
 export interface Tokens {

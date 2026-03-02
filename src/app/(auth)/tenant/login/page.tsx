@@ -4,21 +4,28 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { googleAuthAsync, loginTenantAsync } from '@/features/auth/authThunks';
-import { loginSchema, LoginValues } from '@/constants/authValidation';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { GoogleLogin } from '@react-oauth/google';
+import { useForm } from 'react-hook-form';
+
 import LoginForm from '@/components/auth/LoginForm';
+import type { LoginValues } from '@/constants/authValidation';
+import { loginSchema } from '@/constants/authValidation';
 import { clearError } from '@/features/auth/authSlice';
-import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { googleAuthAsync, loginTenantAsync } from '@/features/auth/authThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+
+import type { CredentialResponse } from '@react-oauth/google';
+
 export default function TenantLogin() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
-
+    const role =  typeof window !== 'undefined' ? sessionStorage.getItem('signupEmail') || '' : '';
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -31,10 +38,10 @@ export default function TenantLogin() {
     dispatch(clearError());  
   }, [dispatch]);
   const handleLogin = async (data: LoginValues) => {
-    const result = await dispatch(loginTenantAsync(data));
+    const result = await dispatch(loginTenantAsync({data,role: 'TENANT'}));
     if (loginTenantAsync.fulfilled.match(result)) {
      
-      router.replace(result.payload.redirectTo);
+      router.replace('/tenant/dashboard');
     }
   };
 

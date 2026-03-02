@@ -4,15 +4,19 @@
 'use client';
 
 import React from 'react';
-import { Eye, EyeOff, Mail, Phone, Lock, User, Home } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
 import Link from 'next/link';
-import { SignupValues } from '@/constants/authValidation';
-import { UseFormReturn } from 'react-hook-form';
+
+import { Eye, EyeOff, Mail, Phone, Lock, User, Home } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import type { SignupValues } from '@/constants/authValidation';
+
+import type { UseFormReturn } from 'react-hook-form';
 
 interface SignupFormProps {
   form: UseFormReturn<SignupValues>;

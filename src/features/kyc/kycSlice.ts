@@ -50,8 +50,10 @@
 
 
 import { createSlice } from "@reduxjs/toolkit";
+
 import { fetchKycStatusAsync, submitLandlordKYC } from "./kycThunks";
-import { KycState } from "./types";
+
+import type { KycState } from "./types";
 
 const initialState: KycState = {
   status: 'idle',

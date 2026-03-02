@@ -1,15 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { forgotPasswordLandlordAsync } from '@/features/auth/authThunks';  
-import { forgotPasswordSchema, ForgotPasswordValues } from '@/constants/authValidation';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
+import type { ForgotPasswordValues } from '@/constants/authValidation';
+import { forgotPasswordSchema } from '@/constants/authValidation';
 import { clearError } from '@/features/auth/authSlice';
+import { forgotPasswordLandlordAsync, forgotPasswordTenantAsync } from '@/features/auth/authThunks';  
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 export default function LandlordForgotPassword() {  
   const router = useRouter();
@@ -30,7 +33,7 @@ export default function LandlordForgotPassword() {
   
 
   const onSubmit = async (data: ForgotPasswordValues) => {
-    const result = await dispatch(forgotPasswordLandlordAsync(data)).unwrap();  
+    const result = await dispatch(forgotPasswordTenantAsync({data,role:"LANDLORD"})).unwrap();  
     sessionStorage.setItem('Email', result.data.email);
     router.push('/landlord/forgot-verify-otp');  
   };

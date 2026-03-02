@@ -1,12 +1,16 @@
 'use client';
 
 import React from 'react';
+
 import { Lock, Eye, EyeOff, Home } from 'lucide-react'; // Added Home icon
+
+
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { UseFormReturn } from 'react-hook-form';
-import { ResetPasswordValues } from '@/constants/authValidation';
+import { Input } from '@/components/ui/input';
+import type { ResetPasswordValues } from '@/constants/authValidation';
+
+import type { UseFormReturn } from 'react-hook-form';
 
 interface ResetPasswordFormProps {
   form: UseFormReturn<ResetPasswordValues>;

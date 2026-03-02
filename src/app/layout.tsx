@@ -1,8 +1,9 @@
 import "./globals.css";
 
-import ReduxProvider from "@/providers/ReduxProvider";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Toaster } from "sonner"
+
+import ReduxProvider from "@/providers/ReduxProvider";
 
 export default function RootLayout({ 
   children 

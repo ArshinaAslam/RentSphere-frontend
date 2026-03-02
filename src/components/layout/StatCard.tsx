@@ -1,5 +1,5 @@
 // components/layout/StatCard.tsx
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface StatCardProps {
   title: string;

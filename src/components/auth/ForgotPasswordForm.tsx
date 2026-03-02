@@ -2,13 +2,18 @@
 'use client';
 
 import React from 'react';
-import { Mail, Home, SendHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
 import Link from 'next/link';
-import { UseFormReturn } from 'react-hook-form';
-import { ForgotPasswordValues } from '@/constants/authValidation';
+
+import { Mail, Home, SendHorizontal } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import type { ForgotPasswordValues } from '@/constants/authValidation';
+
+import type { UseFormReturn } from 'react-hook-form';
+
 
 interface ForgotPasswordFormProps {
   form: UseFormReturn<ForgotPasswordValues>;

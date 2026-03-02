@@ -1,14 +1,14 @@
 
 export const AUTH_ROUTES = {
   // Tenant
-  TENANT_SIGNUP: '/tenant/auth/signup',
-  TENANT_VERIFY_OTP: '/tenant/auth/verify-otp',
-  TENANT_LOGIN: '/tenant/auth/login',
-  TENANT_FORGOT_PASSWORD: '/tenant/auth/forgot-password',
-  TENANT_RESET_PASSWORD: '/tenant/auth/reset-password',
-  TENANT_GOOGLE_AUTH: '/tenant/auth/google-auth',
-  TENANT_RESEND_OTP: '/tenant/auth/resend-otp',
-  TENANT_LOGOUT: '/tenant/auth/logout',
+  SIGNUP: '/auth/signup',
+  VERIFY_OTP: '/auth/verify-otp',
+  LOGIN: '/auth/login',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  RESET_PASSWORD: '/auth/reset-password',
+  GOOGLE_AUTH: '/auth/google-auth',
+  RESEND_OTP: '/auth/resend-otp',
+  LOGOUT: '/auth/logout',
   
   // Landlord  
   LANDLORD_SIGNUP: '/auth/landlord/signup',
@@ -17,9 +17,10 @@ export const AUTH_ROUTES = {
   LANDLORD_FORGOT_PASSWORD: '/auth/landlord/forgot-password',
 
   //Admin
-  ADMIN_LOGIN:'/auth/admin/login',
+  ADMIN_LOGIN:'/admin/auth/login',
   
   // Shared
   // GET_CURRENT_USER: '/auth/me',
   
 } as const;
+

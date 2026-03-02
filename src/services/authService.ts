@@ -1,10 +1,13 @@
-import { EditProfileValues, PasswordValues, SignupValues } from "@/constants/authValidation";
-import axiosInstance from "./axios";
 import { AUTH_ROUTES } from "@/constants/authRoutes";
+import type { ForgotPasswordValues, LoginValues, PasswordValues, ResetPasswordValues, SignupValues } from "@/constants/authValidation";
+
+
+import axiosInstance from "./axios";
+
 
 export const authService = {
     async tenantSignup(data:SignupValues & {role:string}){
-        const response = await  axiosInstance.post(AUTH_ROUTES.TENANT_SIGNUP,data)
+        const response = await  axiosInstance.post(AUTH_ROUTES.SIGNUP,data)
         return response.data
     },
 
@@ -15,7 +18,7 @@ export const authService = {
 
 
      async googleAuth({ token, role }: { token: string; role: string }) {
-        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_GOOGLE_AUTH, { token, role });
+        const response = await axiosInstance.post(AUTH_ROUTES.GOOGLE_AUTH, { token, role });
         console.log("qwerqwer",response.data)
         return response.data;
     },
@@ -23,7 +26,7 @@ export const authService = {
 
 
     async verifyTenantOtp(data:{email:string;otp:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_VERIFY_OTP,data)
+        const response = await axiosInstance.post(AUTH_ROUTES.VERIFY_OTP,data)
         return response.data
     },
 
@@ -34,23 +37,23 @@ export const authService = {
 
 
     async resendOtp(data:{email:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_RESEND_OTP,data)
+        const response = await axiosInstance.post(AUTH_ROUTES.RESEND_OTP,data)
         return response.data
     },
 
 
-    async tenatLogin(data:{email:string;password:string; }){
-        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_LOGIN,data)
+    async tenatLogin(data:LoginValues & {role:string}){
+        const response = await axiosInstance.post(AUTH_ROUTES.LOGIN,data)
         return response.data
     },
 
-    async tenantForgotPassword(data:{email:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_FORGOT_PASSWORD,data)
+    async tenantForgotPassword(data:ForgotPasswordValues & {role:string}){
+        const response = await axiosInstance.post(AUTH_ROUTES.FORGOT_PASSWORD,data)
         return response.data
     },
 
-    async resetPassword(data:{password:string,confirmPassword:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.TENANT_RESET_PASSWORD,data)
+    async resetPassword(data:ResetPasswordValues & {role:string}){
+        const response = await axiosInstance.post(AUTH_ROUTES.RESET_PASSWORD,data)
         return response.data
 
     },
@@ -68,7 +71,7 @@ export const authService = {
      },
 
     async logout() {
-    await axiosInstance.post(AUTH_ROUTES.TENANT_LOGOUT,{},{withCredentials: true});
+    await axiosInstance.post(AUTH_ROUTES.LOGOUT,{},{withCredentials: true});
   },
 
 

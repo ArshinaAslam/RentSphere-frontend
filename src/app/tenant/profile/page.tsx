@@ -1,10 +1,14 @@
    'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Eye, EyeOff, Mail, Phone, User, Lock, Shield, LogOut, Smartphone, Settings as SettingsIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+ 
+import Navbar from '@/components/layout/Navbar';
+import ProfileSidebar from '@/components/layout/ProfileSidebar';
 import { 
   Form, 
   FormControl, 
@@ -14,14 +18,15 @@ import {
   FormMessage 
 } from '@/components/ui/form';
 import { Input } from "@/components/ui/input";
-import ProfileSidebar from '@/components/layout/ProfileSidebar';
-import Navbar from '@/components/layout/Navbar';
-import { editProfileSchema, EditProfileValues } from '@/constants/authValidation';
+import type { EditProfileValues } from '@/constants/authValidation';
+import { editProfileSchema } from '@/constants/authValidation';
 import { editTenantProfileAsync } from '@/features/auth/authThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import type { ProfileOverviewUser } from '@/types/user';
+
 import ChangePasswordModal from './ChangePasswordModal';
 import EditProfile from './EditProfile';
-import { toast } from 'sonner'; 
-import { ProfileOverviewUser } from '@/types/user';
+
 
 export type ProfileTab = 'basic' | 'edit' | 'settings';
 
@@ -281,7 +286,7 @@ function Settings({ onPasswordClick }: SettingsProps) {
   );
 }
 
-// Session Item Component
+
 function SessionItem({ device, location, lastActive }: { 
   device: string; 
   location: string; 
@@ -302,7 +307,7 @@ function SessionItem({ device, location, lastActive }: {
   );
 }
 
-// Change Password Form
+
 interface PasswordFormData {
   currentPassword: string;
   newPassword: string;
@@ -311,133 +316,7 @@ interface PasswordFormData {
 
 
 
-// function ChangePasswordForm() {
-//   const [showCurrent, setShowCurrent] = useState(false);
-//   const [showNew, setShowNew] = useState(false);
-//   const [showConfirm, setShowConfirm] = useState(false);
-  
-//   const passwordForm = useForm<PasswordFormData>({
-//     defaultValues: {
-//       currentPassword: '',
-//       newPassword: '',
-//       confirmPassword: '',
-//     },
-//   });
 
-//   const onPasswordSubmit = (data: PasswordFormData) => {
-//     console.log('Password change:', data);
-//     alert('Password updated successfully! (Demo)');
-//     passwordForm.reset();
-//   };
-
-//   return (
-//     <div className="max-w-md space-y-6 animate-in fade-in duration-500">
-//       <div className="text-center mb-8">
-//         <Lock className="w-16 h-16 mx-auto text-slate-400 mb-4" />
-//         <h2 className="text-2xl font-bold text-slate-900 mb-2">Change Password</h2>
-//         <p className="text-slate-500">Enter your current password and new password below</p>
-//       </div>
-
-//       <Form {...passwordForm}>
-//         <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
-//           <FormField
-//             control={passwordForm.control}
-//             name="currentPassword"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="text-slate-700 font-semibold">Current Password</FormLabel>
-//                 <FormControl>
-//                   <div className="relative">
-//                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-//                     <Input 
-//                       type={showCurrent ? "text" : "password"}
-//                       placeholder="Enter current password"
-//                       {...field}
-//                       className="pl-10 pr-10 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white h-12"
-//                     />
-//                     <button
-//                       type="button"
-//                       className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full transition-colors"
-//                       onClick={() => setShowCurrent(!showCurrent)}
-//                     >
-//                       {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
-//                     </button>
-//                   </div>
-//                 </FormControl>
-//                 <FormMessage className="text-xs" />
-//               </FormItem>
-//             )}
-//           />
-//           <FormField
-//             control={passwordForm.control}
-//             name="newPassword"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="text-slate-700 font-semibold">New Password</FormLabel>
-//                 <FormControl>
-//                   <div className="relative">
-//                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-//                     <Input 
-//                       type={showNew ? "text" : "password"}
-//                       placeholder="Enter new password"
-//                       {...field}
-//                       className="pl-10 pr-10 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white h-12"
-//                     />
-//                     <button
-//                       type="button"
-//                       className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full transition-colors"
-//                       onClick={() => setShowNew(!showNew)}
-//                     >
-//                       {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
-//                     </button>
-//                   </div>
-//                 </FormControl>
-//                 <FormMessage className="text-xs" />
-//               </FormItem>
-//             )}
-//           />
-//           <FormField
-//             control={passwordForm.control}
-//             name="confirmPassword"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="text-slate-700 font-semibold">Confirm New Password</FormLabel>
-//                 <FormControl>
-//                   <div className="relative">
-//                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-//                     <Input 
-//                       type={showConfirm ? "text" : "password"}
-//                       placeholder="Confirm new password"
-//                       {...field}
-//                       className="pl-10 pr-10 rounded-xl bg-slate-50/50 border-slate-100 focus:bg-white h-12"
-//                     />
-//                     <button
-//                       type="button"
-//                       className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full transition-colors"
-//                       onClick={() => setShowConfirm(!showConfirm)}
-//                     >
-//                       {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-//                     </button>
-//                   </div>
-//                 </FormControl>
-//                 <FormMessage className="text-xs" />
-//               </FormItem>
-//             )}
-//           />
-//           <button 
-//             type="submit"
-//             className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-4 rounded-2xl transition-all shadow-xl shadow-emerald-100 active:scale-95 flex items-center justify-center gap-2 text-lg h-12"
-//           >
-//             <Lock className="h-5 w-5" />
-//             Update Password
-//           </button>
-//         </form>
-//       </Form>
-//     </div>
-//   );
-// }
-
-// UI Components
 function Info({ label, value }: { label: string; value?: string }) {
   return (
     <div>

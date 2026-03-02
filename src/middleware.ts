@@ -9,11 +9,14 @@ const AUTH_PAGES = [
   '/landlord/kyc-details', '/landlord/kyc-pending',
   '/admin/login',
   '/account-type',
+  
 ];
 
 const PROTECTED_PREFIXES = [
   '/tenant/dashboard', '/tenant/profile', '/tenant/profilepage',
+
   '/landlord/dashboard', '/landlord/profile',
+  'landlord/my-properies',
   '/admin/dashboard', '/admin/tenant-listing-page', '/admin/landlord-listing-page',
 ];
 

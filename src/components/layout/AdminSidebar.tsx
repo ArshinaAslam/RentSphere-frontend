@@ -43,6 +43,8 @@
 
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
+
 import { 
   LayoutDashboard, 
   Users, 
@@ -56,7 +58,6 @@ import {
   CreditCard,
   FolderOpen
 } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
 
 export const DashboardSidebar = () => {
   const pathname = usePathname();
@@ -65,7 +66,7 @@ export const DashboardSidebar = () => {
   const navItems = [
     { title: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { title: "Landlord Management", icon: Home, path: "/admin/landlord-listing-page" },
-    { title: "Property Management", icon:  Building2, path: "/admin/properties" },
+    // { title: "Property Management", icon:  Building2, path: "/admin/properties" },
     // { title: "Tenant Verification", icon: UserCheck, path: "/admin/verification" },
     { title: "Tenant Management", icon: Users, path: "/admin/tenant-listing-page" },
     { title: "Lease Agreements", icon: FileText, path: "/admin/leases" },

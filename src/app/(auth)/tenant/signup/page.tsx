@@ -3,16 +3,20 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { googleAuthAsync, signupAsync } from '@/features/auth/authThunks';
-import { signupSchema, SignupValues } from '@/constants/authValidation';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useGoogleLogin , GoogleLogin } from '@react-oauth/google';
+import { useForm } from 'react-hook-form';
 
 import SignupForm from '@/components/auth/SignupForm';
-import { useGoogleLogin } from '@react-oauth/google';
-import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import type { SignupValues } from '@/constants/authValidation';
+import { signupSchema } from '@/constants/authValidation';
+import { googleAuthAsync, signupAsync } from '@/features/auth/authThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+
+import type { CredentialResponse } from '@react-oauth/google';
 
 export default function TenantSignup() {
   const router = useRouter();

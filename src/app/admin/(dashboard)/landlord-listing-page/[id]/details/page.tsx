@@ -3,13 +3,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { useParams, useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import {
-  approveKycAsync,
-  rejectKycAsync,
-  fetchSingleLandlordAsync,
-} from '@/features/users/usersThunks';
+
 import {
   ArrowLeft,
   Mail,
@@ -20,8 +16,14 @@ import {
   Ban,
   CheckCircle,
   Eye,
-} from 'lucide-react';
-import { Loader2 } from 'lucide-react';
+ Loader2 } from 'lucide-react';
+
+import {
+  approveLandlordKycAsync,
+  rejectLandlordKycAsync,
+  fetchSingleLandlordAsync,
+} from '@/features/admin/adminThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const LandlordDetailsPage = () => {
   const params = useParams();
@@ -31,7 +33,7 @@ const LandlordDetailsPage = () => {
   const [rejectModal, setRejectModal] = useState(false);     
 const [rejectReason, setRejectReason] = useState('');
   const { singleLandlord, singleLoading } = useAppSelector(
-    (state) => state.users
+    (state) => state.admin
   );
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -43,7 +45,7 @@ const [rejectReason, setRejectReason] = useState('');
   }, [dispatch, landlordId]);
 
   const handleApprove = () => {
-    dispatch(approveKycAsync({ id: landlordId }));
+    dispatch(approveLandlordKycAsync({ id: landlordId }));
 
     // console.log("idRi",result.payload.data.id)
     //   console.log("statusRi",result.data.status)
@@ -63,7 +65,7 @@ const [rejectReason, setRejectReason] = useState('');
 };
 
 const handleConfirmReject = () => {
-  dispatch(rejectKycAsync({ id: landlordId, reason: rejectReason }));
+  dispatch(rejectLandlordKycAsync({ id: landlordId, reason: rejectReason }));
   setRejectModal(false);
   setRejectReason('');
   router.back();

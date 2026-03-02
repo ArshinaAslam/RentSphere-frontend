@@ -1,19 +1,23 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Lock, X } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+ 
+import { Button } from '@/components/ui/button';
 import { 
   Form, FormControl, FormField, FormItem, FormLabel, FormMessage 
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { passwordSchema, PasswordValues } from '@/constants/authValidation';
-import { ChangePasswordModalProps } from '@/types/user';
+import type { PasswordValues } from '@/constants/authValidation';
+import { passwordSchema } from '@/constants/authValidation';
 import { changePasswordAsync } from '@/features/auth/authThunks';
 import { useAppDispatch } from '@/store/hooks';
-import { toast } from 'sonner'; 
+import type { ChangePasswordModalProps } from '@/types/user';
+
 
 export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProps) {
   const [showCurrent, setShowCurrent] = useState(false);

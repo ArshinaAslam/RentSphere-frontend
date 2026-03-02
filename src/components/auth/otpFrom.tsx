@@ -134,10 +134,13 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from "react";
+
+import Link from 'next/link';
+
 import { RotateCw, Home } from "lucide-react"; // Replaced Check with Home
+
 import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import Link from 'next/link';
 
 interface OtpFormProps {
   email: string;

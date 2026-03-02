@@ -3,15 +3,18 @@
 'use client';
 
 import { useState } from 'react';
+
+import { useRouter } from 'next/navigation';
+
 import { 
   MessageCircle, 
   Bell, 
   ChevronDown, 
   LogOut 
 } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useRouter } from 'next/navigation';
+
 import { logoutAsync } from '@/features/auth/authThunks';
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 export const DashboardHeader = () => {
   const router = useRouter();

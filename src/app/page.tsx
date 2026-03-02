@@ -1,6 +1,9 @@
 'use client';
+import { useEffect } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { 
   ShieldCheck, 
   FileCheck, 
@@ -14,9 +17,9 @@ import {
   MapPin,
   ChevronRight
 } from "lucide-react";
+
+import type { RootState } from "@/store";
 import { useAppSelector } from "@/store/hooks";
-import { useEffect } from "react";
-import { RootState } from "@/store";
 
 export default function Home() {
 
@@ -35,13 +38,13 @@ export default function Home() {
     { id: "3", title: "Sign lease and pay rent", desc: "Create digital leases with e‑signatures and enable online rent payments with automated tracking." },
   ];
 
- if (loading || userData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-600"></div>
-      </div>
-    );
-  }
+//  if (loading || userData) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center bg-white">
+//         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-600"></div>
+//       </div>
+//     );
+//   }
 
 
   return (

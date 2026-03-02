@@ -1,10 +1,14 @@
    'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { Eye, EyeOff, Mail, Phone, User, Lock, Shield, LogOut, Smartphone, Settings as SettingsIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+ 
+import Navbar from '@/components/layout/Navbar';
+import ProfileSidebar from '@/components/layout/ProfileSidebar';
 import { 
   Form, 
   FormControl, 
@@ -14,14 +18,15 @@ import {
   FormMessage 
 } from '@/components/ui/form';
 import { Input } from "@/components/ui/input";
-import ProfileSidebar from '@/components/layout/ProfileSidebar';
-import Navbar from '@/components/layout/Navbar';
-import { editProfileSchema, EditProfileValues } from '@/constants/authValidation';
+import type { EditProfileValues } from '@/constants/authValidation';
+import { editProfileSchema } from '@/constants/authValidation';
 import { editTenantProfileAsync } from '@/features/auth/authThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import type { ProfileOverviewUser } from '@/types/user';
+
 import ChangePasswordModal from './ChangePassword';
 import EditProfile from './EditProfile';
-import { toast } from 'sonner'; 
-import { ProfileOverviewUser } from '@/types/user';
+
 
 export type ProfileTab = 'basic' | 'edit' | 'settings';
 

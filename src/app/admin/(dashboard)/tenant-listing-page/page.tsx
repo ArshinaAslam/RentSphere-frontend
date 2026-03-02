@@ -4,17 +4,19 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { 
   Search, Ban, CheckCircle, ChevronLeft, ChevronRight, 
   Mail, Phone, Eye, Clock, Loader2 
 } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+
+import { clearError, setSearch, setCurrentPage } from '@/features/admin/adminSlice';
 import { 
-  fetchUsersAsync,
-  toggleUserStatusAsync,
+  fetchTenantsAsync,
+  toggleTenantStatusAsync,
   
-} from '@/features/users/usersThunks';
-import { clearError, setSearch, setCurrentPage } from '@/features/users/usersSlice';
+} from '@/features/admin/adminThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const TenantListingPage = () => {
   const dispatch = useAppDispatch();
@@ -27,17 +29,17 @@ const TenantListingPage = () => {
     isLoading, 
     error ,
   
-  } = useAppSelector((state) => state.users);
+  } = useAppSelector((state) => state.admin);
   
   const limit = 10;
 
   useEffect(() => {
-    dispatch(fetchUsersAsync({ search, page: currentPage, limit}));
+    dispatch(fetchTenantsAsync({ search, page: currentPage, limit}));
   }, [dispatch, search, currentPage]);
 
   const handleToggleStatus = (id: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
-     dispatch(toggleUserStatusAsync({ id, status: newStatus }));
+     dispatch(toggleTenantStatusAsync({ id, status: newStatus }));
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

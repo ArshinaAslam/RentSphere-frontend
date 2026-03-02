@@ -1,23 +1,27 @@
-import { EditProfileValues, PasswordValues, SignupValues } from "@/constants/authValidation";
-import { authService } from "@/services/authService";
-import { EditProfileData } from "@/types/user";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, isAxiosError } from "axios";
+
+import type { ForgotPasswordValues, LoginValues, PasswordValues, ResetPasswordValues, SignupValues } from "@/constants/authValidation";
+import { EditProfileValues } from "@/constants/authValidation";
+import { authService } from "@/services/authService";
+import { EditProfileData } from "@/types/user";
+
 
 
 export const signupAsync = createAsyncThunk(
     'auth/signup',
     async ({data,role}: { data: SignupValues; role: string },{rejectWithValue})=>{
         try {
-        if(role == "TENANT"){
-          const result =   await authService.tenantSignup({...data,role})
-          return result
-        }else if(role === "LANDLORD"){
-         const result =  await authService.landlordSignup({ ...data, role });
-         return result
-        }
+        // if(role == "TENANT"){
+        //   const result =   await authService.tenantSignup({...data,role})
+        //   return result
+        // }else if(role === "LANDLORD"){
+        //  const result =  await authService.landlordSignup({ ...data, role });
+        //  return result
+        // }
 
-      
+       const result =   await authService.tenantSignup({...data,role})
+          return result
 
 
         } catch (err: unknown) {
@@ -62,7 +66,7 @@ export const googleAuthAsync = createAsyncThunk(
 
 export const verifyTenantOtpAsync = createAsyncThunk(
     'auth/verifyTenantOtp',
-    async (data:{email:string;otp:string},{rejectWithValue})=>{
+    async (data:{email:string;otp:string;role:string},{rejectWithValue})=>{
         try {
             const result = await authService.verifyTenantOtp({...data})
             return result
@@ -102,7 +106,7 @@ export const verifyLandlordOtpAsync = createAsyncThunk(
 
 export const resendOtpAsync = createAsyncThunk(
   'auth/resendOtp',
-  async (data:{email:string},{rejectWithValue})=>{
+  async (data:{email:string,role:string},{rejectWithValue})=>{
     try {
 
       const result = await authService.resendOtp(data)
@@ -125,10 +129,10 @@ export const resendOtpAsync = createAsyncThunk(
 
 export const loginTenantAsync = createAsyncThunk(
   'auth/tenantLogin',
-  async (data:{email:string;password:string;},{rejectWithValue})=>{
+  async ({data,role}:{data:LoginValues;role:string},{rejectWithValue})=>{
     try {
 
-      const result = await authService.tenatLogin(data)
+      const result = await authService.tenatLogin({...data,role})
 
     
       return result
@@ -150,9 +154,9 @@ export const loginTenantAsync = createAsyncThunk(
 
 export const forgotPasswordTenantAsync = createAsyncThunk(
   'auth/tenantForgotPassword',
-  async (data:{email:string},{rejectWithValue})=>{
+  async ({data,role}:{data:ForgotPasswordValues,role:string},{rejectWithValue})=>{
     try {
-      const result = await authService.tenantForgotPassword(data)
+      const result = await authService.tenantForgotPassword({...data,role})
       return result
       
     } catch (error: unknown) {
@@ -175,9 +179,9 @@ export const forgotPasswordTenantAsync = createAsyncThunk(
 
 export const resetPasswordAsync = createAsyncThunk(
   'auth/resetTenantPassword',
-  async (data:{email:string;password:string,confirmPassword:string},{rejectWithValue})=>{
+  async ({data,role}:{data:ResetPasswordValues,role:string},{rejectWithValue})=>{
      try {
-      const result = await authService.resetPassword(data)
+      const result = await authService.resetPassword({...data,role})
       return result
      } catch (error: unknown) {
       if (isAxiosError(error)) {

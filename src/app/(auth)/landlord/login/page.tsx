@@ -4,15 +4,22 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { googleAuthAsync, loginLandlordAsync } from '@/features/auth/authThunks';  
-import { loginSchema, LoginValues } from '@/constants/authValidation';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { GoogleLogin } from '@react-oauth/google';
+import { useForm } from 'react-hook-form';
+
 import LoginForm from '@/components/auth/LoginForm';
+import type { LoginValues } from '@/constants/authValidation';
+import { loginSchema } from '@/constants/authValidation';
 import { clearError } from '@/features/auth/authSlice';
-import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { googleAuthAsync, loginLandlordAsync, loginTenantAsync } from '@/features/auth/authThunks';  
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+
+import type { CredentialResponse } from '@react-oauth/google';
+
 export default function LandlordLogin() {  
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -31,7 +38,7 @@ export default function LandlordLogin() {
     dispatch(clearError());  
   }, [dispatch]);
   const handleLogin = async (data: LoginValues) => {
-    const result = await dispatch(loginLandlordAsync(data));  
+    const result = await dispatch(loginTenantAsync({data,role:"LANDLORD"}));  
     if (loginLandlordAsync.fulfilled.match(result)) {         
       router.replace(result.payload.redirectTo);  
     }

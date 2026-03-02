@@ -1,12 +1,14 @@
 'use client';
 
 import React from "react";
+
 import { useRouter } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { resendOtpAsync, verifyTenantOtpAsync } from "@/features/auth/authThunks";
+
 import { toast } from "sonner";
 
 import OtpForm from "@/components/auth/otpFrom";
+import { resendOtpAsync, verifyTenantOtpAsync } from "@/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 export default function TenantOtpVerification() {
   const router = useRouter();
@@ -14,22 +16,22 @@ export default function TenantOtpVerification() {
   const { loading, error } = useAppSelector((state) => state.auth);
 
   const email = typeof window !== 'undefined' ? sessionStorage.getItem('signupEmail') || '' : '';
-
+  const role =  typeof window !== 'undefined' ? sessionStorage.getItem('signupEmail') || '' : '';
   const handleVerify = async (otp: string) => {
     if (otp.length !== 6) return;
     
    
-      const result = await dispatch(verifyTenantOtpAsync({ email, otp })).unwrap();
+      const result = await dispatch(verifyTenantOtpAsync({ email, otp ,role:"TENANT"})).unwrap();
       toast.success("OTP Verified Successfully!");
       sessionStorage.removeItem('signupEmail');
-      sessionStorage.removeItem('signupRole');
+    
       router.replace("/tenant/login");
     
   };
 
   const handleResend = async () => {
   
-      await dispatch(resendOtpAsync({ email })).unwrap();
+      await dispatch(resendOtpAsync({ email ,role})).unwrap();
       toast.success("OTP resent! Check your email.");
    
   };

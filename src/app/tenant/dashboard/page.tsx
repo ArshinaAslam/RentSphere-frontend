@@ -1,10 +1,12 @@
 
 'use client';
 
-import { useAppSelector } from "@/store/hooks";
+import { Home, IndianRupee, Wrench, CalendarDays, AlertCircle, CheckCircle2,MessageCircle } from 'lucide-react';
+
 import Navbar from "@/components/layout/Navbar";
 import Sidebar from "@/components/layout/Sidebar";
-import { Home, IndianRupee, Wrench, CalendarDays, AlertCircle, CheckCircle2,MessageCircle } from 'lucide-react';
+import { useAppSelector } from "@/store/hooks";
+
 
 export default function TenantDashboard() {
   const { userData,loading } = useAppSelector(state => state.auth);

@@ -1,13 +1,16 @@
 
 'use client';
 
+import { useEffect } from 'react';
+
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
 import { Clock, ShieldCheck, AlertCircle, CheckCircle } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { useEffect } from 'react';
 import { fetchKycStatusAsync } from '@/features/kyc/kycThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const KycPendingPage = () => {
   const router = useRouter();

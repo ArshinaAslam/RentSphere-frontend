@@ -3,16 +3,22 @@
 'use client';
 
 import React, { useDebugValue, useEffect, useState } from 'react';
+
 import { useRouter } from 'next/navigation';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ShieldCheck, Info, CheckCircle2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { kycFormSchema, KycFormValues } from '@/constants/authValidation';
-import { useAppDispatch } from '@/store/hooks';
-import { submitLandlordKYC } from '@/features/kyc/kycThunks';
+import { useForm, Controller } from 'react-hook-form';
+
 import UploadBox from '@/components/auth/UploadBox';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import type { KycFormValues } from '@/constants/authValidation';
+import { kycFormSchema } from '@/constants/authValidation';
+import { submitLandlordKYC } from '@/features/kyc/kycThunks';
+import { useAppDispatch } from '@/store/hooks';
+
+import type { SubmitHandler } from 'react-hook-form';
 
 
 const ReadOnlyField = ({ label, value }: { label: string; value: string }) => (
@@ -29,6 +35,8 @@ const ReadOnlyField = ({ label, value }: { label: string; value: string }) => (
 const KycVerificationPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const role =  typeof window !== 'undefined' ? sessionStorage.getItem('signupEmail') || '' : '';
      const [userData, setUserData] = useState({
     email: '',
     fullName: '',
@@ -93,7 +101,7 @@ const KycVerificationPage = () => {
   // if (values.selfie) formData.append('selfie', values.selfie);
 
   
-  for (let pair of formData.entries()) {
+  for (const pair of formData.entries()) {
     console.log(pair[0], pair[1]); 
   }
 

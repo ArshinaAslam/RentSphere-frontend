@@ -2,6 +2,10 @@
 
 // components/layout/Navbar.tsx
 import { useState } from 'react';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import { 
   Home, 
   MessageCircle, 
@@ -13,10 +17,10 @@ import {
   LogOut,
   ArrowRight 
 } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useRouter } from 'next/navigation';
+
 import { logoutAsync } from '@/features/auth/authThunks';
-import Link from 'next/link';
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
 
 export default function Navbar() {
     const router = useRouter()

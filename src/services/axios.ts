@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
       const originalRequest = error.config;
-        if (originalRequest?.url?.includes('/tenant/auth/refresh')) {
+        if (originalRequest?.url?.includes('/auth/refresh')) {
       return Promise.reject(error);
     }
 
@@ -31,10 +31,10 @@ axiosInstance.interceptors.response.use(
       
       try {
         console.log('Token expired → Auto-refreshing...');
-        await axiosInstance.post('/tenant/auth/refresh');
+        await axiosInstance.post('/auth/refresh');
         
         console.log('Token refreshed → Retrying request');
-        return axiosInstance(error.config!);
+        return axiosInstance(error.config);
       } catch (refreshError) {
         console.log('Refresh failed → Logging out');
 

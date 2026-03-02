@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+
+import { User, Phone, Mail } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { User, Phone, Mail } from 'lucide-react';
-import { EditProfileValues } from '@/constants/authValidation';
-import { UseFormReturn } from 'react-hook-form';
-import { toast } from 'sonner';
+import type { EditProfileValues } from '@/constants/authValidation';
+
+import type { UseFormReturn } from 'react-hook-form';
 
 interface EditProfileProps {
   user: any;

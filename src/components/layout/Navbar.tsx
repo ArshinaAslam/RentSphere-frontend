@@ -1,6 +1,9 @@
 
-// components/layout/Navbar.tsx
 import { useState } from 'react';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import { 
   Home, 
   MessageCircle, 
@@ -12,10 +15,10 @@ import {
   LogOut,
   ArrowRight 
 } from 'lucide-react';
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useRouter } from 'next/navigation';
+
 import { logoutAsync } from '@/features/auth/authThunks';
-import Link from 'next/link';
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
 
 export default function Navbar() {
     const router = useRouter()
@@ -51,18 +54,8 @@ export default function Navbar() {
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-slate-100 h-16 shadow-sm">
       <div className="px-6 md:px-8 h-full flex items-center justify-between mx-auto max-w-7xl">
         
-        {/* Brand Section */}
-        {/* <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-10 h-10">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-xl rotate-6 blur-sm" />
-            <div className="relative w-9 h-9 bg-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Home className="w-5 h-5 text-white stroke-[2.5]" />
-            </div>
-          </div>
-          <span className="text-slate-900 font-bold text-xl tracking-tight">RentSphere</span>
-        </div> */}
-
-        {/* Brand Section - NOW LINKS TO DASHBOARD */}
+       
+     
 <Link 
   href="/tenant/dashboard" 
   className="flex items-center gap-3 group"
@@ -78,18 +71,19 @@ export default function Navbar() {
   </span>
 </Link>
 
-        {/* Unified Navigation & Profile Section */}
+        
         <div className="flex items-center gap-9 h-full">
           
-          {/* Item 1: Home */}
-          <button 
-            title="Home" 
-            className="text-slate-400 hover:text-emerald-600 transition-all flex items-center justify-center p-1 -m-1 rounded-lg"
-          >
-            <Home size={22} strokeWidth={1.5} />
-          </button>
+          {/*  Home */}
+         <button 
+  title="Home"
+  onClick={() => router.push('/tenant/home')}
+  className="text-slate-400 hover:text-emerald-600 transition-all flex items-center justify-center p-1 -m-1 rounded-lg"
+>
+  <Home size={22} strokeWidth={1.5} />
+</button>
 
-          {/* Item 2: Messages */}
+          {/*  Messages */}
           <button 
             title="Messages" 
             className="text-slate-400 hover:text-emerald-600 transition-all flex items-center justify-center p-1 -m-1 rounded-lg"
@@ -97,7 +91,7 @@ export default function Navbar() {
             <MessageCircle size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Item 3: Notifications */}
+          {/*  Notifications */}
           <div className="relative flex items-center justify-center p-1 -m-1 rounded-lg">
             <button 
               title="Notifications" 

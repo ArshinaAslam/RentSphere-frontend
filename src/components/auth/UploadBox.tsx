@@ -54,8 +54,9 @@
 
 'use client';
 
-import { Upload, Camera, CheckCircle, X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+
+import { Upload, Camera, CheckCircle, X } from 'lucide-react';
 
 interface UploadBoxProps {
   title: string;

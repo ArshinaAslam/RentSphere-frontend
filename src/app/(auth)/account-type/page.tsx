@@ -1,6 +1,8 @@
 
 import Link from "next/link";
+
 import { User, Building2 } from "lucide-react";
+
 import AccountTypeCard from "@/components/auth/AccountTypeCard";
 
 

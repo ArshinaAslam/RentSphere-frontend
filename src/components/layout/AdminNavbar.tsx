@@ -60,8 +60,9 @@
 
 'use client';
 
-import { Bell, ChevronDown, LogOut, Search, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
+
+import { Bell, ChevronDown, LogOut, Search, ShieldCheck } from 'lucide-react';
 
 export default function AdminNavbar() {
   const [showMenu, setShowMenu] = useState(false);

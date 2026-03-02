@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { AuthState, ErrorPayload } from "./types";
+
 import {
   changeLandlordPasswordAsync,
   changePasswordAsync,
@@ -21,6 +21,8 @@ import {
  
   verifyTenantOtpAsync,
 } from "./authThunks";
+
+import type { AuthState, ErrorPayload } from "./types";
 
 const initialState: AuthState = {
   userData: null,
@@ -318,7 +320,7 @@ const authSlice = createSlice({
 // .addCase(fetchCurrentUserAsync.fulfilled, (state, action) => ({
 //   ...state,
 //   loading: false,
-//   userData: action.payload.user,  // ✅ Same as loginTenantAsync
+//   userData: action.payload.user, 
 // }))
 // .addCase(fetchCurrentUserAsync.rejected, (state, action) => ({
 //   ...state,

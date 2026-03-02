@@ -1,7 +1,9 @@
 // src/components/AccountTypeCard.tsx
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
+
 import { Check } from "lucide-react";
+
+import type { LucideIcon } from "lucide-react";
 
 type Props = {
   icon: LucideIcon;

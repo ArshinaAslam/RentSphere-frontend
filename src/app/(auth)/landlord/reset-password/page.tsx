@@ -1,14 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { resetPasswordAsync } from '@/features/auth/authThunks';  
-import { resetPasswordSchema, ResetPasswordValues } from '@/constants/authValidation';
-import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import {toast} from 'sonner'
+
+import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
+import type { ResetPasswordValues } from '@/constants/authValidation';
+import { resetPasswordSchema } from '@/constants/authValidation';
+import { resetPasswordAsync } from '@/features/auth/authThunks';  
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+
 export default function LandlordResetPasswordPage() {  
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -40,7 +45,7 @@ export default function LandlordResetPasswordPage() {
     const onSubmit = async (data: ResetPasswordValues) => {
       try {
         setError(''); 
-        await dispatch(resetPasswordAsync({email,password:data.password,confirmPassword:data.confirmPassword })).unwrap();
+        await dispatch(resetPasswordAsync({data ,role:"LANDLORD"})).unwrap();
         
         toast.success("Password reset successful!");
         sessionStorage.removeItem('Email');

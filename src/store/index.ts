@@ -1,22 +1,30 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import type { Action } from "@reduxjs/toolkit";
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+
+import adminReducer from "@/features/admin/adminSlice";
 import authReducer from "@/features/auth/authSlice";
 import kycReducer from "@/features/kyc/kycSlice";
-import usersReducer from "@/features/users/usersSlice";
+import propertyReducer from '@/features/property/propertySlice';
+import visitReducer from '@/features/visit/visitSlice'
+
+import type { Action } from "@reduxjs/toolkit";
+
+
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth"],
+  whitelist: ["auth","property"],
 };
    
 
 const appReducer = combineReducers({
   auth: authReducer,
   kyc: kycReducer,
-  users: usersReducer,
+  admin: adminReducer,
+  property : propertyReducer,
+  visit: visitReducer,
 });
 
 const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: Action) => {

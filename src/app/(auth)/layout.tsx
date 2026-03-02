@@ -1,5 +1,6 @@
 'use client'
 import { GoogleOAuthProvider } from '@react-oauth/google';
+
 import PublicRouteGuard from '@/providers/publicRouteGuard';
 
 export default function AuthLayout({

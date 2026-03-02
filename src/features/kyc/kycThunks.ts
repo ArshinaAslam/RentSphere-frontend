@@ -1,6 +1,7 @@
 // src/features/kyc/kycThunk.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError, isAxiosError } from "axios";
+
 import { kycService } from "@/services/kycService";
 
 export const submitLandlordKYC = createAsyncThunk(

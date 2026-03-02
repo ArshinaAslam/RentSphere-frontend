@@ -1,18 +1,25 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+
 import LandlordNavbar from '@/components/layout/LandlordNavbar';
 import LandlordProfileSidebar from '@/components/layout/LandlordProfileSidebar';
-import { editProfileSchema, EditProfileValues } from '@/constants/authValidation';
+import type { EditProfileValues } from '@/constants/authValidation';
+import { editProfileSchema } from '@/constants/authValidation';
+import { editLandlordProfileAsync } from '@/features/auth/authThunks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+
 // import { editLandlordProfileAsync } from '@/features/auth/authThunks'; // ✅ Landlord thunk
+import type { ProfileOverviewUser } from '@/types/user';
+
 import LandlordChangePasswordModal from './LandlordChangePasswordModal';
 import LandlordEditProfile from './LandlordEditProfile';
-import { toast } from 'sonner';
-import { ProfileOverviewUser } from '@/types/user';
-import { editLandlordProfileAsync } from '@/features/auth/authThunks';
+
+
 
 export type LandlordProfileTab = 'basic' | 'edit' | 'settings' | 'kyc';
 

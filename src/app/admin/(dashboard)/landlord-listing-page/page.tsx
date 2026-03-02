@@ -4,15 +4,18 @@
 'use client';
 
 import { useEffect } from 'react';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 import { 
   Search, ChevronLeft, ChevronRight, Mail, Phone, 
   Eye, Loader2, Ban, CheckCircle ,ShieldCheck,Clock,AlertCircle
 } from 'lucide-react';
+
+import { clearError, setCurrentPage, setSearch } from '@/features/admin/adminSlice';
+import { fetchLandlordsAsync, toggleLandlordStatusAsync } from '@/features/admin/adminThunks';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchLandlordsAsync, toggleUserStatusAsync } from '@/features/users/usersThunks';
-import { clearError, setCurrentPage, setSearch } from '@/features/users/usersSlice';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const LandlordListingPage = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +28,7 @@ const LandlordListingPage = () => {
     search, 
     isLoading, 
     error 
-  } = useAppSelector((state) => state.users);
+  } = useAppSelector((state) => state.admin);
   
   const limit = 10;
 
@@ -35,7 +38,7 @@ const LandlordListingPage = () => {
 
   const handleToggleStatus = (id: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'blocked' : 'active';
-    dispatch(toggleUserStatusAsync({ id, status: newStatus }));
+    dispatch(toggleLandlordStatusAsync({ id, status: newStatus }));
   };
 
   if (isLoading && landlords.length === 0) {

@@ -1,8 +1,5 @@
 'use client';
 
-import { useAppSelector } from "@/store/hooks";
-import LandlordNavbar from "@/components/layout/LandlordNavbar";
-import LandlordSidebar from "@/components/layout/LandlordSidebar";
 import { 
   Home, 
   Users, 
@@ -13,6 +10,11 @@ import {
   AlertCircle, 
   CheckCircle2 
 } from 'lucide-react';
+
+import LandlordNavbar from "@/components/layout/LandlordNavbar";
+import LandlordSidebar from "@/components/layout/LandlordSidebar";
+import { useAppSelector } from "@/store/hooks";
+
 
 export default function LandlordDashboard() {
   const { userData, loading } = useAppSelector(state => state.auth);
@@ -36,7 +38,7 @@ export default function LandlordDashboard() {
       {/* Main Content */}
       <main className="pl-64 pt-16 min-h-screen overflow-y-auto">
         <div className="p-6 md:p-8 lg:p-10 max-w-7xl mx-auto">
-          {/* Greeting + Quick Stats Row */}
+         
           <header className="mb-10">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
