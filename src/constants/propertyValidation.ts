@@ -23,7 +23,13 @@ export const propertySchema = z.object({
   status: z.enum(["Available", "Active", "Pending", "Rented", "Inactive"]),
   furnishing: z.string().min(1, "Furnishing status is required"),
   description: z.string().min(20, "Description must be at least 20 characters"),
-});
+}).refine(
+  (data) => Number(data.securityDeposit) <= Number(data.price),
+  {
+    message: "Security deposit cannot be greater than monthly rent",
+    path: ["securityDeposit"],  
+  }
+);
 
 export type PropertyFormValues = z.infer<typeof propertySchema>;
 

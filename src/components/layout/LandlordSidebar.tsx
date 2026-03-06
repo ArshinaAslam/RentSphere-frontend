@@ -8,7 +8,9 @@ import {
   LayoutDashboard, 
   Plus, 
   Home,
-  CreditCard 
+  CreditCard, 
+  CalendarCheck,
+  MessageSquare
 } from 'lucide-react';
 
 export default function LandlordSidebar() {
@@ -16,8 +18,10 @@ export default function LandlordSidebar() {
 
   const menuItems = [
     { name: 'Dashboard', href: '/landlord/dashboard', icon: LayoutDashboard },
-    { name: 'Add Property', href: '/landlord/add-properties', icon: Plus },
+    // { name: 'Add Property', href: '/landlord/add-properties', icon: Plus },
+    { name: 'Visit Requests',  href: '/landlord/visit-requests',  icon: CalendarCheck   },
     { name: 'My Properties', href: '/landlord/my-properties', icon: Home },
+    { name: 'Enquiries',      href: '/landlord/enquiries',      icon: MessageSquare   },
     { name: 'Payments', href: '/landlord/payments', icon: CreditCard },
   ];
 

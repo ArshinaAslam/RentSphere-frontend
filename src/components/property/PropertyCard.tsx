@@ -1,9 +1,11 @@
 import Link from "next/link";
 
-import { Bed, Bath, Maximize2 } from "lucide-react";
+import { Bed, Bath, Maximize2,  MessageCircleQuestion } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import PropertyInquiryModal from "../inquiry/PropertyInquiryModal";
 
 
 interface Property {
@@ -28,7 +30,9 @@ const statusColors: Record<string, string> = {
 };
 
 export default function PropertyCard({ property }: { property: Property }) {
+   const [showInquiries, setShowInquiries] = useState(false);
   return (
+  <>
     <Card className="overflow-hidden border-0 bg-card">
       <div className="relative h-48 overflow-hidden">
         <img
@@ -45,8 +49,12 @@ export default function PropertyCard({ property }: { property: Property }) {
 
       <CardContent className="space-y-3 p-4">
         <div>
-          <h3 className="text-base font-semibold text-foreground">{property.title}</h3>
-          <p className="text-sm text-muted-foreground">{property.location}</p>
+          <h3 className="text-base font-semibold text-foreground">
+            {property.title}
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            {property.location}
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -60,38 +68,57 @@ export default function PropertyCard({ property }: { property: Property }) {
 
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1">
-            <Bed size={14} /> {property.bedrooms} {property.bedrooms === 1 ? "Bed" : "Beds"}
+            <Bed size={14} /> {property.bedrooms}{" "}
+            {property.bedrooms === 1 ? "Bed" : "Beds"}
           </span>
           <span className="flex items-center gap-1">
-            <Bath size={14} /> {property.bathrooms} {property.bathrooms === 1 ? "Bath" : "Baths"}
+            <Bath size={14} /> {property.bathrooms}{" "}
+            {property.bathrooms === 1 ? "Bath" : "Baths"}
           </span>
           <span className="flex items-center gap-1">
-            <Maximize2 size={14} /> {property.area.toLocaleString()} sqft
+            <Maximize2 size={14} />{" "}
+            {property.area.toLocaleString()} sqft
           </span>
         </div>
 
-     <div className="flex gap-2 pt-1">
- <Button 
-    variant="outline" 
-    size="sm" 
-    className="flex-1 text-sm"
-    asChild  
-  >
-    <Link href={`/landlord/my-properties/${property.id}/details`}>
-      View Details
-    </Link>
-  </Button>
-<Button 
-  asChild 
-  size="sm" 
-  className="flex-1 text-sm bg-emerald-600 hover:bg-emerald-700 text-white border-0 "
->
-  <Link href={`/landlord/my-properties/edit/${property.id}`}>
-    Edit Listing
-  </Link>
-</Button>
-</div>
+        <div className="flex gap-2 pt-1">
+          <Button variant="outline" size="sm" className="flex-1 text-sm" asChild>
+            <Link href={`/landlord/my-properties/${property.id}/details`}>
+              View Details
+            </Link>
+          </Button>
+
+          <Button
+            asChild
+            size="sm"
+            className="flex-1 text-sm bg-emerald-600 hover:bg-emerald-700 text-white border-0"
+          >
+            <Link href={`/landlord/my-properties/edit/${property.id}`}>
+              Edit Listing
+            </Link>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowInquiries(true)}
+            className="px-2.5 border-slate-200 hover:bg-emerald-50 hover:border-emerald-400 hover:text-emerald-600 transition"
+            title="View Inquiries"
+          >
+            <MessageCircleQuestion size={15} />
+          </Button>
+        </div>
       </CardContent>
     </Card>
-  );
+
+    {showInquiries && (
+      <PropertyInquiryModal
+        propertyId={property.id}
+        propertyTitle={property.title}
+        onClose={() => setShowInquiries(false)}
+      />
+    )}
+  </>
+  
+)
 }

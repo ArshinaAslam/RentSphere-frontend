@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
@@ -13,6 +14,7 @@ import {
   Dumbbell, ShowerHead, UtensilsCrossed, Tv
 } from 'lucide-react';
 
+import InquiryModal from '@/components/inquiry/InquiryModal';
 import Navbar from '@/components/layout/Navbar';
 import { fetchTenantPropertyById } from '@/features/property/propertyThunk';
 import type { Landlord } from '@/features/property/types';
@@ -39,6 +41,7 @@ export default function PropertyDetailPage() {
 
   const [activeImg, setActiveImg] = useState(0);
   const [imgErr, setImgErr] = useState<Record<number, boolean>>({});
+  const [showInquiry, setShowInquiry] = useState(false);
 
   useEffect(() => {
     if (id) void dispatch(fetchTenantPropertyById(id));
@@ -66,7 +69,14 @@ export default function PropertyDetailPage() {
 
     
   return (
-    <div className="min-h-screen bg-[#f3f4f6]">
+    <div className="relative min-h-screen bg-[#f3f4f6]">
+     <div
+  className={
+    showInquiry
+      ? 'blur-sm pointer-events-none select-none transition'
+      : 'transition'
+  }
+>
       <Navbar />
 
       
@@ -295,12 +305,12 @@ export default function PropertyDetailPage() {
     Schedule Visit
   </Link>
 
-  <Link
-    href="/tenant/inquiry"
-    className="w-full text-center py-3 border-2 border-emerald-600 text-emerald-600 rounded-lg font-semibold hover:bg-emerald-50 transition block"
-  >
-    Send Inquiry
-  </Link>
+  <button
+  onClick={() => setShowInquiry(true)}
+  className="w-full text-center py-3 border-2 border-emerald-600 text-emerald-600 rounded-lg font-semibold hover:bg-emerald-50 transition block"
+>
+  Send Inquiry
+</button>
 
   <button className="w-full py-3 bg-emerald-50 text-emerald-700 rounded-lg font-semibold hover:bg-emerald-100 transition border border-emerald-200">
     Send Message
@@ -313,6 +323,15 @@ export default function PropertyDetailPage() {
 
         </div>
       </div>
+</div>
+      {showInquiry && landlord && (
+  <InquiryModal
+    propertyId={property._id}
+    landlordId={landlord.id}
+    propertyTitle={property.title}
+    onClose={() => setShowInquiry(false)}
+  />
+)}
     </div>
   );
 }
