@@ -1,13 +1,9 @@
+import { VISIT_ROUTES } from '@/constants/visitRoutes.';
 import axiosInstance from '@/services/axios';
 
 import type { BookVisitParams} from '../features/visit/types';
 
-const VISIT_ROUTES = {
-  BOOKED_SLOTS: '/tenant/visits/booked-slots',
-  BOOK_VISIT:   '/tenant/visits/book',
-  MY_VISITS:    '/tenant/visits/my-visits',
-  CANCEL_VISIT: (id: string) => `/tenant/visits/cancel/${id}`,
-};
+
 
 export const visitService = {
   async getBookedSlots(propertyId: string, date: string) {

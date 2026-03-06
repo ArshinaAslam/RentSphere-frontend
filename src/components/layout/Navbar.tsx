@@ -52,7 +52,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-slate-100 h-16 shadow-sm">
-      <div className="px-6 md:px-8 h-full flex items-center justify-between mx-auto max-w-7xl">
+     <div className="px-6 h-full flex items-center justify-between w-full">
         
        
      

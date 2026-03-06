@@ -31,7 +31,7 @@ export default function ScheduleVisitPage() {
     useAppSelector((s: RootState) => s.visit);
     const tenantProfile = useAppSelector((s: RootState) => s.auth.userData);
 
-  // Get landlordId from selected property in redux
+ 
   const selectedProperty = useAppSelector((s: RootState) => s.property.selectedProperty);
   const landlordId = typeof selectedProperty?.landlordId === 'object'
     ? selectedProperty.landlordId.id
@@ -40,12 +40,12 @@ export default function ScheduleVisitPage() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
 
-  // Cleanup on unmount
+  
   useEffect(() => {
     return () => { dispatch(clearVisitState()); };
   }, [dispatch]);
 
-  // Fetch booked slots when date changes
+  
   useEffect(() => {
     if (!selectedDate || !propertyId) return;
     setSelectedSlot('');
@@ -63,7 +63,13 @@ export default function ScheduleVisitPage() {
     }));
   };
 
-  const today = new Date().toISOString().split('T')[0];
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+const minDate = [
+  tomorrow.getFullYear(),
+  String(tomorrow.getMonth() + 1).padStart(2, '0'),
+  String(tomorrow.getDate()).padStart(2, '0'),
+].join('-');
 
   // Success screen
   if (success) {
@@ -106,7 +112,7 @@ export default function ScheduleVisitPage() {
             <label className="block text-sm font-semibold mb-2">Select Date</label>
             <input
               type="date"
-              min={today}
+              min={minDate}
               className="w-full border border-slate-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               value={selectedDate}
               onChange={e => setSelectedDate(e.target.value)}
@@ -166,7 +172,7 @@ export default function ScheduleVisitPage() {
           )}
 
 
-          {/* Contact Information — readonly, pre-filled from profile */}
+          {/* Contact Information  */}
 <div className="space-y-4">
   <h3 className="text-sm font-semibold text-slate-800">
     Your Contact Information

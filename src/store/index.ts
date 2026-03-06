@@ -6,7 +6,9 @@ import adminReducer from "@/features/admin/adminSlice";
 import authReducer from "@/features/auth/authSlice";
 import kycReducer from "@/features/kyc/kycSlice";
 import propertyReducer from '@/features/property/propertySlice';
-import visitReducer from '@/features/visit/visitSlice'
+import visitReducer from '@/features/visit/visitSlice';
+import landlordVisitReducer from '@/features/landlordVisit/landlordVisitSlice';
+import inquiryReducer from '@/features/inquiry/inquirySlice';
 
 import type { Action } from "@reduxjs/toolkit";
 
@@ -15,7 +17,7 @@ import type { Action } from "@reduxjs/toolkit";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth","property"],
+  whitelist: ["auth","property","visit","landlordVisit","inquiry"],
 };
    
 
@@ -25,6 +27,9 @@ const appReducer = combineReducers({
   admin: adminReducer,
   property : propertyReducer,
   visit: visitReducer,
+   landlordVisit: landlordVisitReducer,
+   inquiry: inquiryReducer,
+   
 });
 
 const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: Action) => {

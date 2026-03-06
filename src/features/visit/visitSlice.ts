@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { bookVisit, cancelMyVisit, fetchBookedSlots, fetchMyVisits } from './visitThunk';
-import { VisitBooking } from './types';
+
+import type { VisitBooking } from './types';
 
 interface VisitState {
   bookedSlots:  string[];

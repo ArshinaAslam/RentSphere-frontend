@@ -13,6 +13,7 @@ import { fetchAllProperties } from '@/features/property/propertyThunk';
 import type { propertyData } from '@/features/property/types';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
+
 const BHK_OPTIONS     = ['1 BHK', '2 BHK', '3 BHK', '4+ BHK'];
 const TYPE_OPTIONS    = ['Apartment', 'Villa', 'House'];
 const STATUS_OPTIONS  = ['Available', 'Rented', 'Inactive'];

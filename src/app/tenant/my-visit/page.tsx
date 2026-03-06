@@ -176,9 +176,9 @@ function VisitCard({
   const { label, classes, icon } = statusConfig(visit.status);
   const isCancelling = cancellingId === visit._id;
   const isConfirming = confirmId    === visit._id;
-  const canCancel    = visit.status === 'pending' || visit.status === 'confirmed';
+  const canCancel    =  visit.status === 'confirmed';
 
-  // Get property info — populated or string
+ 
   const property = typeof visit.propertyId === 'object' ? visit.propertyId : null;
 
   return (
@@ -186,7 +186,7 @@ function VisitCard({
       visit.status === 'cancelled' ? 'opacity-60' : ''
     }`}>
 
-      {/* Property image placeholder */}
+      
       <div className="h-36 bg-slate-100 flex items-center justify-center relative">
         {property?.images?.[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
