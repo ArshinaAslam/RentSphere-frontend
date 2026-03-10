@@ -5,13 +5,16 @@ import Link from 'next/link';
 import {
   Search, MapPin, BedDouble, Bath, Maximize2,
   X, SlidersHorizontal, ChevronLeft, ChevronRight,
-  Home, ChevronDown, ChevronUp, ArrowRight
+  Home, ChevronDown, ChevronUp, ArrowRight,
+  Heart,
+  Loader2
 } from 'lucide-react';
 
 import Navbar from '@/components/layout/Navbar';
 import { fetchAllProperties } from '@/features/property/propertyThunk';
 import type { propertyData } from '@/features/property/types';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { toggleWishlist } from '@/features/wishlist/wishlistThunk';
 
 
 const BHK_OPTIONS     = ['1 BHK', '2 BHK', '3 BHK', '4+ BHK'];
@@ -29,7 +32,7 @@ const LIMIT = 9;
 export default function TenantHomePage() {
 
   const dispatch = useAppDispatch();
-  const { properties, total, isLoading } = useAppSelector(s => s.property);
+  const { properties, total} = useAppSelector(s => s.property);
 
   const [search, setSearch] = useState('');
   const [debounced, setDebounced] = useState('');
@@ -450,6 +453,24 @@ export default function TenantHomePage() {
 
 function PropertyCard({ property }: { property: propertyData }) {
   const [imgErr, setImgErr] = useState(false);
+   const dispatch   = useAppDispatch();
+   const { userData } = useAppSelector(s => s.auth);
+    const { wishlisted, togglingId } = useAppSelector(s => s.wishlist);
+
+  const isWishlisted = wishlisted.includes(property._id);
+  const isToggling   = togglingId === property._id;
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!userData?.id) return;
+    void dispatch(toggleWishlist({
+      tenantId:    userData.id,
+      propertyId:  property._id,
+      isWishlisted,
+    }));
+  };
+
 
   return (
     <article className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 transition-all">
@@ -471,6 +492,21 @@ function PropertyCard({ property }: { property: propertyData }) {
         <span className="absolute top-3 left-3 bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold">
           {property.status}
         </span>
+
+
+          <button
+          onClick={handleWishlist}
+          className="absolute top-2 right-3 w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:scale-110 transition-all"
+        >
+          {isToggling ? (
+            <Loader2 size={16} className="animate-spin text-slate-400" />
+          ) : (
+            <Heart
+              size={16}
+              className={isWishlisted ? "text-rose-500 fill-rose-500" : "text-slate-400"}
+            />
+          )}
+        </button>
       </div>
 
       <div className="p-5">

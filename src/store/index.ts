@@ -4,11 +4,12 @@ import storage from "redux-persist/lib/storage";
 
 import adminReducer from "@/features/admin/adminSlice";
 import authReducer from "@/features/auth/authSlice";
+import inquiryReducer from '@/features/inquiry/inquirySlice';
 import kycReducer from "@/features/kyc/kycSlice";
+import landlordVisitReducer from '@/features/landlordVisit/landlordVisitSlice';
 import propertyReducer from '@/features/property/propertySlice';
 import visitReducer from '@/features/visit/visitSlice';
-import landlordVisitReducer from '@/features/landlordVisit/landlordVisitSlice';
-import inquiryReducer from '@/features/inquiry/inquirySlice';
+import wishlistReducer from "@/features/wishlist/wishlistSlice";
 
 import type { Action } from "@reduxjs/toolkit";
 
@@ -17,7 +18,7 @@ import type { Action } from "@reduxjs/toolkit";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth","property","visit","landlordVisit","inquiry"],
+  whitelist: ["auth","property","visit","landlordVisit","inquiry","wishlist"],
 };
    
 
@@ -29,7 +30,7 @@ const appReducer = combineReducers({
   visit: visitReducer,
    landlordVisit: landlordVisitReducer,
    inquiry: inquiryReducer,
-   
+   wishlist: wishlistReducer,
 });
 
 const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: Action) => {

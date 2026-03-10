@@ -6,7 +6,7 @@ export const signupSchema = z
     firstName: z.string().min(1, "First name is required").max(50),
     lastName: z.string().min(1, "Last name is required").max(50),
     email: z.string().email("Please enter a valid email address"),
-    phone: z.string().regex(/^[\+]?[1-9][\d]{9,14}$/, "Enter valid phone (+91...)"),
+    phone: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
     agreeToTerms: z.boolean().refine((val) => val === true, {

@@ -34,6 +34,7 @@ const ReadOnlyField = ({ label, value }: { label: string; value: string }) => (
 
 const KycVerificationPage = () => {
   const router = useRouter();
+  
   const dispatch = useAppDispatch();
 
   const role =  typeof window !== 'undefined' ? sessionStorage.getItem('signupEmail') || '' : '';
@@ -83,7 +84,7 @@ const KycVerificationPage = () => {
 
 
   const onSubmit: SubmitHandler<KycFormValues> = async (data) => {
-  console.log("reached")
+
   const formData = new FormData();
   
   
@@ -93,34 +94,37 @@ const KycVerificationPage = () => {
   
   
   const values = form.getValues();
-  
+  console.log("values.aadhaarFront",values.aadhaarFront)
   
   if (values.aadhaarFront) formData.append('aadhaarFront', values.aadhaarFront);
   if (values.aadhaarBack) formData.append('aadhaarBack', values.aadhaarBack);
   if (values.panCard) formData.append('panCard', values.panCard);
   // if (values.selfie) formData.append('selfie', values.selfie);
 
-  
-  for (const pair of formData.entries()) {
-    console.log(pair[0], pair[1]); 
+    for (let pair of formData.entries()) {
+    console.log(pair[0], pair[1]);
   }
+ 
 
   const result = await dispatch(submitLandlordKYC(formData));
-   console.log('KYC Result:', result);
+  
     if (submitLandlordKYC.fulfilled.match(result)) {
-      console.log("yesss",result.payload)
+  
        const { kycId,kycStatus } = result.payload;
       sessionStorage.setItem('kycId', result.payload.data.kycId);
       sessionStorage.setItem('kycStatus', result.payload.data.kycStatus);
       
-  console.log('Retrieved KYC ID:', result.payload.data.kycId);  
-  console.log('Retrieved Status:', result.payload.data.kycStatus);
+ 
       router.push('/landlord/kyc-pending');
     } else {
        console.error('KYC FAILED:', result.payload || result.error);
        alert('KYC submission failed')
     }
 };
+
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-start justify-center py-12 px-4 sm:px-6 lg:px-8">

@@ -105,6 +105,7 @@ export default function Navbar() {
           {/* Item 2: Messages */}
           <button 
             title="Messages" 
+             onClick={() => router.push('/landlord/chat')}
             className="text-slate-400 hover:text-emerald-600 transition-all flex items-center justify-center p-1 -m-1 rounded-lg"
           >
             <MessageCircle size={22} strokeWidth={1.5} />

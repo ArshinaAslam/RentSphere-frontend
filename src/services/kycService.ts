@@ -3,7 +3,7 @@ import axiosInstance from "./axios";
 
 export const kycService = {
   async submitLandlordKYC(formData: FormData) {
-    const response = await axiosInstance.post('/kyc/landlord/kyc-submit', formData, {
+    const response = await axiosInstance.post('/landlord/kyc/kyc-submit', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -12,7 +12,7 @@ export const kycService = {
   },
 
   async fetchKycStatus (email:string) {
-  const response = await axiosInstance.get('/kyc/landlord/kyc-status', {
+  const response = await axiosInstance.get('/landlord/kyc/kyc-status', {
       params: { email }  
     });
   return response.data;
