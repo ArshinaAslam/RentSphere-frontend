@@ -1,18 +1,18 @@
-// components/layout/StatCard.tsx
+
 import type { ReactNode } from 'react';
 
 interface StatCardProps {
   title: string;
   value: string;
   icon: ReactNode;
-  iconColorClass: string; // Tailored via CSS or Tailwind
+  iconColorClass: string; 
 }
 
 export const StatCard = ({ title, value, icon, iconColorClass }: StatCardProps) => {
   return (
     <div className="bg-white p-6 rounded-[24px] border border-slate-200 shadow-sm hover:shadow-md transition-all animate-in fade-in duration-500">
       <div className="flex items-center gap-4">
-        {/* iconColorClass should handle the specific background-tint of the icon */}
+    
         <div className={`p-3 rounded-xl ${iconColorClass}`}>
           {icon}
         </div>

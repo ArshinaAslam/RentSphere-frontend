@@ -1,10 +1,12 @@
+import { useState } from "react";
+
 import Link from "next/link";
 
 import { Bed, Bath, Maximize2,  MessageCircleQuestion } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+
 import PropertyInquiryModal from "../inquiry/PropertyInquiryModal";
 
 

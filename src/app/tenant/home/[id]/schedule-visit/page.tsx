@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Check, Loader2 } from "lucide-react";
+import { useEffect , useState } from "react";
 
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchBookedSlots, bookVisit } from "@/features/visit/visitThunk";
-import { clearVisitState, clearVisitError } from "@/features/visit/visitSlice";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+
+import { ArrowLeft, Check, Loader2 } from "lucide-react";
 import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
-import { useState } from "react";
+
 import Navbar from "@/components/layout/Navbar";
+import { clearVisitState, clearVisitError } from "@/features/visit/visitSlice";
+import { fetchBookedSlots, bookVisit } from "@/features/visit/visitThunk";
+import type { RootState } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 const ALL_SLOTS = [
   { label: "Morning", time: "8:00 AM - 11:00 AM", emoji: "☀️" },

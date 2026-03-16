@@ -1,19 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import Link from 'next/link';
+
 import {
   CalendarCheck, MapPin, Clock, X,
   CheckCircle, XCircle, Loader2, Home,
   AlertCircle, Calendar,
 } from 'lucide-react';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchMyVisits, cancelMyVisit } from '@/features/visit/visitThunk';
-import type { RootState } from '@/store';
-import type { VisitBooking } from '@/features/visit/types';
 import Navbar from '@/components/layout/Navbar';
 import Sidebar from '@/components/layout/Sidebar';
+import type { VisitBooking } from '@/features/visit/types';
+import { fetchMyVisits, cancelMyVisit } from '@/features/visit/visitThunk';
+import type { RootState } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 export default function MyVisitsPage() {
   const dispatch = useAppDispatch();

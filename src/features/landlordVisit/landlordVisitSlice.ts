@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { fetchLandlordVisits, updateLandlordVisitStatus } from './landlordVisitThunk';
+
 import type { LandlordVisit } from './types';
 
 interface LandlordVisitState {

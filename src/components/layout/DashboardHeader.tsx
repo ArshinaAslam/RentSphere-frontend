@@ -29,7 +29,7 @@ export const DashboardHeader = () => {
       await dispatch(logoutAsync());
       router.replace('/admin/login');
       
-      console.log('Logout successful!');
+    
 
      
   };
@@ -43,7 +43,7 @@ export const DashboardHeader = () => {
           
        
           
-          {/* Item 1: Messages */}
+         
           <button 
             title="Messages"
             className="text-slate-400 hover:text-[#6A5ACD] transition-all flex items-center justify-center p-1"
@@ -51,7 +51,7 @@ export const DashboardHeader = () => {
             <MessageCircle size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Item 2: Notifications */}
+        
        <div className="relative flex items-center justify-center p-1">
             <button 
               title="Notifications"
@@ -59,11 +59,11 @@ export const DashboardHeader = () => {
             >
               <Bell size={22} strokeWidth={1.5} />
             </button>
-            {/* Notification Dot */}
+          
             <span className="absolute top-1 right-1 w-2 h-2 bg-[#6A5ACD] rounded-full border-2 border-white"></span>
           </div>
 
-   {/* Item 3: Profile Pill with Dropdown */}
+  
 <div className="relative">
   <button
     onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -81,7 +81,7 @@ export const DashboardHeader = () => {
     />
   </button>
 
-  {/* ✅ Compact Dropdown Menu: Reduced width (w-36) and tight spacing (gap-2) */}
+  
   {showProfileMenu && (
     <div className="absolute top-[calc(100%+8px)] right-0 w-36 bg-white border border-slate-200 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2">
       <button 

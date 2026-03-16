@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { isAxiosError } from 'axios';
 
 import { landlordVisitService } from '../../services/landlordVisitService';
+
 import type { LandlordVisit, VisitStatus } from './types';
 
 export const fetchLandlordVisits = createAsyncThunk<

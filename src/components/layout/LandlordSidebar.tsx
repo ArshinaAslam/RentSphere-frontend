@@ -1,12 +1,12 @@
 
-// components/ui/LandlordSidebar.tsx
+
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { 
   LayoutDashboard, 
-  Plus, 
+ 
   Home,
   CreditCard, 
   CalendarCheck,

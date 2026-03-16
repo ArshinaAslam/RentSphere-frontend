@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import { fetchWishlist, toggleWishlist } from "./wishlistThunk";
+
 import type { WishlistItem, WishlistState } from "./types";
 
 const initialState: WishlistState = {

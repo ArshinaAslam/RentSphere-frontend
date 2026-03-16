@@ -140,8 +140,8 @@ export default function VisitRequestsPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filtered.map(visit => {
-                  const tenant   = typeof visit.tenantId   === 'object' ? visit.tenantId   as TenantInfo   : null;
-                  const property = typeof visit.propertyId === 'object' ? visit.propertyId as PropertyInfo : null;
+                  const tenant   = typeof visit.tenantId   === 'object' ? visit.tenantId   : null;
+                  const property = typeof visit.propertyId === 'object' ? visit.propertyId : null;
                   const isUpdating   = updatingId  === visit._id;
                   const isConfirming = confirmId   === visit._id;
                   const canCancel    = visit.status === 'pending' || visit.status === 'confirmed';

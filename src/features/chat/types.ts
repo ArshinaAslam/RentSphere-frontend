@@ -9,11 +9,11 @@ export interface Conversation {
   _id:           string;
   tenantId:      ChatParticipant;
   landlordId:    ChatParticipant;
-  propertyId:    { _id: string; title: string; city: string };
   lastMessage:   string;
   lastMessageAt: string;
   unreadCount:   number;
   status:        'active' | 'closed';
+  lastMessageSenderRole?: 'tenant' | 'landlord';
 }
 
 export interface Message {
@@ -30,8 +30,10 @@ export interface ChatState {
   conversations:      Conversation[];
   activeConversation: Conversation | null;
   messages:           Message[];
+  
   isLoadingConvos:    boolean;
   isLoadingMessages:  boolean;
   isSending:          boolean;
+  isTyping:           boolean;
   error:              string | null;
 }

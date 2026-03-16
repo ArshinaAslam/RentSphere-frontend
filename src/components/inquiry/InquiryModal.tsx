@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { X, MessageSquare, Loader2, CheckCircle } from 'lucide-react';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { createInquiry } from '@/features/inquiry/inquiryThunk';
 import { clearInquiryState } from '@/features/inquiry/inquirySlice';
+import { createInquiry } from '@/features/inquiry/inquiryThunk';
 import type { RootState } from '@/store';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 const PRESET_QUESTIONS = [
   'Is the property still available?',
@@ -73,7 +74,7 @@ export default function InquiryModal({
         className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative"
         onClick={e => e.stopPropagation()}
       >
-        {/* Close button */}
+       
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"
@@ -82,7 +83,7 @@ export default function InquiryModal({
         </button>
 
         {success ? (
-          /* Success state */
+        
           <div className="flex flex-col items-center py-6 text-center">
             <div className="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
               <CheckCircle className="w-7 h-7 text-emerald-600" />
@@ -102,7 +103,7 @@ export default function InquiryModal({
           </div>
         ) : (
           <>
-            {/* Header */}
+           
             <div className="flex items-center gap-3 mb-5">
               <div className="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center">
                 <MessageSquare className="w-4 h-4 text-emerald-600" />
@@ -115,7 +116,7 @@ export default function InquiryModal({
               </div>
             </div>
 
-            {/* Questions */}
+         
             <div className="mb-5">
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
                 Select your questions
@@ -153,7 +154,7 @@ export default function InquiryModal({
               </div>
             </div>
 
-            {/* Optional message */}
+          
             <div className="mb-5">
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                 Additional message (optional)
@@ -167,14 +168,14 @@ export default function InquiryModal({
               />
             </div>
 
-            {/* Validation or API error */}
+          
             {(validationError || error) && (
               <p className="text-xs text-red-500 bg-red-50 border border-red-200 px-3 py-2 rounded-lg mb-4">
                 {validationError || error}
               </p>
             )}
 
-            {/* Submit */}
+       
             <button
               disabled={isSubmitting || selectedQuestions.length === 0}
               onClick={handleSubmit}

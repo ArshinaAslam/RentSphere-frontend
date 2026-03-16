@@ -1,9 +1,9 @@
-// components/auth/ForgotPasswordForm.tsx ✅ FIXED onSubmit
+
 'use client';
 
 import React from 'react';
 
-import Link from 'next/link';
+
 
 import { Mail, Home, SendHorizontal } from 'lucide-react';
 
@@ -51,7 +51,7 @@ export default function ForgotPasswordForm({
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">  {/* ✅ handleSubmit */}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">  
           <FormField
             control={form.control}
             name="email"
@@ -94,7 +94,7 @@ export default function ForgotPasswordForm({
         </form>
       </Form>
 
-      {/* Info Box */}
+    
       <div className="mt-8 w-full p-4 bg-slate-50 rounded-2xl border border-slate-100">
         <p className="text-xs text-slate-600 flex items-center gap-2">
           <span className="w-2 h-2 bg-slate-400 rounded-full" />

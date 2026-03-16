@@ -13,7 +13,7 @@ export default function LandlordProfileSidebar({ activeTab, onTabChange }: Landl
   const menu = [
     { id: 'basic', label: 'Profile Overview', icon: User },
     { id: 'edit', label: 'Edit Profile', icon: UserPen },
-    { id: 'kyc', label: 'KYC Details', icon: ShieldCheck },    // ✅ NEW KYC SECTION
+    { id: 'kyc', label: 'KYC Details', icon: ShieldCheck },    
     { id: 'settings', label: 'Account Settings', icon: Settings },
   ];
 

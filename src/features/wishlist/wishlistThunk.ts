@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
 import { wishlistService }  from "@/services/wishlistService";
 
 export const fetchWishlist = createAsyncThunk(
