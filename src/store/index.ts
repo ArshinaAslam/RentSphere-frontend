@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 
 import adminReducer from "@/features/admin/adminSlice";
 import authReducer from "@/features/auth/authSlice";
+import chatReducer from "@/features/chat/chatSlice";
 import inquiryReducer from '@/features/inquiry/inquirySlice';
 import kycReducer from "@/features/kyc/kycSlice";
 import landlordVisitReducer from '@/features/landlordVisit/landlordVisitSlice';
@@ -31,6 +32,7 @@ const appReducer = combineReducers({
    landlordVisit: landlordVisitReducer,
    inquiry: inquiryReducer,
    wishlist: wishlistReducer,
+   chat: chatReducer,
 });
 
 const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: Action) => {

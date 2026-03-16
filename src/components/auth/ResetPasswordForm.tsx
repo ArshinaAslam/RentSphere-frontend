@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Lock, Eye, EyeOff, Home } from 'lucide-react'; // Added Home icon
+import { Lock, Eye, EyeOff, Home } from 'lucide-react'; 
 
 
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ export default function ResetPasswordForm({
   return (
     <div className="bg-white rounded-[2rem] shadow-[0_10px_40px_rgba(0,0,0,0.04)] border border-slate-100 p-8 md:p-10 flex flex-col items-center">
       
-      {/* ✅ Brand Logo Section Integrated Here */}
+    
       <div className="text-center mb-8 flex flex-col items-center">
         <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-100">
           <Home className="w-7 h-7 text-white stroke-[2.5]" />
@@ -55,7 +55,7 @@ export default function ResetPasswordForm({
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-5">
-          {/* New Password Field */}
+         
           <FormField
             control={form.control}
             name="password"
@@ -86,7 +86,7 @@ export default function ResetPasswordForm({
             )}
           />
 
-          {/* Confirm Password Field */}
+        
           <FormField
             control={form.control}
             name="confirmPassword"
@@ -117,7 +117,7 @@ export default function ResetPasswordForm({
             )}
           />
 
-          {/* Password Requirements */}
+
           <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
             <p className="text-xs font-bold text-slate-500 uppercase tracking-tight mb-3">
               Password requirements:
@@ -151,7 +151,7 @@ export default function ResetPasswordForm({
   );
 }
 
-// Helper component
+
 function RequirementItem({ met, label }: { met: boolean; label: string }) {
   return (
     <li className="flex items-center gap-2 text-xs">

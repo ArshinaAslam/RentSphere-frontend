@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import Link from 'next/link';
+
 import { Heart, Home, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import Navbar  from '@/components/layout/Navbar';

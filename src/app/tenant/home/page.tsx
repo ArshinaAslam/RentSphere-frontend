@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+
 import Link from 'next/link';
+
 import {
   Search, MapPin, BedDouble, Bath, Maximize2,
   X, SlidersHorizontal, ChevronLeft, ChevronRight,
@@ -13,8 +15,8 @@ import {
 import Navbar from '@/components/layout/Navbar';
 import { fetchAllProperties } from '@/features/property/propertyThunk';
 import type { propertyData } from '@/features/property/types';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleWishlist } from '@/features/wishlist/wishlistThunk';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
 
 const BHK_OPTIONS     = ['1 BHK', '2 BHK', '3 BHK', '4+ BHK'];

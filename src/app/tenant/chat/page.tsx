@@ -1,25 +1,21 @@
-
-
-
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-import { Search, Send, MessageSquare, Phone, Video, Loader2 , PhoneOff, PhoneIncoming, PhoneMissed,VideoOff, MicOff, Mic } from 'lucide-react';
+import { Search, Send, MessageSquare, Phone, Video, Loader2, PhoneOff, PhoneIncoming, PhoneMissed,VideoOff, MicOff, Mic } from 'lucide-react';
 
 import CallHistoryList from '@/components/chat/CallHistoryList';
 import VoiceMessage from '@/components/chat/VoiceMessage';
-import LandlordNavbar from '@/components/layout/LandlordNavbar';
-import { setActiveConversation, appendMessage, clearUnread, resetActiveConversation, markMessagesAsRead }      from '@/features/chat/chatSlice';
-import { markAsReadThunk , fetchLandlordConversations, fetchMessages, uploadVoiceMessageThunk, fetchCallHistory } from '@/features/chat/chatThunk';
+import Navbar from '@/components/layout/Navbar';
+import { setActiveConversation, appendMessage, clearUnread, resetActiveConversation, markMessagesAsRead } from '@/features/chat/chatSlice';
+import { fetchTenantConversations, fetchMessages, markAsReadThunk, uploadVoiceMessageThunk, fetchCallHistory } from '@/features/chat/chatThunk';
 import type { Conversation, Message } from '@/features/chat/types';
-import { useCall } from '@/hooks/useCall';
+import { useCall }                                             from '@/hooks/useCall';
 import { useVoiceRecorder } from '@/hooks/useVoiceRecorder';
-import { connectSocket, disconnectSocket, getSocket } from '@/lib/socket';
-import { useAppDispatch, useAppSelector }    from '@/store/hooks';
+import { connectSocket, disconnectSocket, getSocket }               from '@/lib/socket';
+import { useAppDispatch, useAppSelector }        from '@/store/hooks';
 
-
-export default function ChatPage() {
+export default function TenantChatPage() {
   const dispatch     = useAppDispatch();
   const { userData } = useAppSelector(s => s.auth);
   const {
@@ -30,10 +26,10 @@ export default function ChatPage() {
 
 const {
   callStatus, callType, incomingCall,
-  isMicMuted, isCameraOff,         
+  isMicMuted, isCameraOff,           
   remoteAudioRef, localVideoRef, remoteVideoRef,
   startCall, acceptCall, rejectCall, endCall,
-  toggleMic, toggleCamera,           
+  toggleMic, toggleCamera,          
   setupCallListeners,
 } = useCall(userData?.id ?? '');
 
@@ -43,35 +39,32 @@ const {
   resetRecorder, formatDuration,
 } = useVoiceRecorder();
 
-  const [search,        setSearch]        = useState('');
-  const [input,         setInput]         = useState('');
-  const [isSending,     setIsSending]     = useState(false);
-  const [isTyping,      setIsTyping]      = useState(false);
-  const [onlineUsers,   setOnlineUsers]   = useState<Set<string>>(new Set());
+  const [search,       setSearch]       = useState('');
+  const [input,        setInput]        = useState('');
+  const [isSending,    setIsSending]    = useState(false);
+  const [isTyping,     setIsTyping]     = useState(false);
+  const [onlineUsers,  setOnlineUsers]  = useState<Set<string>>(new Set());
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const bottomRef        = useRef<HTMLDivElement>(null);
-  
 
  
 const activeConversationRef = useRef(activeConversation);
 
-const [activeTab, setActiveTab] = useState<'messages' | 'calls'>('messages');
-
-const [callHistory,     setCallHistory]     = useState<Message[]>([]); 
-const [isLoadingCalls,  setIsLoadingCalls]  = useState(false);          
+const [activeTab,      setActiveTab]      = useState<'messages' | 'calls'>('messages');
+const [callHistory,    setCallHistory]    = useState<Message[]>([]);
+const [isLoadingCalls, setIsLoadingCalls] = useState(false);
 
 
 useEffect(() => {
   activeConversationRef.current = activeConversation;
 }, [activeConversation]);
 
- 
+
   useEffect(() => {
     if (!userData?.id) return;
 
     connectSocket(userData.id);
     const socket = getSocket();
-
 socket.on('message:receive', (message: Message) => {
   dispatch(appendMessage(message));
   if (
@@ -82,76 +75,72 @@ socket.on('message:receive', (message: Message) => {
       conversationId: message.conversationId,
       userId:         userData.id,
     })).then(() => {
-  
+     
       getSocket().emit('messages:read', {
         conversationId: message.conversationId,
         userId:         userData.id,
       });
-      void dispatch(fetchLandlordConversations(userData.id));
+      void dispatch(fetchTenantConversations(userData.id));
     });
   } else {
-    void dispatch(fetchLandlordConversations(userData.id));
+    void dispatch(fetchTenantConversations(userData.id));
   }
 });
-
-   
-    socket.on("typing:start", () => setIsTyping(true));
-    socket.on("typing:stop",  () => setIsTyping(false));
-
- 
-    socket.on("user:status", ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {
+    socket.on('typing:start', () => setIsTyping(true));
+    socket.on('typing:stop',  () => setIsTyping(false));
+    socket.on('user:status', ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {
       setOnlineUsers(prev => {
         const next = new Set(prev);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         isOnline ? next.add(userId) : next.delete(userId);
         return next;
       });
     });
-
+    socket.on('conversation:updated', () => {
+      if (userData?.id) void dispatch(fetchTenantConversations(userData.id));
+    });
 
     socket.on('messages:read', ({ conversationId }: { conversationId: string }) => {
   if (conversationId === activeConversationRef.current?._id) {
-    
     dispatch(markMessagesAsRead(conversationId));
   }
 });
 
+    const cleanupCall = setupCallListeners(); 
 
-    socket.on("conversation:updated", () => {
-      if (userData?.id) void dispatch(fetchLandlordConversations(userData.id));
-    });
-   const cleanupCall = setupCallListeners();
     return () => {
-      socket.off("message:receive");
-      socket.off("typing:start");
-      socket.off("typing:stop");
-      socket.off("user:status");
-      socket.off("conversation:updated");
-      socket.off('messages:read');
+      socket.off('message:receive');
+      socket.off('typing:start');
+      socket.off('typing:stop');
+      socket.off('user:status');
+      socket.off('conversation:updated');
+       socket.off('messages:read');
       cleanupCall();
       disconnectSocket();
     };
+  
   }, [userData?.id, dispatch]);
 
-  
+
 useEffect(() => {
   if (!userData?.id) return;
   dispatch(resetActiveConversation());
-  void dispatch(fetchLandlordConversations(userData.id));
+  void dispatch(fetchTenantConversations(userData.id));
 }, [userData?.id, dispatch]);
 
- 
+
   useEffect(() => {
     if (!activeConversation?._id) return;
     const socket = getSocket();
-    socket.emit("conversation:join", activeConversation._id);
+    socket.emit('conversation:join', activeConversation._id);
     void dispatch(fetchMessages({ conversationId: activeConversation._id }));
 
     return () => {
-      socket.emit("conversation:leave", activeConversation._id);
+      socket.emit('conversation:leave', activeConversation._id);
     };
   }, [activeConversation?._id, dispatch]);
 
-
+ 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -169,7 +158,7 @@ useEffect(() => {
   }
 }, [activeTab, userData?.id, dispatch]);
 
-const handleSelectConv = (conv: Conversation) => {
+  const handleSelectConv = (conv: Conversation) => {
   dispatch(setActiveConversation(conv));
   dispatch(clearUnread(conv._id));
   if (userData?.id) {
@@ -177,41 +166,36 @@ const handleSelectConv = (conv: Conversation) => {
       conversationId: conv._id, 
       userId: userData.id 
     })).then(() => {
+      
       getSocket().emit('messages:read', {
         conversationId: conv._id,
         userId:         userData.id,
       });
-      void dispatch(fetchLandlordConversations(userData.id));
+      void dispatch(fetchTenantConversations(userData.id));
     });
   }
-};
+}
 
-  
   const handleSend = useCallback(() => {
     if (!input.trim() || !activeConversation || !userData?.id) return;
     const socket = getSocket();
-
     setIsSending(true);
-    socket.emit("message:send", {
+    socket.emit('message:send', {
       conversationId: activeConversation._id,
       senderId:       userData.id,
-      senderRole:     "landlord",
+      senderRole:     'tenant',
       content:        input.trim(),
-      recipientId:    activeConversation.tenantId._id,
+      recipientId:    activeConversation.landlordId._id,
     });
-
-  
-    socket.emit("typing:stop", {
+    socket.emit('typing:stop', {
       conversationId: activeConversation._id,
       userId:         userData.id,
     });
-
     setInput('');
     setIsSending(false);
   }, [input, activeConversation, userData?.id]);
 
-
- const handleSendVoice = useCallback(async () => {
+const handleSendVoice = useCallback(async () => {
   if (!audioBlob || !activeConversation || !userData?.id) return;
   setIsSending(true);
 
@@ -224,9 +208,9 @@ const handleSelectConv = (conv: Conversation) => {
       socket.emit('message:send', {
         conversationId: activeConversation._id,
         senderId:       userData.id,
-        senderRole:     'landlord', 
+        senderRole:     'tenant', 
         content:        `voice:${url}`,
-        recipientId:    activeConversation.tenantId._id, 
+        recipientId:    activeConversation.landlordId._id, 
       });
       resetRecorder();
     }
@@ -237,31 +221,19 @@ const handleSelectConv = (conv: Conversation) => {
   }
 }, [audioBlob, activeConversation, userData?.id, dispatch, resetRecorder]);
 
-  
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
     if (!activeConversation || !userData?.id) return;
-
     const socket = getSocket();
-    socket.emit("typing:start", {
-      conversationId: activeConversation._id,
-      userId:         userData.id,
-    });
-
+    socket.emit('typing:start', { conversationId: activeConversation._id, userId: userData.id });
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
-      socket.emit("typing:stop", {
-        conversationId: activeConversation._id,
-        userId:         userData.id,
-      });
+      socket.emit('typing:stop', { conversationId: activeConversation._id, userId: userData.id });
     }, 1500);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
   const formatTime = (dateStr: string) =>
@@ -275,34 +247,33 @@ const handleSelectConv = (conv: Conversation) => {
   };
 
   const getInitials = (conv: Conversation) =>
-    `${conv.tenantId.firstName[0]}${conv.tenantId.lastName[0]}`.toUpperCase();
+    `${conv.landlordId.firstName[0]}${conv.landlordId.lastName[0]}`.toUpperCase();
 
-  const isTenantOnline = activeConversation
-    ? onlineUsers.has(String(activeConversation.tenantId._id))
+  const isLandlordOnline = activeConversation
+    ? onlineUsers.has(String(activeConversation.landlordId._id))
     : false;
 
   const filteredConvos = conversations.filter((c: Conversation) =>
-    `${c.tenantId.firstName} ${c.tenantId.lastName}`
+    `${c.landlordId.firstName} ${c.landlordId.lastName}`
       .toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <LandlordNavbar />
+      <Navbar />
 
       <main className="pt-16 h-screen">
         <div className="h-[calc(100vh-64px)] flex">
 
-         {/* ── LEFT PANEL ── */}
+          {/* ── LEFT PANEL ── */}
+       
 <div className="w-80 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
-  
-  
+
+ 
   <div className="px-5 pt-4 pb-0 border-b border-slate-100">
     <h2 className="text-lg font-bold text-slate-900 mb-3">
       {activeTab === 'messages' ? 'Messages' : 'Calls'}
     </h2>
-
-  
     <div className="flex gap-0">
       <button
         onClick={() => setActiveTab('messages')}
@@ -329,7 +300,7 @@ const handleSelectConv = (conv: Conversation) => {
     </div>
   </div>
 
-  {/* Search */}
+  
   {activeTab === 'messages' && (
     <div className="px-5 py-3 border-b border-slate-100">
       <div className="relative">
@@ -346,7 +317,6 @@ const handleSelectConv = (conv: Conversation) => {
 
   <div className="flex-1 overflow-y-auto">
     {activeTab === 'messages' ? (
-   
       <>
         {isLoadingConvos ? (
           <div className="flex items-center justify-center h-full">
@@ -359,8 +329,8 @@ const handleSelectConv = (conv: Conversation) => {
           </div>
         ) : (
           filteredConvos.map((conv: Conversation) => {
-            const isActive     = conv._id === activeConversation?._id;
-            const tenantOnline = onlineUsers.has(String(conv.tenantId._id)); 
+            const isActive       = conv._id === activeConversation?._id;
+            const landlordOnline = onlineUsers.has(String(conv.landlordId._id));
             return (
               <button
                 key={conv._id}
@@ -376,13 +346,13 @@ const handleSelectConv = (conv: Conversation) => {
                     {getInitials(conv)}
                   </div>
                   <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
-                    tenantOnline ? 'bg-emerald-500' : 'bg-slate-300'
+                    landlordOnline ? 'bg-emerald-500' : 'bg-slate-300'
                   }`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-0.5">
                     <p className={`text-sm font-semibold truncate ${isActive ? 'text-emerald-700' : 'text-slate-900'}`}>
-                      {conv.tenantId.firstName} {conv.tenantId.lastName} 
+                      {conv.landlordId.firstName} {conv.landlordId.lastName}
                     </p>
                     <span className="text-[11px] text-slate-400 flex-shrink-0 ml-2">
                       {formatLastSeen(conv.lastMessageAt)}
@@ -405,30 +375,28 @@ const handleSelectConv = (conv: Conversation) => {
         )}
       </>
     ) : (
-      /* ── Calls tab ── */
-     isLoadingCalls ? (
-    <div className="flex items-center justify-center h-full">
-      <Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
-    </div>
-  ) : (
-    <CallHistoryList
-      callMessages={callHistory}         
-      conversations={conversations}
-      currentRole="landlord"
-      onlineUsers={onlineUsers}
-      onCallAudio={(targetId, convId, name) =>
-        void startCall(targetId, convId, name, 'audio', 'landlord')
-      }
-      onCallVideo={(targetId, convId, name) =>
-        void startCall(targetId, convId, name, 'video', 'landlord')
-      }
-      formatLastSeen={formatLastSeen}
-    />
-  )
+      isLoadingCalls ? (
+        <div className="flex items-center justify-center h-full">
+          <Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
+        </div>
+      ) : (
+        <CallHistoryList
+          callMessages={callHistory}
+          conversations={conversations}
+          currentRole="tenant"          
+          onlineUsers={onlineUsers}
+          onCallAudio={(targetId, convId, name) =>
+            void startCall(targetId, convId, name, 'audio', 'tenant')  
+          }
+          onCallVideo={(targetId, convId, name) =>
+            void startCall(targetId, convId, name, 'video', 'tenant')  
+          }
+          formatLastSeen={formatLastSeen}
+        />
+      )
     )}
   </div>
 </div>
-
           {/* ── RIGHT PANEL ── */}
           <div className="flex-1 flex flex-col bg-[#f0f2f5]">
             {!activeConversation ? (
@@ -443,56 +411,56 @@ const handleSelectConv = (conv: Conversation) => {
               </div>
             ) : (
               <>
-                {/* Chat Header */}
+              
                 <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center gap-3 flex-shrink-0 shadow-sm">
                   <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 font-bold text-sm flex items-center justify-center flex-shrink-0">
                     {getInitials(activeConversation)}
                   </div>
                   <div className="flex-1">
                     <p className="font-bold text-slate-900 text-sm">
-                      {activeConversation.tenantId.firstName} {activeConversation.tenantId.lastName}
+                      {activeConversation.landlordId.firstName} {activeConversation.landlordId.lastName}
                     </p>
                     <div className="flex items-center gap-1.5">
                       {isTyping ? (
                         <span className="text-xs text-emerald-600 font-medium italic">typing...</span>
                       ) : (
                         <>
-                          <span className={`w-2 h-2 rounded-full ${isTenantOnline ? 'bg-emerald-500' : 'bg-slate-300'}`} />
-                          <span className={`text-xs font-medium ${isTenantOnline ? 'text-emerald-600' : 'text-slate-400'}`}>
-                            {isTenantOnline ? 'Online' : 'Offline'}
+                          <span className={`w-2 h-2 rounded-full ${isLandlordOnline ? 'bg-emerald-500' : 'bg-slate-300'}`} />
+                          <span className={`text-xs font-medium ${isLandlordOnline ? 'text-emerald-600' : 'text-slate-400'}`}>
+                            {isLandlordOnline ? 'Online' : 'Offline'}
                           </span>
                         </>
                       )}
                     </div>
                   </div>
-         <button
-  onClick={() => {
-    if (!activeConversation || !userData?.id) return;
-   
-    if (callStatus === 'connected') {
-      endCall();
-    } else {
-      
-      void startCall(
-        String(activeConversation.tenantId._id),
-        activeConversation._id,
-        `${userData.fullName} `,
-        'audio',
-        'landlord',
-      );
-    }
-  }}
-  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
-    callStatus === 'connected'
-      ? 'bg-red-100 text-red-600 hover:bg-red-200'
-      : 'bg-slate-100 hover:bg-emerald-100 hover:text-emerald-600 text-slate-500'
-  }`}
->
-  {callStatus === 'connected'
-    ? <PhoneOff size={17} strokeWidth={2} />
-    : <Phone size={17} strokeWidth={2} />
-  }
-</button>
+
+                 
+                  <button
+                    onClick={() => {
+                      if (callStatus === 'connected') {
+                        endCall();
+                      } else if (activeConversation) {
+                        void startCall(
+                          String(activeConversation.landlordId._id), 
+                          activeConversation._id,
+                          `${userData?.fullName} `,
+                          'audio',
+                          'tenant',
+                        );
+                      }
+                    }}
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
+                      callStatus === 'connected'
+                        ? 'bg-red-100 text-red-600 hover:bg-red-200'
+                        : 'bg-slate-100 hover:bg-emerald-100 hover:text-emerald-600 text-slate-500'
+                    }`}
+                  >
+                    {callStatus === 'connected'
+                      ? <PhoneOff size={17} strokeWidth={2} />
+                      : <Phone size={17} strokeWidth={2} />
+                    }
+                  </button>
+
                 <button
   onClick={() => {
     if (!activeConversation) return;
@@ -501,11 +469,11 @@ const handleSelectConv = (conv: Conversation) => {
       return;
     }
     void startCall(
-      String(activeConversation.tenantId._id), 
+      String(activeConversation.landlordId._id), 
       activeConversation._id,
-      `${activeConversation.landlordId.firstName} ${activeConversation.landlordId.lastName}`,
+      `${activeConversation.tenantId.firstName} ${activeConversation.tenantId.lastName}`,
       'video',
-      'landlord',
+      'tenant',
     );
   }}
   className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
@@ -521,7 +489,7 @@ const handleSelectConv = (conv: Conversation) => {
 </button>
                 </div>
 
-                {/* Messages */}
+               
                 <div className="flex-1 overflow-y-auto px-6 py-4 space-y-2">
                   {isLoadingMessages ? (
                     <div className="flex items-center justify-center h-full">
@@ -541,10 +509,10 @@ const handleSelectConv = (conv: Conversation) => {
                       </div>
 
                       {messages.map((msg: Message) => {
-                        const isMe = msg.senderRole === 'landlord';
-                         const isCallMsg = msg.content.startsWith('Voice call') || msg.content.startsWith('Video call');
-  const isVideoCall = msg.content.startsWith('Video call');
+                        const isMe = msg.senderRole === 'tenant';
 
+                          const isCallMsg = msg.content.startsWith('Voice call') || msg.content.startsWith('Video call');
+  const isVideoCall = msg.content.startsWith('Video call');
     const isVoiceMsg = msg.content.startsWith('voice:');
   if (isVoiceMsg) {
     const audioSrc = msg.content.replace('voice:', '');
@@ -559,7 +527,8 @@ const handleSelectConv = (conv: Conversation) => {
     );
   }
 
- if (isCallMsg) {
+                      if (isCallMsg) {
+                        
     return (
       <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
         <div className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl shadow-sm ${
@@ -617,7 +586,7 @@ const handleSelectConv = (conv: Conversation) => {
                   )}
                 </div>
 
-              
+           
 
                 {/* Input area */}
 <div className="px-4 py-3 flex-shrink-0">
@@ -633,7 +602,7 @@ const handleSelectConv = (conv: Conversation) => {
           rows={1}
           className="flex-1 resize-none text-sm text-slate-800 outline-none placeholder:text-slate-400 max-h-28 py-1"
         />
-      
+       
         {!input.trim() ? (
           <button
             onClick={() => void startRecording()}
@@ -700,8 +669,8 @@ const handleSelectConv = (conv: Conversation) => {
         </div>
       </main>
 
-<audio ref={remoteAudioRef} autoPlay />
 
+<audio ref={remoteAudioRef} autoPlay />
 
 
 {callStatus === 'calling' && (
@@ -717,7 +686,7 @@ const handleSelectConv = (conv: Conversation) => {
         {callType === 'video' ? 'Video Calling...' : 'Calling...'}
       </p>
       <p className="text-slate-500 text-sm">
-        {activeConversation?.tenantId.firstName} {activeConversation?.tenantId.lastName}
+        {activeConversation?.landlordId.firstName} {activeConversation?.landlordId.lastName}
       </p>
       <button onClick={endCall}
         className="w-14 h-14 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition"
@@ -755,7 +724,7 @@ const handleSelectConv = (conv: Conversation) => {
             : <PhoneMissed className="w-6 h-6 text-white" />
           }
         </button>
-        <button onClick={() => { void acceptCall('landlord'); }}
+        <button onClick={() => { void acceptCall('tenant'); }}
           className="w-14 h-14 bg-emerald-500 hover:bg-emerald-600 rounded-full flex items-center justify-center transition"
         >
           {incomingCall.callType === 'video'
@@ -769,6 +738,7 @@ const handleSelectConv = (conv: Conversation) => {
 )}
 
 
+
 <div className={`fixed inset-0 bg-black z-50 ${
   callStatus === 'connected' && callType === 'video' ? 'flex' : 'hidden'
 } items-center justify-center`}>
@@ -777,10 +747,10 @@ const handleSelectConv = (conv: Conversation) => {
     className="absolute bottom-28 right-4 w-36 h-24 rounded-2xl object-cover border-2 border-white shadow-lg"
   />
 
- 
+
   <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/50 backdrop-blur px-6 py-3 rounded-full">
 
-  
+ 
     <button
       onClick={toggleMic}
       title={isMicMuted ? 'Unmute' : 'Mute'}
@@ -796,7 +766,6 @@ const handleSelectConv = (conv: Conversation) => {
       }
     </button>
 
-   
     <button
       onClick={endCall}
       title="End call"
@@ -805,14 +774,14 @@ const handleSelectConv = (conv: Conversation) => {
       <PhoneOff className="w-7 h-7 text-white rotate-[135deg]" />
     </button>
 
-  
+    
     <button
       onClick={toggleCamera}
       title={isCameraOff ? 'Turn on camera' : 'Turn off camera'}
       className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
         isCameraOff
-          ? 'bg-slate-600 hover:bg-slate-500'   
-          : 'bg-white/20 hover:bg-white/30'      
+          ? 'bg-slate-600 hover:bg-slate-500'  
+          : 'bg-white/20 hover:bg-white/30'     
       }`}
     >
       {isCameraOff
@@ -824,16 +793,14 @@ const handleSelectConv = (conv: Conversation) => {
   </div>
 </div>
 
-
-
 {callStatus === 'connected' && callType === 'audio' && (
   <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/95 backdrop-blur text-white px-8 py-4 rounded-full flex items-center gap-5 shadow-2xl z-50">
     
-
+  
     <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse" />
     <span className="text-sm font-medium">Call connected</span>
 
-   
+  
     <button
       onClick={toggleMic}
       title={isMicMuted ? 'Unmute microphone' : 'Mute microphone'}
@@ -849,7 +816,7 @@ const handleSelectConv = (conv: Conversation) => {
       }
     </button>
 
- 
+   
     <button
       onClick={endCall}
       title="End call"

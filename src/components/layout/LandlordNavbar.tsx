@@ -1,6 +1,6 @@
 
 
-// components/layout/Navbar.tsx
+
 import { useState } from 'react';
 
 import Link from 'next/link';
@@ -10,12 +10,12 @@ import {
   Home, 
   MessageCircle, 
   Bell, 
-  LayoutGrid, 
+ 
   ChevronDown, 
   User, 
-  Settings, 
+ 
   LogOut,
-  ArrowRight 
+ 
 } from 'lucide-react';
 
 import { logoutAsync } from '@/features/auth/authThunks';
@@ -37,27 +37,12 @@ export default function Navbar() {
 
   const handleMenuItemClick = (action: string) => {
     setShowProfileMenu(false);
-    // Handle actions here
-    console.log('Menu action:', action);
+   
     router.push('/landlord/profile') 
     
   };
 
-  //   const handleLogout = async () => {
 
-      
-  //     await dispatch(logoutAsync()).unwrap();
-      
-      
-      
-      
-  //     router.push('/landlord/login');
-  //     router.refresh(); // Hard refresh for clean state
-      
-  //     console.log('Logout successful!');
-
-     
-  // };
 
 
 
@@ -66,7 +51,7 @@ export default function Navbar() {
       await dispatch(logoutAsync());
       router.replace('/landlord/login');
       
-      console.log('Logout successful!');
+    
 
      
   };
@@ -91,10 +76,10 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Unified Navigation & Profile Section */}
+       
         <div className="flex items-center gap-9 h-full">
           
-          {/* Item 1: Home */}
+         
           <button 
             title="Home" 
             className="text-slate-400 hover:text-emerald-600 transition-all flex items-center justify-center p-1 -m-1 rounded-lg"
@@ -102,7 +87,7 @@ export default function Navbar() {
             <Home size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Item 2: Messages */}
+        
           <button 
             title="Messages" 
              onClick={() => router.push('/landlord/chat')}
@@ -111,7 +96,7 @@ export default function Navbar() {
             <MessageCircle size={22} strokeWidth={1.5} />
           </button>
 
-          {/* Item 3: Notifications */}
+         
           <div className="relative flex items-center justify-center p-1 -m-1 rounded-lg">
             <button 
               title="Notifications" 
@@ -122,7 +107,7 @@ export default function Navbar() {
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white"></span>
           </div>
 
-          {/* Profile Pill with Dropdown */}
+         
           <div className="relative">
             <button
               onClick={toggleProfileMenu}
@@ -144,11 +129,11 @@ export default function Navbar() {
               />
             </button>
 
-            {/* Profile Dropdown Menu */}
+          
             {showProfileMenu && (
               <div className="absolute top-full right-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-900/10 py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
                 
-                {/* Profile Header */}
+              
                 <div className="px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-slate-100/50 rounded-t-2xl">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full bg-emerald-600 text-white font-semibold flex items-center justify-center text-base shadow-lg ring-2 ring-emerald-500/30">
@@ -161,7 +146,7 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* Menu Items */}
+                
                 <div className="space-y-0.5 py-3">
                   <ProfileMenuItem 
                     icon={User}
@@ -193,7 +178,7 @@ export default function Navbar() {
   );
 }
 
-// Reusable Profile Menu Item Component
+
 function ProfileMenuItem({ 
   icon: Icon, 
   label, 

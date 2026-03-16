@@ -1,6 +1,7 @@
 
 
-import { PasswordValues } from "@/constants/authValidation";
+import type { PasswordValues } from "@/constants/authValidation";
+
 import axiosInstance from "./axios";
 
 

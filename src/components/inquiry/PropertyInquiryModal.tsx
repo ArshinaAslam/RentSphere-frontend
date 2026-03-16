@@ -7,11 +7,11 @@ import {
   Phone, Clock, Loader2, Inbox, MessageCircle,
 } from 'lucide-react';
 
+import { clearPropertyInquiries } from '@/features/inquiry/inquirySlice';
 import { fetchPropertyInquiries } from '@/features/inquiry/inquiryThunk';
 import type { TenantInfo } from '@/features/inquiry/types';
 import type { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearPropertyInquiries } from '@/features/inquiry/inquirySlice';
 
 interface Props {
   propertyId:    string;
@@ -50,17 +50,17 @@ export default function PropertyInquiryModal({
 
   return (
     <>
-      {/* Backdrop */}
+    
       <div
         className="fixed inset-0 bg-black/30 z-40"
         onClick={onClose}
       />
 
-      {/* Modal */}
+    
       <div className="fixed inset-0 z-50 flex items-center justify-center px-4 pointer-events-none">
         <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl pointer-events-auto flex flex-col max-h-[85vh] overflow-hidden">
 
-          {/* Header — fixed */}
+        
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center">
@@ -81,17 +81,17 @@ export default function PropertyInquiryModal({
             </button>
           </div>
 
-          {/* Scrollable content */}
+        
           <div className="overflow-y-auto flex-1 px-6 py-4 space-y-4">
 
-            {/* Loading */}
+           
             {isLoadingInquiries && (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
               </div>
             )}
 
-            {/* Empty */}
+           
             {!isLoadingInquiries && propertyInquiries.length === 0 && (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mb-3">
@@ -104,7 +104,7 @@ export default function PropertyInquiryModal({
               </div>
             )}
 
-            {/* Inquiry cards */}
+         
             {!isLoadingInquiries && propertyInquiries.map(inquiry => {
               const t = tenant(inquiry.tenantId);
               return (
@@ -116,7 +116,7 @@ export default function PropertyInquiryModal({
                       : 'border-slate-100 bg-white'
                   }`}
                 >
-                  {/* Tenant info row */}
+                
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -161,7 +161,7 @@ export default function PropertyInquiryModal({
                     </div>
                   )}
 
-                  {/* Questions */}
+                
                   <div className="space-y-1.5">
                     {inquiry.questions.map((q, i) => (
                       <div
@@ -174,14 +174,14 @@ export default function PropertyInquiryModal({
                     ))}
                   </div>
 
-                  {/* Additional message */}
+               
                   {inquiry.message && (
                     <div className="text-xs text-slate-600 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2 italic">
                       "{inquiry.message}"
                     </div>
                   )}
 
-                  {/* Timestamp */}
+                
                   <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
                     <Clock className="w-3 h-3" />
                     {formatDate(inquiry.createdAt)}
@@ -193,7 +193,7 @@ export default function PropertyInquiryModal({
 
           </div>
 
-          {/* Footer count */}
+         
           {!isLoadingInquiries && propertyInquiries.length > 0 && (
             <div className="px-6 py-3 border-t border-slate-100 flex-shrink-0">
               <p className="text-xs text-slate-400 text-center">
