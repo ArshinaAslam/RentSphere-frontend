@@ -9,10 +9,6 @@ export const inquiryService = {
   async createInquiry(params: CreateInquiryParams) {
     await axiosInstance.post(INQUIRY_ROUTES.CREATE_INQUIRY, params);
   },
-//    async getPropertyInquiries(propertyId: string) {
-//     const res = await axiosInstance.get(INQUIRY_ROUTES.PROPERTY_INQUIRIES(propertyId));
-//     return res.data.data.inquiries ;
-//   },
 
 
 

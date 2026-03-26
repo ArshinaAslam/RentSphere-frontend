@@ -20,14 +20,14 @@ export const propertyService = {
   return response.data;
 },
 
- async getLandlordPropertyById(id: string) {
-    const response = await axiosInstance.get(PROPERTY_ROUTES.LANDLORD_SINGLE_PROPERTY(id));
+ async getLandlordPropertyById(propertyId: string) {
+    const response = await axiosInstance.get(PROPERTY_ROUTES.LANDLORD_SINGLE_PROPERTY(propertyId));
     return response.data;
   },
 
  
-  async deleteLandlordProperty(id: string) {
-    const response = await axiosInstance.delete(PROPERTY_ROUTES.LANDLORD_DELETE_PROPERTY(id));
+  async deleteLandlordProperty(propertyId: string) {
+    const response = await axiosInstance.delete(PROPERTY_ROUTES.LANDLORD_DELETE_PROPERTY(propertyId));
     return response.data;
   },
 

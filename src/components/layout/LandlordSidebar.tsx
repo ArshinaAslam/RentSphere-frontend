@@ -10,7 +10,8 @@ import {
   Home,
   CreditCard, 
   CalendarCheck,
-  MessageSquare
+  MessageSquare,
+  ScrollText
 } from 'lucide-react';
 
 export default function LandlordSidebar() {
@@ -23,6 +24,7 @@ export default function LandlordSidebar() {
     { name: 'My Properties', href: '/landlord/my-properties', icon: Home },
     { name: 'Enquiries',      href: '/landlord/enquiries',      icon: MessageSquare   },
     { name: 'Payments', href: '/landlord/payments', icon: CreditCard },
+    { name: 'Lease', href: '/landlord/leases', icon: ScrollText },
   ];
 
   const isActive = (href: string) => pathname === href;

@@ -20,9 +20,10 @@ export default function Sidebar() {
     { name: 'Dashboard',    icon: LayoutDashboard, href: '/tenant/dashboard' },
     { name: 'My Residence', icon: ResidenceIcon,   href: '/tenant/home'      },
     { name: 'My Visits',    icon: CalendarCheck,   href: '/tenant/my-visit'    },
-    { name: 'Lease Details',icon: FileText,        href: '/tenant/lease'     },
+    { name: 'My Lease',icon: FileText,        href: '/tenant/my-lease'     },
     { name: 'Payments',     icon: CreditCard,      href: '/tenant/payments'  },
     { name: 'Favourites',   icon: Heart,           href: '/tenant/favourites'},
+    
   ];
 
   return (

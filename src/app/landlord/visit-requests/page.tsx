@@ -6,12 +6,14 @@ import {
   CalendarCheck, MapPin, Clock, User,
   Phone, Mail, Loader2, Calendar,
   X, AlertCircle,
+  Search,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 import Navbar from '@/components/layout/LandlordNavbar';
 import LandlordSidebar from '@/components/layout/LandlordSidebar';
 import { fetchLandlordVisits, updateLandlordVisitStatus } from '@/features/landlordVisit/landlordVisitThunk';
-import type { TenantInfo, PropertyInfo } from '@/features/landlordVisit/types';
 import type { RootState } from '@/store';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
@@ -19,18 +21,34 @@ const STATUS_TABS = ['all', 'pending', 'confirmed', 'cancelled', 'completed'] as
 
 export default function VisitRequestsPage() {
   const dispatch = useAppDispatch();
-  const { visits, isLoading, updatingId } =
+  const { visits, isLoading, updatingId,total, totalPages } =
     useAppSelector((s: RootState) => s.landlordVisit);
 
-    console.log("visits  landlord",visits)
+   const LIMIT = 10;
+
+const [search,          setSearch]          = useState('');
+const [debouncedSearch, setDebouncedSearch] = useState('');
+const [page,            setPage]            = useState(1);
 
   const [activeTab,  setActiveTab]  = useState<typeof STATUS_TABS[number]>('all');
   const [confirmId,  setConfirmId]  = useState<string | null>(null);
 
-  useEffect(() => {
-    void dispatch(fetchLandlordVisits());
-  }, [dispatch]);
+useEffect(() => {
+  void dispatch(fetchLandlordVisits({
+    page,
+    limit: LIMIT,
+    search: debouncedSearch,
+  }));
+}, [page, debouncedSearch, dispatch]);
 
+// Debounce search
+useEffect(() => {
+  const t = setTimeout(() => setDebouncedSearch(search), 500);
+  return () => clearTimeout(t);
+}, [search]);
+
+// Reset page on search or tab change
+useEffect(() => { setPage(1); }, [debouncedSearch, activeTab]);
   const filtered = activeTab === 'all'
     ? visits
     : visits.filter(v => v.status === activeTab);
@@ -78,22 +96,34 @@ export default function VisitRequestsPage() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 flex-wrap">
-          {STATUS_TABS.map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition ${
-                activeTab === tab
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:border-emerald-400'
-              }`}
-            >
-              {tab} ({counts[tab]})
-            </button>
-          ))}
-        </div>
+        {/* Searchbar */}
+<div className="relative w-64 mb-4">
+  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+  <input
+    type="text"
+    value={search}
+    onChange={e => setSearch(e.target.value)}
+    placeholder="Search  property, date..."
+    className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-white"
+  />
+</div>
+
+{/* Tabs */}
+<div className="flex gap-2 mb-6 flex-wrap">
+  {STATUS_TABS.map(tab => (
+    <button
+      key={tab}
+      onClick={() => setActiveTab(tab)}
+      className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition ${
+        activeTab === tab
+          ? 'bg-emerald-600 text-white'
+          : 'bg-white border border-slate-200 text-slate-600 hover:border-emerald-400'
+      }`}
+    >
+      {tab} ({counts[tab]})
+    </button>
+  ))}
+</div>
 
         {/* Loading */}
         {isLoading && (
@@ -265,6 +295,45 @@ export default function VisitRequestsPage() {
                 })}
               </tbody>
             </table>
+            {/* Pagination */}
+{totalPages > 1 && (
+  <div className="flex items-center justify-between px-5 py-4 border-t border-slate-100">
+    <p className="text-xs text-slate-400">
+      Showing {Math.min((page - 1) * LIMIT + 1, total)}–{Math.min(page * LIMIT, total)} of {total} visits
+    </p>
+    <div className="flex items-center gap-2">
+      <button
+        disabled={page === 1}
+        onClick={() => setPage(p => p - 1)}
+        className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+      >
+        <ChevronLeft className="w-4 h-4" />
+      </button>
+
+      {Array.from({ length: totalPages }, (_, i) => (
+        <button
+          key={i}
+          onClick={() => setPage(i + 1)}
+          className={`w-8 h-8 rounded-lg text-xs font-semibold transition ${
+            page === i + 1
+              ? 'bg-emerald-600 text-white'
+              : 'border border-slate-200 text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          {i + 1}
+        </button>
+      ))}
+
+      <button
+        disabled={page === totalPages}
+        onClick={() => setPage(p => p + 1)}
+        className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+      >
+        <ChevronRight className="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+)}
           </div>
         )}
 

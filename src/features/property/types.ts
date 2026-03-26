@@ -28,8 +28,10 @@ export interface propertyData {
   images: string[];
   landlordId?: string | Landlord;
   // landlord?:Landlord;
- 
+
 }
+
+
 
 export interface ErrorPayload {
   success: boolean;
@@ -64,6 +66,11 @@ export interface PropertyDetail {
   amenities: string[];
   images: string[];
   landlordId: string;
+    coordinates?: {
+    lat: number;
+    lng: number;
+  };
+ 
   createdAt: string;
   updatedAt: string;
 }

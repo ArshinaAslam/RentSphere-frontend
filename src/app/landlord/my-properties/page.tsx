@@ -21,7 +21,7 @@ import type { RootState } from "@/store/index";
 import AddPropertyPage from './AddPropertyPage';
 
 
-const ITEMS_PER_PAGE = 6;
+
 
 export default function PropertiesPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,10 +40,11 @@ export default function PropertiesPage() {
 }, [searchQuery]);
 
   useEffect(() => {
-  dispatch(fetchLandlordProperties({ page: currentPage, search: debouncedSearch }));
+ void  dispatch(fetchLandlordProperties({ page: currentPage, search: debouncedSearch }));
 }, [debouncedSearch, currentPage]);
 
-    const { properties, isLoading, total, limit } = useSelector((state: RootState) => state.property);
+    const { properties, total, limit } = useSelector((state: RootState) => state.property);
+   
   const totalPages = Math.ceil(total / limit);
 
 
@@ -66,7 +67,7 @@ export default function PropertiesPage() {
       <main className="pl-64 pt-16 min-h-screen">
         <div className="max-w-5xl mx-auto px-10 py-10">
 
-          {/* Header Row */}
+          
           <div className="mb-8 pt-8 flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-slate-900 mb-1">
@@ -88,7 +89,7 @@ export default function PropertiesPage() {
             </Button>
           </div>
 
-          {/* Search Row — only show if properties exist */}
+         
           {properties.length > 0 && (
             <div className="mb-8">
               <div className="relative max-w-sm">
@@ -103,9 +104,9 @@ export default function PropertiesPage() {
             </div>
           )}
 
-          {/* EMPTY STATE vs PROPERTIES LIST */}
+          
           {properties.length === 0 ? (
-            /* EMPTY STATE (No Properties Added Yet) */
+           
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <div className="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6">
                 <Building2 size={36} className="text-emerald-400" />
@@ -125,7 +126,7 @@ export default function PropertiesPage() {
               </Button>
             </div>
           ) : (
-            /*  PROPERTIES GRID + PAGINATION (Has Properties) */
+           
             <>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {properties.map((property: propertyData) => {

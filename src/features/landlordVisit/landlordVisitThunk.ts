@@ -6,14 +6,15 @@ import { landlordVisitService } from '../../services/landlordVisitService';
 import type { LandlordVisit, VisitStatus } from './types';
 
 export const fetchLandlordVisits = createAsyncThunk<
-  LandlordVisit[],
+  { visits: LandlordVisit[]; total: number; page: number; totalPages: number },
   void,
   { rejectValue: { message: string } }
 >(
   'landlordVisit/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, search = '' }, { rejectWithValue }) => {
     try {
-      return await landlordVisitService.getVisits();
+      const res = await landlordVisitService.getVisits({ page, limit, search });
+      return res.data.data
     } catch (error) {
       if (isAxiosError(error)) {
         return rejectWithValue({

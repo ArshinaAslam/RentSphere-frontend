@@ -100,7 +100,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             </Link>
           </Button>
 
-          <Button
+          {/* <Button
             variant="outline"
             size="sm"
             onClick={() => setShowInquiries(true)}
@@ -108,7 +108,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             title="View Inquiries"
           >
             <MessageCircleQuestion size={15} />
-          </Button>
+          </Button> */}
         </div>
       </CardContent>
     </Card>

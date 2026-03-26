@@ -147,7 +147,7 @@ export const fetchAllProperties = createAsyncThunk<
 >(
   'property/fetchAllProperties',
   async (params = {}, { rejectWithValue }) => {
-    const { page = 1, limit = 9, search = '', bhk = '', type = '', minPrice, maxPrice } = params;
+    const { page = 1, limit = 3, search = '', bhk = '', type = '', minPrice, maxPrice } = params;
     try {
       const result = await propertyService.getAllProperties({ page, limit, search, bhk, type, minPrice, maxPrice });
       return result.data;
@@ -173,6 +173,7 @@ export const fetchTenantPropertyById = createAsyncThunk<
   async (id, { rejectWithValue }) => {
     try {
       const result = await propertyService.getTenantPropertyById(id);
+      console.log("result.data.property;",result.data.property)
       return result.data.property;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
