@@ -5,9 +5,9 @@ import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 
 import {
-  Search, MapPin, BedDouble, Bath, Maximize2,
-  X, SlidersHorizontal, ChevronLeft, ChevronRight,
-  Home, ChevronDown, ChevronUp, ArrowRight,
+  Search,
+  X, SlidersHorizontal,
+  Home, ChevronDown, ChevronUp, 
   Heart,
   Loader2
 } from 'lucide-react';
@@ -15,8 +15,9 @@ import {
 import Navbar from '@/components/layout/Navbar';
 import { fetchAllProperties } from '@/features/property/propertyThunk';
 import type { propertyData } from '@/features/property/types';
-import { toggleWishlist } from '@/features/wishlist/wishlistThunk';
+import { fetchWishlist, toggleWishlist } from '@/features/wishlist/wishlistThunk';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { toast } from 'sonner';
 
 
 const BHK_OPTIONS     = ['1 BHK', '2 BHK', '3 BHK', '4+ BHK'];
@@ -29,7 +30,7 @@ const SORT_OPTIONS    = [
   { label: 'Price: High–Low', value: 'price_desc' },
 ];
 
-const LIMIT = 9;
+const LIMIT = 3;
 
 export default function TenantHomePage() {
 
@@ -50,7 +51,7 @@ export default function TenantHomePage() {
   const [furnishing, setFurnishing] = useState('');
   const [moreOpen, setMoreOpen] = useState(false);
 
-  const totalPages = Math.ceil(total / LIMIT);
+ 
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -462,16 +463,30 @@ function PropertyCard({ property }: { property: propertyData }) {
   const isWishlisted = wishlisted.includes(property._id);
   const isToggling   = togglingId === property._id;
 
+useEffect(() => {
+  if (userData?.id) {
+    void dispatch(fetchWishlist({ tenantId: userData.id, page: 1, limit: 100 }));
+  }
+}, [userData?.id, dispatch]);
+
   const handleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!userData?.id) return;
-    void dispatch(toggleWishlist({
-      tenantId:    userData.id,
-      propertyId:  property._id,
-      isWishlisted,
-    }));
-  };
+  e.preventDefault();
+  e.stopPropagation();
+  if (!userData?.id) return;
+  void dispatch(toggleWishlist({
+    tenantId:    userData.id,
+    propertyId:  property._id,
+    isWishlisted,
+  })).then((result) => {
+    if (toggleWishlist.fulfilled.match(result)) {
+      if (isWishlisted) {
+        toast.error('Removed from wishlist');
+      } else {
+        toast.success('Added to wishlist!');
+      }
+    }
+  });
+};
 
 
   return (

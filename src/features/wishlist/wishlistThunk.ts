@@ -10,7 +10,7 @@ export const fetchWishlist = createAsyncThunk(
   ) => {
     try {
       const res = await wishlistService.getWishlist(tenantId, page, limit);
-      console.log("res??",res)
+     
       return res.data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || "Failed to fetch wishlist");

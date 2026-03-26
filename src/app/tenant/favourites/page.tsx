@@ -10,6 +10,7 @@ import Navbar  from '@/components/layout/Navbar';
 import Sidebar from '@/components/layout/Sidebar';
 import { fetchWishlist, toggleWishlist } from '@/features/wishlist/wishlistThunk';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { toast } from 'sonner';
 
 const LIMIT = 6;
 
@@ -29,21 +30,24 @@ export default function FavouritesPage() {
     }
   }, [userData?.id, page, dispatch]);
 
-  const handleRemove = (propertyId: string) => {
-    if (!userData?.id) return;
-    void dispatch(toggleWishlist({
-      tenantId:     userData.id,
-      propertyId,
-      isWishlisted: true,
-    })).then(() => {
-      // if last item on page, go back one page
+ const handleRemove = (propertyId: string) => {
+  if (!userData?.id) return;
+  void dispatch(toggleWishlist({
+    tenantId:     userData.id,
+    propertyId,
+    isWishlisted: true,
+  })).then((result) => {
+    if (toggleWishlist.fulfilled.match(result)) {
+      toast.error('Removed from wishlist');
+      
       if (items.length === 1 && page > 1) {
         setPage(p => p - 1);
       } else {
-       void  dispatch(fetchWishlist({ tenantId: userData.id, page, limit: LIMIT }));
+        void dispatch(fetchWishlist({ tenantId: userData.id, page, limit: LIMIT }));
       }
-    });
-  };
+    }
+  });
+};
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -94,7 +98,7 @@ export default function FavouritesPage() {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {items.map((item) => {
-                  const property = typeof item.propertyId === 'object' ? item.propertyId : null;
+                  const property = item.property ?? null;
                   
                   if (!property) return null;
                   const isRemoving = togglingId === property._id;

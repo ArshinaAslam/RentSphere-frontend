@@ -22,6 +22,7 @@ export const visitService = {
     const res = await axiosInstance.get(VISIT_ROUTES.MY_VISITS);
     return res.data.data.visits ;
   },
+  
 
   async cancelVisit(visitId: string) {
     await axiosInstance.patch(VISIT_ROUTES.CANCEL_VISIT(visitId));

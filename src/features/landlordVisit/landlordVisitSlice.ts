@@ -6,6 +6,9 @@ import type { LandlordVisit } from './types';
 
 interface LandlordVisitState {
   visits:     LandlordVisit[];
+   total:      number;        
+  page:       number;       
+  totalPages: number;  
   isLoading:  boolean;
   updatingId: string | null;
   error:      string | null;
@@ -13,6 +16,9 @@ interface LandlordVisitState {
 
 const initialState: LandlordVisitState = {
   visits:     [],
+  total:      0,       
+  page:       1,        
+  totalPages: 1, 
   isLoading:  false,
   updatingId: null,
   error:      null,
@@ -31,7 +37,10 @@ const landlordVisitSlice = createSlice({
       })
       .addCase(fetchLandlordVisits.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.visits    = action.payload;
+         state.visits     = action.payload.visits;      
+  state.total      = action.payload.total;      
+  state.page       = action.payload.page;       
+  state.totalPages = action.payload.totalPages; 
       })
       .addCase(fetchLandlordVisits.rejected, (state, action) => {
         state.isLoading = false;

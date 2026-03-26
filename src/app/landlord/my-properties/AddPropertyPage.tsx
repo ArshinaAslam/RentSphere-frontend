@@ -8,7 +8,7 @@ import {
   Maximize2, FileText, Image as ImageIcon, X, Sparkles,
 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {toast} from 'sonner'
 
 import LandlordNavbar from "@/components/layout/LandlordNavbar";

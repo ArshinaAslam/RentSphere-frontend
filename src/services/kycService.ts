@@ -1,4 +1,4 @@
-// src/services/kycService.ts
+
 import axiosInstance from "./axios";
 
 export const kycService = {

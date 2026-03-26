@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import { ArrowLeft, Check, Loader2 } from "lucide-react";
-import { useSelector } from "react-redux";
+
 
 import Navbar from "@/components/layout/Navbar";
 import { clearVisitState, clearVisitError } from "@/features/visit/visitSlice";

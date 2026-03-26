@@ -8,6 +8,8 @@ import chatReducer from "@/features/chat/chatSlice";
 import inquiryReducer from '@/features/inquiry/inquirySlice';
 import kycReducer from "@/features/kyc/kycSlice";
 import landlordVisitReducer from '@/features/landlordVisit/landlordVisitSlice';
+import leaseReducer from '@/features/lease/leaseSlice';
+import paymentReducer from '@/features/payment/paymentSlice';
 import propertyReducer from '@/features/property/propertySlice';
 import visitReducer from '@/features/visit/visitSlice';
 import wishlistReducer from "@/features/wishlist/wishlistSlice";
@@ -19,7 +21,7 @@ import type { Action } from "@reduxjs/toolkit";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth","property","visit","landlordVisit","inquiry","wishlist"],
+  whitelist: ["auth","property","visit","landlordVisit","inquiry","wishlist","lease"],
 };
    
 
@@ -33,6 +35,8 @@ const appReducer = combineReducers({
    inquiry: inquiryReducer,
    wishlist: wishlistReducer,
    chat: chatReducer,
+   lease: leaseReducer,
+   payment: paymentReducer,
 });
 
 const rootReducer = (state: ReturnType<typeof appReducer> | undefined, action: Action) => {
