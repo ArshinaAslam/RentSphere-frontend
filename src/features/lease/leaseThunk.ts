@@ -1,197 +1,255 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { isAxiosError } from "axios";
 
-import {  leaseService } from '@/services/leaseService';
+import { leaseService } from "@/services/leaseService";
 
-import type { CreateLeasePayload, Lease, UpdateLeasePayload } from './types';
-
-// ── Landlord thunks ──
-// export const fetchLandlordLeases = createAsyncThunk(
-//   'lease/fetchLandlordLeases',
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const res = await leaseService.getAllLeases();
-//       return res.data.leases
-//     } catch (err: any) {
-//       return rejectWithValue(err.response?.data?.message || 'Failed to fetch leases');
-//     }
-//   }
-// );
+import type { CreateLeasePayload, UpdateLeasePayload } from "./types";
 
 export const fetchLandlordLeases = createAsyncThunk(
-  'lease/fetchLandlordLeases',
+  "lease/fetchLandlordLeases",
   async (
-    { page = 1, limit = 10, search = "" }: { page?: number; limit?: number; search?: string } = {},
-    { rejectWithValue }
+    {
+      page = 1,
+      limit = 10,
+      search = "",
+    }: { page?: number; limit?: number; search?: string } = {},
+    { rejectWithValue },
   ) => {
     try {
-      const res = await leaseService.getAllLeases(page, limit, search);
-    
-      return res.data
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch leases');
+      const result = await leaseService.getAllLeases(page, limit, search);
+
+      return result.data;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to fetch leases");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const fetchLeaseById = createAsyncThunk(
-  'lease/fetchLeaseById',
+  "lease/fetchLeaseById",
   async (leaseId: string, { rejectWithValue }) => {
     try {
       const res = await leaseService.getLeaseById(leaseId);
-      return res.data.lease 
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch lease');
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to fetch lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const createLeaseThunk = createAsyncThunk(
-  'lease/create',
+  "lease/create",
   async (data: CreateLeasePayload, { rejectWithValue }) => {
     try {
       const res = await leaseService.createLease(data);
-      console.log("res.data",res.data)
-      return res.data.lease 
-    } catch (err: any) {
-    
-      return rejectWithValue(err.response?.data?.message || 'Failed to create lease');
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to create lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const updateLeaseThunk = createAsyncThunk(
-  'lease/update',
-  async ({ leaseId, data }: { leaseId: string; data: UpdateLeasePayload }, { rejectWithValue }) => {
+  "lease/update",
+  async (
+    { leaseId, data }: { leaseId: string; data: UpdateLeasePayload },
+    { rejectWithValue },
+  ) => {
     try {
       const res = await leaseService.updateLease(leaseId, data);
-      return res.data.lease 
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to update lease');
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to update lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const sendLeaseThunk = createAsyncThunk(
-  'lease/send',
+  "lease/send",
   async (leaseId: string, { rejectWithValue }) => {
     try {
       const res = await leaseService.sendLease(leaseId);
-      return res.data.data.lease as Lease;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to send lease');
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to send lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const terminateLeaseThunk = createAsyncThunk(
-  'lease/terminate',
+  "lease/terminate",
   async (leaseId: string, { rejectWithValue }) => {
     try {
       const res = await leaseService.terminateLease(leaseId);
-      return res.data.data.lease as Lease;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to terminate lease');
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to terminate lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const deleteLeaseThunk = createAsyncThunk(
-  'lease/delete',
+  "lease/delete",
   async (leaseId: string, { rejectWithValue }) => {
     try {
       await leaseService.deleteLease(leaseId);
       return leaseId;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete lease');
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to delete lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const fetchLandlordProperties = createAsyncThunk(
-  'lease/fetchLandlordProperties',
+  "lease/fetchLandlordProperties",
   async (_, { rejectWithValue }) => {
     try {
       const res = await leaseService.getProperties();
-      
-      const data = (res.data?.properties ?? []) 
-      return Array.isArray(data) ? data : [];
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch properties');
+
+      return res.data.properties;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to fetch properties");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const searchTenantsThunk = createAsyncThunk(
-  'lease/searchTenants',
+  "lease/searchTenants",
   async (query: string, { rejectWithValue }) => {
     try {
       const res = await leaseService.searchTenants(query);
-       console.log('search tenants raw response:', res);
-      return (res.data?.tenants ?? []) 
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to search tenants');
+      return res;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to search tenants");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const signLeaseAsLandlordThunk = createAsyncThunk(
-  'lease/signAsLandlord',
-  async ({ leaseId, signatureName }: { leaseId: string; signatureName: string }, { rejectWithValue }) => {
+  "lease/signAsLandlord",
+  async (
+    { leaseId, signatureName }: { leaseId: string; signatureName: string },
+    { rejectWithValue },
+  ) => {
     try {
-      const res = await leaseService.signLeaseAsLandlord(leaseId, signatureName);
-      console.log("res.thunk",res)
+      const res = await leaseService.signLeaseAsLandlord(
+        leaseId,
+        signatureName,
+      );
       return res.data.lease;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to sign lease');
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to sign lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
-// ── Tenant thunks ──
 export const fetchTenantLeases = createAsyncThunk(
-  'lease/fetchTenantLeases',
+  "lease/fetchTenantLeases",
   async (_, { rejectWithValue }) => {
     try {
       const res = await leaseService.getTenantLeases();
-      return res.data.leases 
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch leases');
+
+      return res.leases;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to fetch leases");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const fetchTenantLeaseById = createAsyncThunk(
-  'lease/fetchTenantLeaseById',
+  "lease/fetchTenantLeaseById",
   async (leaseId: string, { rejectWithValue }) => {
     try {
       const res = await leaseService.getTenantLeaseById(leaseId);
-      return res.data.lease 
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch lease');
+
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to fetch lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const markLeaseAsViewedThunk = createAsyncThunk(
-  'lease/markAsViewed',
+  "lease/markAsViewed",
   async (leaseId: string, { rejectWithValue }) => {
     try {
       const res = await leaseService.markLeaseAsViewed(leaseId);
-      return res.data.data.lease as Lease;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed');
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(
+          data?.message || "Failed to mark lease as viewed",
+        );
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );
 
 export const signLeaseThunk = createAsyncThunk(
-  'lease/sign',
-  async ({ leaseId, signatureName }: { leaseId: string; signatureName: string }, { rejectWithValue }) => {
+  "lease/sign",
+  async (
+    { leaseId, signatureName }: { leaseId: string; signatureName: string },
+    { rejectWithValue },
+  ) => {
     try {
       const res = await leaseService.signLease(leaseId, signatureName);
-      return res.data.lease 
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || 'Failed to sign lease');
+      return res.data.lease;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to sign lease");
+      }
+      return rejectWithValue("Network error");
     }
-  }
+  },
 );

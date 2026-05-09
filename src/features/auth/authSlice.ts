@@ -1,11 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import {
-  changeLandlordPasswordAsync,
-  changePasswordAsync,
-  editLandlordProfileAsync,
-  editTenantProfileAsync,
-  // fetchCurrentUserAsync,
   forgotPasswordLandlordAsync,
   forgotPasswordTenantAsync,
   googleAuthAsync,
@@ -16,13 +11,12 @@ import {
   resendOtpAsync,
   resetPasswordAsync,
   signupAsync,
- 
-  verifyLandlordOtpAsync,
- 
-  verifyTenantOtpAsync,
+  verifyOtpAsync,
+
 } from "./authThunks";
 
 import type { AuthState, ErrorPayload } from "./types";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: AuthState = {
   userData: null,
@@ -35,13 +29,13 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<AuthState["userData"]>) => {
       state.userData = action.payload;
       state.error = null;
     },
     clearUser: (state) => {
       state.userData = null;
-      // state.tokens = null;
+       state.tokens = null;
       state.error = null;
     },
     clearError: (state) => {
@@ -67,56 +61,56 @@ const authSlice = createSlice({
       }))
 
       .addCase(googleAuthAsync.pending, (state) => ({
-  ...state,
-  loading: true,
-  error: null,
-}))
-.addCase(googleAuthAsync.fulfilled, (state, action) => ({
-  ...state,
-  loading: false,
-  userData: action.payload.user,
-  // tokens: action.payload.tokens,
-}))
-.addCase(googleAuthAsync.rejected, (state, action) => ({
-  ...state,
-  loading: false,
-  error: (action.payload as ErrorPayload)?.message || 'Google auth failed',
-}))
-
-      // Verify OTP
-      .addCase(verifyTenantOtpAsync.pending, (state) => ({
         ...state,
         loading: true,
         error: null,
       }))
-      .addCase(verifyTenantOtpAsync.fulfilled, (state) => ({
+      .addCase(googleAuthAsync.fulfilled, (state, action) => ({
+        ...state,
+        loading: false,
+        userData: action.payload.user,
+      }))
+      .addCase(googleAuthAsync.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error:
+          (action.payload as ErrorPayload)?.message || "Google auth failed",
+      }))
+
+      // Verify OTP
+      .addCase(verifyOtpAsync.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(verifyOtpAsync.fulfilled, (state) => ({
         ...state,
         loading: false,
         error: null,
       }))
-      .addCase(verifyTenantOtpAsync.rejected, (state, action) => ({
+      .addCase(verifyOtpAsync.rejected, (state, action) => ({
         ...state,
         loading: false,
         error:
           (action.payload as ErrorPayload)?.message || "Verification failed",
       }))
 
-
-       .addCase(verifyLandlordOtpAsync.pending, (state) => ({
-      ...state,
-      loading: true,
-      error: null,
-    }))
-    .addCase(verifyLandlordOtpAsync.fulfilled, (state) => ({
-      ...state,
-      loading: false,
-      error: null,
-    }))
-    .addCase(verifyLandlordOtpAsync.rejected, (state, action) => ({
-      ...state,
-      loading: false,
-      error: (action.payload as ErrorPayload)?.message || "Verification failed",
-    }))
+      // .addCase(verifyLandlordOtpAsync.pending, (state) => ({
+      //   ...state,
+      //   loading: true,
+      //   error: null,
+      // }))
+      // .addCase(verifyLandlordOtpAsync.fulfilled, (state) => ({
+      //   ...state,
+      //   loading: false,
+      //   error: null,
+      // }))
+      // .addCase(verifyLandlordOtpAsync.rejected, (state, action) => ({
+      //   ...state,
+      //   loading: false,
+      //   error:
+      //     (action.payload as ErrorPayload)?.message || "Verification failed",
+      // }))
 
       .addCase(resendOtpAsync.pending, (state) => ({
         ...state,
@@ -142,7 +136,7 @@ const authSlice = createSlice({
         ...state,
         loading: false,
         userData: action.payload.user,
-        // tokens: action.payload.tokens,
+         tokens: action.payload.tokens,
       }))
       .addCase(loginTenantAsync.rejected, (state, action) => ({
         ...state,
@@ -150,187 +144,105 @@ const authSlice = createSlice({
         error: (action.payload as ErrorPayload)?.message || "Login failed",
       }))
 
+      .addCase(loginLandlordAsync.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(loginLandlordAsync.fulfilled, (state, action) => ({
+        ...state,
+        loading: false,
+        userData: action.payload.user,
+         tokens: action.payload.tokens,
+      }))
+      .addCase(loginLandlordAsync.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error: (action.payload as ErrorPayload)?.message || "Login failed",
+      }))
 
-        .addCase(loginLandlordAsync.pending, (state) => ({
-      ...state,
-      loading: true,
-      error: null,
-    }))
-    .addCase(loginLandlordAsync.fulfilled, (state, action) => ({
-      ...state,
-      loading: false,
-      userData: action.payload.user,
-      // tokens: action.payload.tokens,
-    }))
-    .addCase(loginLandlordAsync.rejected, (state, action) => ({
-      ...state,
-      loading: false,
-      error: (action.payload as ErrorPayload)?.message || "Login failed",
-    }))
+      .addCase(forgotPasswordTenantAsync.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(forgotPasswordTenantAsync.fulfilled, (state) => ({
+        ...state,
+        loading: false,
+      }))
+      .addCase(forgotPasswordTenantAsync.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error:
+          (action.payload as ErrorPayload)?.message ||
+          "Failed to send reset link",
+      }))
 
-    
-    .addCase(forgotPasswordTenantAsync.pending, (state) => ({
-      ...state,
-      loading: true,
-      error: null,
-    }))
-    .addCase(forgotPasswordTenantAsync.fulfilled, (state) => ({
-      ...state,
-      loading: false,
-    }))
-    .addCase(forgotPasswordTenantAsync.rejected, (state, action) => ({
-      ...state,
-      loading: false,
-      error: (action.payload as ErrorPayload)?.message || 'Failed to send reset link',
-    }))
+      .addCase(forgotPasswordLandlordAsync.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(forgotPasswordLandlordAsync.fulfilled, (state) => ({
+        ...state,
+        loading: false,
+      }))
+      .addCase(forgotPasswordLandlordAsync.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error:
+          (action.payload as ErrorPayload)?.message ||
+          "Failed to send reset link",
+      }))
 
-    .addCase(forgotPasswordLandlordAsync.pending, (state) => ({
-      ...state,
-      loading: true,
-      error: null,
-    }))
-    .addCase(forgotPasswordLandlordAsync.fulfilled, (state) => ({
-      ...state,
-      loading: false,
-    }))
-    .addCase(forgotPasswordLandlordAsync.rejected, (state, action) => ({
-      ...state,
-      loading: false,
-      error: (action.payload as ErrorPayload)?.message || 'Failed to send reset link',
-    }))
-
-    .addCase(resetPasswordAsync.pending, (state) => ({
-  ...state,
-  loading: true,
-  error: null,
-}))
-.addCase(resetPasswordAsync.fulfilled, (state) => ({
-  ...state,
-  loading: false,
-  error: null,
-}))
-.addCase(resetPasswordAsync.rejected, (state, action) => ({
-  ...state,
-  loading: false,
-  error: (action.payload as ErrorPayload)?.message || "Password reset failed",
-}))
+      .addCase(resetPasswordAsync.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(resetPasswordAsync.fulfilled, (state) => ({
+        ...state,
+        loading: false,
+        error: null,
+      }))
+      .addCase(resetPasswordAsync.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error:
+          (action.payload as ErrorPayload)?.message || "Password reset failed",
+      }))
 
       .addCase(logoutAsync.fulfilled, (state) => {
         state.userData = null;
         state.loading = false;
-        // state.tokens = null;
+
         state.error = null;
       })
       .addCase(logoutAsync.rejected, (state) => {
         state.userData = null;
         state.loading = false;
         state.error = null;
-        // state.tokens=null;
-       
       })
 
-       .addCase(editTenantProfileAsync.pending, (state) => ({
-      ...state,
-      loading: true,
-      error: null,
-    }))
-  
-    .addCase(editTenantProfileAsync.fulfilled, (state, action) => ({
-      ...state,
-      loading: false,
-      userData: action.payload.data.user , 
-      error: null,
-    }))
-    .addCase(editTenantProfileAsync.rejected, (state, action) => ({
-      ...state,
-      loading: false,
-      error: (action.payload as ErrorPayload)?.message || 'Profile update failed',
-    }))
-
-      .addCase(editLandlordProfileAsync.pending, (state) => ({
-      ...state,
-      loading: true,
-      error: null,
-    }))
-  
-    .addCase(editLandlordProfileAsync.fulfilled, (state, action) => ({
-      ...state,
-      loading: false,
-      userData: action.payload.data.user , 
-      error: null,
-    }))
-    .addCase(editLandlordProfileAsync.rejected, (state, action) => ({
-      ...state,
-      loading: false,
-      error: (action.payload as ErrorPayload)?.message || 'Profile update failed',
-    }))
-    .addCase(changePasswordAsync.pending, (state) => ({
-  ...state,
-  loading: true,
-  error: null,
-}))
-.addCase(changePasswordAsync.fulfilled, (state) => ({
-  ...state,
-  loading: false,
-  
-}))
-.addCase(changePasswordAsync.rejected, (state, action) => ({
-  ...state,
-  loading: false,
-  error: (action.payload as any)?.message || "Password change failed",
-}))
- .addCase(changeLandlordPasswordAsync.pending, (state) => ({
-  ...state,
-  loading: true,
-  error: null,
-}))
-.addCase(changeLandlordPasswordAsync.fulfilled, (state) => ({
-  ...state,
-  loading: false,
-  
-}))
-.addCase(changeLandlordPasswordAsync.rejected, (state, action) => ({
-  ...state,
-  loading: false,
-  error: (action.payload as any)?.message || "Password change failed",
-}))
-.addCase(loginAdminAsync.pending, (state) => ({
-  ...state,
-  loading: true,
-  error: null,
-}))
-.addCase(loginAdminAsync.fulfilled, (state, action) => ({
-  ...state,
-  loading: false,
-  userData: action.payload.user,
-  token : action.payload.token
- 
-}))
-.addCase(loginAdminAsync.rejected, (state, action) => ({
-  ...state,
-  loading: false,
-  error: (action.payload as ErrorPayload)?.message || "Admin login failed",
-}))
-
-// .addCase(fetchCurrentUserAsync.pending, (state) => ({
-//   ...state,
-//   loading: true,
-//   error: null,
-// }))
-// .addCase(fetchCurrentUserAsync.fulfilled, (state, action) => ({
-//   ...state,
-//   loading: false,
-//   userData: action.payload.user, 
-// }))
-// .addCase(fetchCurrentUserAsync.rejected, (state, action) => ({
-//   ...state,
-//   loading: false,
-//   error: (action.payload as ErrorPayload)?.message || "Failed to fetch user",
-// }))
-
-
+      .addCase(loginAdminAsync.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(loginAdminAsync.fulfilled, (state, action) => ({
+        ...state,
+        loading: false,
+        userData: action.payload.user,
+        token: action.payload.tokens,
+      }))
+      .addCase(loginAdminAsync.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error:
+          (action.payload as ErrorPayload)?.message || "Admin login failed",
+      }));
   },
 });
 
-export const { clearUser, clearError,setUser } = authSlice.actions;
+export const { clearUser, clearError, setUser } = authSlice.actions;
 export default authSlice.reducer;

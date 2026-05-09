@@ -1,89 +1,84 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { isAxiosError } from 'axios';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { isAxiosError } from "axios";
 
-import { inquiryService } from '../../services/inquiryService';
+import { inquiryService } from "../../services/inquiryService";
 
-import type { CreateInquiryParams, PropertyInquiry } from './types';
+import type {
+  CreateInquiryParams,
+  GetLandlordInquiriesParams,
+  GetLandlordInquiriesResult,
+  GetTenantInquiriesResult,
+} from "./types";
+
+type RejectPayload = { message: string };
 
 export const createInquiry = createAsyncThunk<
   void,
   CreateInquiryParams,
-  { rejectValue: { message: string } }
->(
-  'inquiry/create',
-  async (params, { rejectWithValue }) => {
-    try {
-      await inquiryService.createInquiry(params);
-    } catch (error) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to send inquiry',
-        });
-      }
-      return rejectWithValue({ message: 'Network error' });
+  { rejectValue: RejectPayload }
+>("inquiry/create", async (params, { rejectWithValue }) => {
+  try {
+    await inquiryService.createInquiry(params);
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const data = error.response?.data as { message?: string } | undefined;
+      return rejectWithValue({
+        message: data?.message ?? "Failed to send inquiry",
+      });
     }
-  },
-);
-//landlord
-// export const fetchPropertyInquiries = createAsyncThunk<
-//   PropertyInquiry[],
-//   string,
-//   { rejectValue: { message: string } }
-// >(
-//   'inquiry/fetchByProperty',
-//   async (propertyId, { rejectWithValue }) => {
-//     try {
-//       return await inquiryService.getPropertyInquiries(propertyId);
-//     } catch (error) {
-//       if (isAxiosError(error)) {
-//         return rejectWithValue({
-//           message: error.response?.data?.message as string || 'Failed to fetch inquiries',
-//         });
-//       }
-//       return rejectWithValue({ message: 'Network error' });
-//     }
-//   },
-// );
-
-
-
-
-export const fetchPropertyInquiries = createAsyncThunk<
-  PropertyInquiry[],
-  string,
-  { rejectValue: { message: string } }
->(
-  'inquiry/fetchByProperty',
-  async (propertyId, { rejectWithValue }) => {
-    try {
-      return await inquiryService.getPropertyInquiries(propertyId);
-    } catch (error) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to fetch inquiries',
-        });
-      }
-      return rejectWithValue({ message: 'Network error' });
-    }
-  },
-);
+    return rejectWithValue({ message: "Network error" });
+  }
+});
 
 export const fetchLandlordInquiries = createAsyncThunk<
   GetLandlordInquiriesResult,
   GetLandlordInquiriesParams,
-  { rejectValue: { message: string } }
->(
-  'inquiry/fetchLandlordInquiries',
-  async (params, { rejectWithValue }) => {
-    try {
-      return await inquiryService.getLandlordInquiries(params);
-    } catch (error) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to fetch inquiries',
-        });
-      }
-      return rejectWithValue({ message: 'Network error' });
+  { rejectValue: RejectPayload }
+>("inquiry/fetchLandlordInquiries", async (params, { rejectWithValue }) => {
+  try {
+    const res = await inquiryService.getLandlordInquiries(params);
+    return res.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const data = error.response?.data as { message?: string } | undefined;
+      return rejectWithValue({
+        message: data?.message ?? "Failed to fetch inquiries",
+      });
     }
-  },
-);
+    return rejectWithValue({ message: "Network error" });
+  }
+});
+
+export const markInquiryAsRead = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: RejectPayload }
+>("inquiry/markAsRead", async (inquiryId, { rejectWithValue }) => {
+  try {
+    await inquiryService.markAsRead(inquiryId);
+    return inquiryId;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const data = error.response?.data as { message?: string } | undefined;
+      return rejectWithValue({ message: data?.message ?? "Failed" });
+    }
+    return rejectWithValue({ message: "Network error" });
+  }
+});
+
+export const fetchTenantInquiries = createAsyncThunk<
+  GetTenantInquiriesResult,
+  { page: number; limit: number; search?: string },
+  { rejectValue: RejectPayload }
+>("inquiry/fetchTenantInquiries", async (params, { rejectWithValue }) => {
+  try {
+    const res = await inquiryService.getTenantInquiries(params);
+    return res.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const data = error.response?.data as { message?: string } | undefined;
+      return rejectWithValue({ message: data?.message ?? "Failed to fetch" });
+    }
+    return rejectWithValue({ message: "Network error" });
+  }
+});

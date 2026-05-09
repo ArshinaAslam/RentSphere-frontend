@@ -1,5 +1,4 @@
-
-export const KYC_API = {
-  SUBMIT:  '/kyc/landlord/kyc-submit',
-  STATUS:  '/kyc/landlord/kyc-status',
-};
+export const KYC_ROUTES = {
+  SUBMIT: "/landlord/kyc/kyc-submit",
+  STATUS: "/landlord/kyc/kyc-status",
+} as const;

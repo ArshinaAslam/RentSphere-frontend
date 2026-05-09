@@ -1,31 +1,4 @@
-// export interface Tenant {
-//   id: string;
-//   tenantId: string;
-//   fullName: string;
-//   email: string;
-//   phone: string;
-//   avatar?: string;
- 
-//   status: 'active' | 'blocked';
-//   kycStatus: 'pending' | 'verified' | 'rejected';
-//   joinedAt: string;
-//   isEmailVerified: boolean;
-// }
 
-// export interface UsersState {
-//   tenants: Tenant[];
-//   total: number;
-//   currentPage: number;
-//   totalPages: number;
-//   search: string;
-//   isLoading: boolean;
-//   error: string | null;
-// }
-
-// export interface ErrorPayload {
-//   success: boolean;
-//   message: string;
-// }
 
 
 export interface BaseUser {
@@ -64,25 +37,116 @@ export interface Landlord extends BaseUser {
   kycRejectedReason?: string;
 }
 
-// ✅ UNION TYPE for both
+
 export type User = Tenant | Landlord;
+
+export interface AdminProperty {
+  _id: string;
+  title: string;
+  type: string;        
+  propertyType?: string; 
+  status: string;        
+  landlordId: string;
+  rent: number;
+  city: string;
+  state: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminPropertiesResponse {
+  properties: AdminProperty[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+ 
+export interface FetchAdminPropertiesParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  type?: string;
+  status?: string;
+  from?: string;
+  to?: string;
+}
 
 export interface UsersState {
   tenants: Tenant[];
   landlords: Landlord[];    
    singleLandlord: Landlord | null,   
-  total: number;
+  tenantTotal: number,     
+  landlordTotal: number,   
   currentPage: number;
   totalPages: number;
   search: string;
-  activeTab: 'tenants' | 'landlords';  // ✅ ADD
+  activeTab: 'tenants' | 'landlords';  
   isLoading: boolean;
-  singleLoading: boolean;           // ✅ NEW: Separate loading for single fetch
+  singleLoading: boolean;           
 
   error: string | null;
+
+
+    properties: AdminProperty[];
+  propertyTotal: number;
+  propertyPage: number;
+  propertyTotalPages: number;
+  isLoadingProperties: boolean;
 }
 
 export interface ErrorPayload {
   success: boolean;
   message: string;
+}
+
+
+export interface FetchParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+   role?: 'TENANT' | 'LANDLORD'; 
+    from?: string;   
+  to?: string; 
+}
+
+export interface SingleLandlordResponse {
+  success: boolean;
+  message: string;
+  data: Landlord;  
+}
+
+
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  message: string;
+  data: {
+    users: T[];
+    total: number;
+    totalPages: number;
+    page: number;
+  };
+}
+
+export interface ToggleStatusResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+export interface ToggleLandlordStatusParams {
+  landlordId: string;
+  status: 'active' | 'blocked';
+}
+
+export interface ToggleTenantStatusParams {
+  id: string;
+  status: 'active' | 'blocked';
+}
+
+
+export interface KycResponse {
+  success: boolean;
+  message: string;
+  data: { id: string; kycStatus: string; status: string };
 }

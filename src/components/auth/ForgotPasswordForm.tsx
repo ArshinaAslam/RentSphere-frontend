@@ -1,19 +1,20 @@
+"use client";
 
-'use client';
+import { Mail, Home, SendHorizontal } from "lucide-react";
 
-import React from 'react';
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import type { ForgotPasswordValues } from "@/constants/authValidation";
 
-
-
-import { Mail, Home, SendHorizontal } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import type { ForgotPasswordValues } from '@/constants/authValidation';
-
-import type { UseFormReturn } from 'react-hook-form';
-
+import type { UseFormReturn } from "react-hook-form";
 
 interface ForgotPasswordFormProps {
   form: UseFormReturn<ForgotPasswordValues>;
@@ -21,27 +22,27 @@ interface ForgotPasswordFormProps {
   backLink: string;
   backText: string;
   error?: string;
-  onSubmit: (data: ForgotPasswordValues) => void;  
+  onSubmit: (data: ForgotPasswordValues) => void | Promise<void>;
 }
 
 export default function ForgotPasswordForm({
   form,
   loading,
-  backLink,
-  backText,
   error,
-  onSubmit
+  onSubmit,
 }: ForgotPasswordFormProps) {
   return (
     <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-10 flex flex-col items-center border border-slate-50">
-      {/* Header Icon */}
       <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-100">
-          <Home className="w-7 h-7 text-white stroke-[2.5]" />
-        </div>
-      <h1 className="text-2xl font-bold text-slate-900 mb-3 text-center">Reset Password</h1>
-      
+        <Home className="w-7 h-7 text-white stroke-[2.5]" />
+      </div>
+      <h1 className="text-2xl font-bold text-slate-900 mb-3 text-center">
+        Reset Password
+      </h1>
+
       <p className="text-slate-500 text-sm text-center leading-relaxed mb-8 max-w-md">
-        Enter your registered email. We'll send you instructions to reset your password.
+        Enter your registered email. We'll send you instructions to reset your
+        password.
       </p>
 
       {error && (
@@ -51,21 +52,28 @@ export default function ForgotPasswordForm({
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">  
+        <form
+          onSubmit={(e) => {
+            void form.handleSubmit(onSubmit)(e);
+          }}
+          className="w-full space-y-6"
+        >
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold text-slate-700">Email Address</FormLabel>
+                <FormLabel className="text-sm font-semibold text-slate-700">
+                  Email Address
+                </FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <Input 
-                      placeholder="Enter your email" 
+                    <Input
+                      placeholder="Enter your email"
                       {...field}
                       disabled={loading}
-                      className="h-14 pl-12 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white transition-all text-base" 
+                      className="h-14 pl-12 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white transition-all text-base"
                     />
                   </div>
                 </FormControl>
@@ -94,7 +102,6 @@ export default function ForgotPasswordForm({
         </form>
       </Form>
 
-    
       <div className="mt-8 w-full p-4 bg-slate-50 rounded-2xl border border-slate-100">
         <p className="text-xs text-slate-600 flex items-center gap-2">
           <span className="w-2 h-2 bg-slate-400 rounded-full" />

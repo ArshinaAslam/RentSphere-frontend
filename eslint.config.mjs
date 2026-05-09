@@ -5,24 +5,20 @@ import importPlugin from "eslint-plugin-import";
 import nextPlugin from "@next/eslint-plugin-next";
 
 const eslintConfig = defineConfig([
-  // ── Ignore ───────────────────────────────────────────────────────────────
   {
     ignores: [
       ".next/**",
       "out/**",
       "build/**",
-      
       "next-env.d.ts",
       "node_modules/**",
       "dist/**",
     ],
   },
 
-  // ── Base JS + TypeScript ──────────────────────────────────────────────────
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
 
-  // ── Next.js rules ─────────────────────────────────────────────────────────
   {
     plugins: { "@next/next": nextPlugin },
     rules: {
@@ -31,17 +27,17 @@ const eslintConfig = defineConfig([
     },
   },
 
-  // ── TypeScript parser ─────────────────────────────────────────────────────
   {
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ["*.mjs"], 
+        },
         tsconfigRootDir: import.meta.dirname,
       },
     },
   },
 
-  // ── Main rules ────────────────────────────────────────────────────────────
   {
     plugins: {
       import: importPlugin,
@@ -58,11 +54,14 @@ const eslintConfig = defineConfig([
 
     rules: {
       // ── TypeScript ─────────────────────────────────────────────────────────
-      "@typescript-eslint/no-explicit-any":         "warn",
-      "@typescript-eslint/no-unsafe-assignment":    "warn",
-      "@typescript-eslint/no-unsafe-member-access": "warn",
-      "@typescript-eslint/no-unsafe-call":          "warn",
-      "@typescript-eslint/no-unsafe-return":        "warn",
+      "@typescript-eslint/no-explicit-any":         "error",
+      "@typescript-eslint/no-unsafe-assignment":    "error",   
+      "@typescript-eslint/no-unsafe-member-access": "error",   
+      "@typescript-eslint/no-unsafe-call":          "error",   
+      "@typescript-eslint/no-unsafe-return":        "error",   
+      "@typescript-eslint/no-unsafe-argument":      "error",   
+      "@typescript-eslint/no-floating-promises":    "error",   
+      "@typescript-eslint/await-thenable":          "error",   
       "@typescript-eslint/no-unused-vars": [
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },

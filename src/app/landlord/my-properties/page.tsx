@@ -1,12 +1,9 @@
-
-
-
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 
-import { Plus, ChevronLeft, ChevronRight, Search, Building2 } from "lucide-react";
-import { useSelector } from 'react-redux';
+import { Plus, ChevronLeft, ChevronRight, Building2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 import LandlordNavbar from "@/components/layout/LandlordNavbar";
 import LandlordSidebar from "@/components/layout/LandlordSidebar";
@@ -18,43 +15,40 @@ import type { propertyData } from "@/features/property/types";
 import { useAppDispatch } from "@/store/hooks";
 import type { RootState } from "@/store/index";
 
-import AddPropertyPage from './AddPropertyPage';
-
-
-
+import AddPropertyPage from "./AddPropertyPage";
 
 export default function PropertiesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddProperty, setShowAddProperty] = useState(false);
-   const [searchQuery, setSearchQuery] = useState("");
-   const [debouncedSearch, setDebouncedSearch] = useState("");
-   const dispatch = useAppDispatch()
-
-
-   useEffect(() => {
-  const timer = setTimeout(() => {
-    setDebouncedSearch(searchQuery); 
-  }, 500);
-
-  return () => clearTimeout(timer); 
-}, [searchQuery]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
- void  dispatch(fetchLandlordProperties({ page: currentPage, search: debouncedSearch }));
-}, [debouncedSearch, currentPage]);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
 
-    const { properties, total, limit } = useSelector((state: RootState) => state.property);
-   
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    void dispatch(
+      fetchLandlordProperties({ page: currentPage, search: debouncedSearch }),
+    );
+  }, [debouncedSearch, currentPage]);
+
+  const { properties, total, limit } = useSelector(
+    (state: RootState) => state.property,
+  );
+
   const totalPages = Math.ceil(total / limit);
 
-
-
-  
   if (showAddProperty) {
     return <AddPropertyPage onBack={() => setShowAddProperty(false)} />;
   }
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
@@ -66,18 +60,15 @@ export default function PropertiesPage() {
 
       <main className="pl-64 pt-16 min-h-screen">
         <div className="max-w-5xl mx-auto px-10 py-10">
-
-          
           <div className="mb-8 pt-8 flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-slate-900 mb-1">
                 My Properties
               </h1>
               <p className="text-slate-500 font-medium">
-                {properties.length === 0 
-                  ? "List your first property to get started" 
-                  : `${properties.length} properties listed • Manage your listings`
-                }
+                {properties.length === 0
+                  ? "List your first property to get started"
+                  : `${properties.length} properties listed • Manage your listings`}
               </p>
             </div>
             <Button
@@ -89,14 +80,13 @@ export default function PropertiesPage() {
             </Button>
           </div>
 
-         
           {properties.length > 0 && (
             <div className="mb-8">
               <div className="relative max-w-sm">
                 {/* <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" /> */}
                 <Input
-                      value={searchQuery}
-                    onChange={handleSearch}
+                  value={searchQuery}
+                  onChange={handleSearch}
                   placeholder="Search properties..."
                   className="h-11 pl-11 pr-4 bg-white border-slate-200 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:border-emerald-500"
                 />
@@ -104,9 +94,7 @@ export default function PropertiesPage() {
             </div>
           )}
 
-          
           {properties.length === 0 ? (
-           
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <div className="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6">
                 <Building2 size={36} className="text-emerald-400" />
@@ -115,7 +103,8 @@ export default function PropertiesPage() {
                 No properties yet
               </h2>
               <p className="text-slate-500 max-w-sm mb-8">
-                You haven't listed any properties yet. Add your first property to get started.
+                You haven't listed any properties yet. Add your first property
+                to get started.
               </p>
               <Button
                 onClick={() => setShowAddProperty(true)}
@@ -126,30 +115,31 @@ export default function PropertiesPage() {
               </Button>
             </div>
           ) : (
-           
             <>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {properties.map((property: propertyData) => {
-    const displayProperty = {
-      id: property._id,
-      title: property.title,
-      location: `${property.city}, ${property.state}`,
-      price: property.price || 0,
-      bedrooms: property.bedrooms || 0,
-      bathrooms: property.bathrooms || 0,
-      area: property.area || 0,
-      status: property.status,
-      vacant: property.vacant || 0,
-      image: property.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"
-    };
-    
-    return (
-      <PropertyCard 
-         key={property._id} 
-        property={displayProperty} 
-      />
-    );
-  })}
+                {properties.map((property: propertyData) => {
+                  const displayProperty = {
+                    id: property._id,
+                    title: property.title,
+                    location: `${property.city}, ${property.state}`,
+                    price: property.price || 0,
+                    bedrooms: property.bedrooms || 0,
+                    bathrooms: property.bathrooms || 0,
+                    area: property.area || 0,
+                    status: property.status,
+                    vacant: property.vacant || 0,
+                    image:
+                      property.images?.[0] ||
+                      "https://via.placeholder.com/400x300?text=No+Image",
+                  };
+
+                  return (
+                    <PropertyCard
+                      key={property._id}
+                      property={displayProperty}
+                    />
+                  );
+                })}
               </div>
 
               {/* Pagination */}
@@ -196,7 +186,6 @@ export default function PropertiesPage() {
               )}
             </>
           )}
-
         </div>
       </main>
     </div>

@@ -1,122 +1,122 @@
 import { AUTH_ROUTES } from "@/constants/authRoutes";
-import type { ForgotPasswordValues, LoginValues, PasswordValues, ResetPasswordValues, SignupValues } from "@/constants/authValidation";
-
+import type {
+  ForgotPasswordValues,
+  LoginValues,
+  ResetPasswordValues,
+  SignupValues,
+} from "@/constants/authValidation";
+import type {
+  ForgotPasswordResult,
+  GoogleAuthResult,
+  LoginResult,
+  OtpVerifyResult,
+  ResetPasswordResult,
+  SignupResult,
+} from "@/features/auth/types";
 
 import axiosInstance from "./axios";
 
-
 export const authService = {
-    async tenantSignup(data:SignupValues & {role:string}){
-        const response = await  axiosInstance.post(AUTH_ROUTES.SIGNUP,data)
-        return response.data
-    },
-
-    async landlordSignup(data:SignupValues & {role:string}){
-        const response =await  axiosInstance.post(AUTH_ROUTES.LANDLORD_SIGNUP,data)
-        return response.data
-    },
-
-
-     async googleAuth({ token, role }: { token: string; role: string }) {
-        const response = await axiosInstance.post(AUTH_ROUTES.GOOGLE_AUTH, { token, role });
-        console.log("qwerqwer",response.data)
-        return response.data;
-    },
-
-
-
-    async verifyTenantOtp(data:{email:string;otp:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.VERIFY_OTP,data)
-        return response.data
-    },
-
-      async verifyLandlordOtp(data:{email:string;otp:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.LANDLORD_VERIFY_OTP,data)
-        return response.data
-    },
-
-
-    async resendOtp(data:{email:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.RESEND_OTP,data)
-        return response.data
-    },
-
-
-    async tenatLogin(data:LoginValues & {role:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.LOGIN,data)
-        return response.data
-    },
-
-    async tenantForgotPassword(data:ForgotPasswordValues & {role:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.FORGOT_PASSWORD,data)
-        return response.data
-    },
-
-    async resetPassword(data:ResetPasswordValues & {role:string}){
-        const response = await axiosInstance.post(AUTH_ROUTES.RESET_PASSWORD,data)
-        return response.data
-
-    },
-
-     async landlordLogin(data:{email:string;password:string; }){
-        const response = await axiosInstance.post(AUTH_ROUTES.LANDLORD_LOGIN,data)
-        return response.data
-    },
-
-
-     async landlordForgotPassword(data: { email: string }) {
-    const response = await axiosInstance.post(AUTH_ROUTES.LANDLORD_FORGOT_PASSWORD, data); 
-    return response.data;
-
-     },
-
-    async logout() {
-    await axiosInstance.post(AUTH_ROUTES.LOGOUT,{},{withCredentials: true});
+  async tenantSignup(
+    data: SignupValues & { role: string },
+  ): Promise<SignupResult> {
+    const response = await axiosInstance.post<{ data: SignupResult }>(
+      AUTH_ROUTES.SIGNUP,
+      data,
+    );
+    return response.data.data;
   },
 
+  async googleAuth({
+    token,
+    role,
+  }: {
+    token: string;
+    role: string;
+  }): Promise<GoogleAuthResult> {
+    const response = await axiosInstance.post<{ data: GoogleAuthResult }>(
+      AUTH_ROUTES.GOOGLE_AUTH,
+      { token, role },
+    );
+    return response.data.data;
+  },
 
-  
+  async verifyOtp(data: {
+    email: string;
+    otp: string;
+  }): Promise<OtpVerifyResult> {
+    const response = await axiosInstance.post<{ data: OtpVerifyResult }>(
+      AUTH_ROUTES.VERIFY_OTP,
+      data,
+    );
+    return response.data.data;
+  },
 
-// async getCurrentUser() {
-//   const response = await axiosInstance.get(AUTH_ROUTES.GET_CURRENT_USER);
-//   return response.data;
-// },
+  async resendOtp(data: { email: string; role: string }): Promise<void> {
+    await axiosInstance.post(AUTH_ROUTES.RESEND_OTP, data);
+  },
 
+  async tenatLogin(data: LoginValues & { role: string }): Promise<LoginResult> {
+    const response = await axiosInstance.post<{ data: LoginResult }>(
+      AUTH_ROUTES.LOGIN,
+      data,
+    );
+    return response.data.data;
+  },
 
-async editTenantProfile(formData: FormData) {  
-  const response = await axiosInstance.post('/auth/tenant/editProfile', formData, {
-    headers: { 
-      'Content-Type': 'multipart/form-data'  
-    }
-  })
-  return response.data;
-},
+  async landlordLogin(data: {
+    email: string;
+    password: string;
+  }): Promise<LoginResult> {
+    const response = await axiosInstance.post<{ data: LoginResult }>(
+      AUTH_ROUTES.LANDLORD_LOGIN,
+      data,
+    );
+    return response.data.data;
+  },
 
+  async tenantForgotPassword(
+    data: ForgotPasswordValues & { role: string },
+  ): Promise<ForgotPasswordResult> {
+    const response = await axiosInstance.post<{ data: ForgotPasswordResult }>(
+      AUTH_ROUTES.FORGOT_PASSWORD,
+      data,
+    );
+    return response.data.data;
+  },
 
-async editLandlordProfile(formData: FormData) {  
-  const response = await axiosInstance.post('/auth/landlord/editProfile', formData, {
-    headers: { 
-      'Content-Type': 'multipart/form-data'  
-    }
-  })
-  return response.data;
-},
+  async landlordForgotPassword(data: {
+    email: string;
+  }): Promise<ForgotPasswordResult> {
+    const response = await axiosInstance.post<{ data: ForgotPasswordResult }>(
+      AUTH_ROUTES.LANDLORD_FORGOT_PASSWORD,
+      data,
+    );
+    return response.data.data;
+  },
 
+  async resetPassword(
+    data: ResetPasswordValues & { role: string },
+  ): Promise<ResetPasswordResult> {
+    const response = await axiosInstance.post<{ data: ResetPasswordResult }>(
+      AUTH_ROUTES.RESET_PASSWORD,
+      data,
+    );
+    return response.data.data;
+  },
 
+  async logout(): Promise<void> {
+    await axiosInstance.post(AUTH_ROUTES.LOGOUT, {}, { withCredentials: true });
+  },
 
-async changePassword(data: PasswordValues) {
-  const response = await axiosInstance.post('/auth/tenant/change-password', data);
-  return response.data;
-},
-
-async changeLandlordPassword(data: PasswordValues) {
-  const response = await axiosInstance.post('/auth/landlord/change-password', data);
-  return response.data;
-},
-
-async adminLogin(data: { email: string; password: string }) {
-  const response = await axiosInstance.post(AUTH_ROUTES.ADMIN_LOGIN, data);
-  return response.data;
-}
-
-}
+  async adminLogin(data: {
+    email: string;
+    password: string;
+  }): Promise<LoginResult> {
+    const response = await axiosInstance.post<{ data: LoginResult }>(
+      AUTH_ROUTES.ADMIN_LOGIN,
+      data,
+    );
+    return response.data.data;
+  },
+};

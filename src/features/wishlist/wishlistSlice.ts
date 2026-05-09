@@ -5,13 +5,13 @@ import { fetchWishlist, toggleWishlist } from "./wishlistThunk";
 import type { WishlistItem, WishlistState } from "./types";
 
 const initialState: WishlistState = {
-  items:      [],
+  items: [],
   wishlisted: [],
-  total:       0,
+  total: 0,
   currentPage: 1,
-  isLoading:  false,
+  isLoading: false,
   togglingId: null,
-  error:      null,
+  error: null,
 };
 
 const wishlistSlice = createSlice({
@@ -23,24 +23,21 @@ const wishlistSlice = createSlice({
       // fetch
       .addCase(fetchWishlist.pending, (state) => {
         state.isLoading = true;
-        state.error     = null;
+        state.error = null;
       })
       .addCase(fetchWishlist.fulfilled, (state, action) => {
-        state.isLoading  = false;
-        state.items      = action.payload.items;
-          state.total      = action.payload.total;
-  state.currentPage = action.payload.page;
-//        state.wishlisted = action.payload.items.map((i: WishlistItem) =>
-//   typeof i.propertyId === "object" ? i.propertyId._id : i.propertyId
-// );
+        state.isLoading = false;
+        state.items = action.payload.items;
+        state.total = action.payload.total;
+        state.currentPage = action.payload.page;
 
-state.wishlisted = action.payload.items.map(
-  (i: WishlistItem) => i.property._id   
-);
+        state.wishlisted = action.payload.items.map(
+          (i: WishlistItem) => i.property._id,
+        );
       })
       .addCase(fetchWishlist.rejected, (state, action) => {
         state.isLoading = false;
-        state.error     = action.payload as string;
+        state.error = action.payload as string;
       })
 
       // toggle
@@ -53,13 +50,11 @@ state.wishlisted = action.payload.items.map(
         if (added) {
           state.wishlisted.push(propertyId);
         } else {
-          state.wishlisted = state.wishlisted.filter(id => id !== propertyId);
-          // state.items      = state.items.filter(i =>
-          //   (typeof i.propertyId === "object" ? i.propertyId._id : i.propertyId) !== propertyId
-          // );
+          state.wishlisted = state.wishlisted.filter((id) => id !== propertyId);
+
           state.items = state.items.filter(
-  (i) => i.property._id !== propertyId  
-);
+            (i) => i.property._id !== propertyId,
+          );
         }
       })
       .addCase(toggleWishlist.rejected, (state) => {

@@ -1,31 +1,34 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchLandlordVisits, updateLandlordVisitStatus } from './landlordVisitThunk';
+import {
+  fetchLandlordVisits,
+  updateLandlordVisitStatus,
+} from "./landlordVisitThunk";
 
-import type { LandlordVisit } from './types';
+import type { LandlordVisit } from "./types";
 
 interface LandlordVisitState {
-  visits:     LandlordVisit[];
-   total:      number;        
-  page:       number;       
-  totalPages: number;  
-  isLoading:  boolean;
+  visits: LandlordVisit[];
+  total: number;
+  page: number;
+  totalPages: number;
+  isLoading: boolean;
   updatingId: string | null;
-  error:      string | null;
+  error: string | null;
 }
 
 const initialState: LandlordVisitState = {
-  visits:     [],
-  total:      0,       
-  page:       1,        
-  totalPages: 1, 
-  isLoading:  false,
+  visits: [],
+  total: 0,
+  page: 1,
+  totalPages: 1,
+  isLoading: false,
   updatingId: null,
-  error:      null,
+  error: null,
 };
 
 const landlordVisitSlice = createSlice({
-  name: 'landlordVisit',
+  name: "landlordVisit",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -33,34 +36,34 @@ const landlordVisitSlice = createSlice({
       // fetchLandlordVisits
       .addCase(fetchLandlordVisits.pending, (state) => {
         state.isLoading = true;
-        state.error     = null;
+        state.error = null;
       })
       .addCase(fetchLandlordVisits.fulfilled, (state, action) => {
         state.isLoading = false;
-         state.visits     = action.payload.visits;      
-  state.total      = action.payload.total;      
-  state.page       = action.payload.page;       
-  state.totalPages = action.payload.totalPages; 
+        state.visits = action.payload.visits;
+        state.total = action.payload.total;
+        state.page = action.payload.page;
+        state.totalPages = action.payload.totalPages;
       })
       .addCase(fetchLandlordVisits.rejected, (state, action) => {
         state.isLoading = false;
-        state.error     = action.payload?.message ?? 'Failed to fetch visits';
+        state.error = action.payload?.message ?? "Failed to fetch visits";
       })
 
       // updateLandlordVisitStatus
       .addCase(updateLandlordVisitStatus.pending, (state, action) => {
         state.updatingId = action.meta.arg.visitId;
-        state.error      = null;
+        state.error = null;
       })
       .addCase(updateLandlordVisitStatus.fulfilled, (state, action) => {
         state.updatingId = null;
         const { visitId, status } = action.payload;
-        const visit = state.visits.find(v => v._id === visitId);
+        const visit = state.visits.find((v) => v._id === visitId);
         if (visit) visit.status = status;
       })
       .addCase(updateLandlordVisitStatus.rejected, (state, action) => {
         state.updatingId = null;
-        state.error      = action.payload?.message ?? 'Failed to update status';
+        state.error = action.payload?.message ?? "Failed to update status";
       });
   },
 });

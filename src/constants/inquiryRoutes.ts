@@ -1,6 +1,8 @@
 export const INQUIRY_ROUTES = {
   CREATE_INQUIRY: '/tenant/inquiry/create-inquiry',
-//   PROPERTY_INQUIRIES:   (propertyId: string) => `/landlord/inquiry/all-inquiries/${propertyId}`,
+  TENANT_INQUIRIES: '/tenant/inquiry/my-inquiries',
+
 
   LANDLORD_INQUIRIES:   '/landlord/inquiry/all-inquiries',
+  MARK_AS_READ: (inquiryId: string) => `/landlord/inquiry/${inquiryId}/read`,
 };

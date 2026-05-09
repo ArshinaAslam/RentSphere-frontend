@@ -1,11 +1,8 @@
-
 import Link from "next/link";
 
 import { User, Building2 } from "lucide-react";
 
 import AccountTypeCard from "@/components/auth/AccountTypeCard";
-
-
 
 export default function AccountTypePage() {
   const tenantFeatures = [
@@ -33,37 +30,35 @@ export default function AccountTypePage() {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 justify-items-center">
-          
           <div className="w-full max-w-[360px]">
-       
-              <AccountTypeCard
-                icon={User}
-                title="Tenant"
-                description="Looking for a place to rent"
-                features={tenantFeatures}
-                buttonText="Continue as Tenant"
-                href="/tenant/signup?role=TENANT"
-              />
-         
+            <AccountTypeCard
+              icon={User}
+              title="Tenant"
+              description="Looking for a place to rent"
+              features={tenantFeatures}
+              buttonText="Continue as Tenant"
+              href="/tenant/signup?role=TENANT"
+            />
           </div>
 
           <div className="w-full max-w-[360px]">
-    
-              <AccountTypeCard
-                icon={Building2}
-                title="Landlord"
-                description="Managing rental properties"
-                features={landlordFeatures}
-                buttonText="Continue as Landlord"
-                href="/landlord/signup?role=LANDLORD"
-              />
-            
+            <AccountTypeCard
+              icon={Building2}
+              title="Landlord"
+              description="Managing rental properties"
+              features={landlordFeatures}
+              buttonText="Continue as Landlord"
+              href="/landlord/signup?role=LANDLORD"
+            />
           </div>
         </div>
 
         <p className="mt-10 text-center text-sm text-slate-500">
           Need help choosing?{" "}
-          <Link href="/contact" className="font-semibold text-emerald-700 hover:underline">
+          <Link
+            href="/contact"
+            className="font-semibold text-emerald-700 hover:underline"
+          >
             Contact our support team
           </Link>
         </p>
@@ -71,4 +66,3 @@ export default function AccountTypePage() {
     </div>
   );
 }
-

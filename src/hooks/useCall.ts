@@ -20,7 +20,7 @@ const ICE_SERVERS = {
   ],
 };
 
-export function useCall(currentUserId: string) {
+export function useCall() {
   const [callStatus, setCallStatus] = useState<CallStatus>("idle");
   const [callType, setCallType] = useState<CallType>("audio");
   const [incomingCall, setIncomingCall] = useState<IncomingCallData | null>(

@@ -1,398 +1,277 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosError, isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 
-import type { ForgotPasswordValues, LoginValues, PasswordValues, ResetPasswordValues, SignupValues } from "@/constants/authValidation";
-import { EditProfileValues } from "@/constants/authValidation";
+import type {
+  ForgotPasswordValues,
+  LoginValues,
+  ResetPasswordValues,
+  SignupValues,
+} from "@/constants/authValidation";
 import { authService } from "@/services/authService";
-import { EditProfileData } from "@/types/user";
-
-
 
 export const signupAsync = createAsyncThunk(
-    'auth/signup',
-    async ({data,role}: { data: SignupValues; role: string },{rejectWithValue})=>{
-        try {
-        // if(role == "TENANT"){
-        //   const result =   await authService.tenantSignup({...data,role})
-        //   return result
-        // }else if(role === "LANDLORD"){
-        //  const result =  await authService.landlordSignup({ ...data, role });
-        //  return result
-        // }
+  "auth/signup",
+  async (
+    { data, role }: { data: SignupValues; role: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const result = await authService.tenantSignup({ ...data, role });
 
-       const result =   await authService.tenantSignup({...data,role})
-          return result
+      return result;
+    } catch (err: unknown) {
+      if (isAxiosError(err)) {
+        const data = err.response?.data as { message?: string } | undefined;
+        return rejectWithValue({
+          success: false,
+          message: data?.message || "Network error",
+        });
+      }
 
-
-        } catch (err: unknown) {
-           if (isAxiosError(err)) {
-     
-      return rejectWithValue({ 
-        success: false, 
-        message: err.response?.data?.message || 'Network error' 
+      return rejectWithValue({
+        success: false,
+        message: "An unexpected error occurred",
       });
     }
-    
-    return rejectWithValue({ 
-      success: false, 
-      message: 'An unexpected error occurred' 
-    });
-        }
-
-    }
-    
-)
-
-
-export const googleAuthAsync = createAsyncThunk(
-  'auth/googleAuth',
-  async ({ token, role }: { token: string; role: string }, { rejectWithValue }) => {
-    try {
-      const result = await authService.googleAuth({ token, role });
-      console.log("reached ggooglethunk",result)
-      return result;
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({ 
-          success: false, 
-          message: error.response?.data?.message || 'Google auth failed' 
-        });
-      }
-      return rejectWithValue({ success: false, message: 'Network error' });
-    }
-  }
-)
-
-
-export const verifyTenantOtpAsync = createAsyncThunk(
-    'auth/verifyTenantOtp',
-    async (data:{email:string;otp:string;role:string},{rejectWithValue})=>{
-        try {
-            const result = await authService.verifyTenantOtp({...data})
-            return result
-            
-        } catch (error:unknown) {
-                if (isAxiosError(error)) {
-                  return rejectWithValue({ 
-                  success: false, 
-                    message: error.response?.data?.message || 'Verification failed' 
-                  });
-                   }
-                return rejectWithValue({ success: false, message: 'Network error' });
-        }
-
-    }
-
-)
-
-
-export const verifyLandlordOtpAsync = createAsyncThunk(
-  'auth/verifyLandlordOtp',
-  async ({ email, otp }: { email: string; otp: string }, { rejectWithValue }) => {
-    try {
-      const result = await authService.verifyLandlordOtp({ email, otp });
-      return result;
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({ 
-          success: false, 
-          message: error.response?.data?.message || 'Verification failed' 
-        });
-      }
-      return rejectWithValue({ success: false, message: 'Network error' });
-    }
-  }
+  },
 );
 
-export const resendOtpAsync = createAsyncThunk(
-  'auth/resendOtp',
-  async (data:{email:string,role:string},{rejectWithValue})=>{
+export const googleAuthAsync = createAsyncThunk(
+  "auth/googleAuth",
+  async (
+    { token, role }: { token: string; role: string },
+    { rejectWithValue },
+  ) => {
     try {
+      const result = await authService.googleAuth({ token, role });
 
-      const result = await authService.resendOtp(data)
-      return result
-      
-    } catch (error:unknown) {
-
-      if (isAxiosError(error)) {
-      return rejectWithValue({ 
-        success: false, 
-        message: error.response?.data?.message || 'Resend failed' 
-      });
-    }
-    return rejectWithValue({ success: false, message: 'Network error' });
-      
-    }
-  }
-)
-
-
-export const loginTenantAsync = createAsyncThunk(
-  'auth/tenantLogin',
-  async ({data,role}:{data:LoginValues;role:string},{rejectWithValue})=>{
-    try {
-
-      const result = await authService.tenatLogin({...data,role})
-
-    
-      return result
-
-
-      
+      return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
           success: false,
-          message: error.response?.data?.message || 'Login failed'
+          message: data?.message || "Google auth failed",
         });
       }
-      return rejectWithValue({ success: false, message: 'Network error' });
+      return rejectWithValue({ success: false, message: "Network error" });
     }
-  }
-)
+  },
+);
 
-
-export const forgotPasswordTenantAsync = createAsyncThunk(
-  'auth/tenantForgotPassword',
-  async ({data,role}:{data:ForgotPasswordValues,role:string},{rejectWithValue})=>{
+export const verifyOtpAsync = createAsyncThunk(
+  "auth/verifyOtp",
+  async (
+    data: { email: string; otp: string; role: string },
+    { rejectWithValue },
+  ) => {
     try {
-      const result = await authService.tenantForgotPassword({...data,role})
-      return result
-      
+      const result = await authService.verifyOtp({ ...data });
+      return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message || 'Failed to send otp';
-
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
           success: false,
-          message: errorMessage,
+          message: data?.message || "Verification failed",
+        });
+      }
+      return rejectWithValue({ success: false, message: "Network error" });
+    }
+  },
+);
+
+// export const verifyLandlordOtpAsync = createAsyncThunk(
+//   "auth/verifyLandlordOtp",
+//   async (
+//     { email, otp }: { email: string; otp: string },
+//     { rejectWithValue },
+//   ) => {
+//     try {
+//       const result = await authService.verifyLandlordOtp({ email, otp });
+//       return result;
+//     } catch (error: unknown) {
+//       if (isAxiosError(error)) {
+//         const data = error.response?.data as { message?: string } | undefined;
+//         return rejectWithValue({
+//           success: false,
+//           message: data?.message || "Verification failed",
+//         });
+//       }
+//       return rejectWithValue({ success: false, message: "Network error" });
+//     }
+//   },
+// );
+
+export const resendOtpAsync = createAsyncThunk(
+  "auth/resendOtp",
+  async (data: { email: string; role: string }, { rejectWithValue }) => {
+    try {
+      const result = await authService.resendOtp(data);
+      return result;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue({
+          success: false,
+          message: data?.message || "Resend failed",
+        });
+      }
+      return rejectWithValue({ success: false, message: "Network error" });
+    }
+  },
+);
+
+export const loginTenantAsync = createAsyncThunk(
+  "auth/tenantLogin",
+  async (
+    { data, role }: { data: LoginValues; role: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const result = await authService.tenatLogin({ ...data, role });
+
+      return result;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue({
+          success: false,
+          message: data?.message || "Login failed",
+        });
+      }
+      return rejectWithValue({ success: false, message: "Network error" });
+    }
+  },
+);
+
+export const forgotPasswordTenantAsync = createAsyncThunk(
+  "auth/tenantForgotPassword",
+  async (
+    { data, role }: { data: ForgotPasswordValues; role: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const result = await authService.tenantForgotPassword({ ...data, role });
+      return result;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue({
+          success: false,
+          message: data?.message,
         });
       }
       return rejectWithValue({
         success: false,
-        message: 'Network error',
+        message: "Network error",
       });
     }
-  }
-)
+  },
+);
 
 export const resetPasswordAsync = createAsyncThunk(
-  'auth/resetTenantPassword',
-  async ({data,role}:{data:ResetPasswordValues,role:string},{rejectWithValue})=>{
-     try {
-      const result = await authService.resetPassword({...data,role})
-      return result
-     } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({
-          success: false,
-          message: error.response?.data?.message || 'Password reset failed',
-        });
-      }
-      return rejectWithValue({ success: false, message: 'Network error' });
-    }
-  }
-)
-
-export const loginLandlordAsync = createAsyncThunk(
-  'auth/landlordLogin',
-  async (data: { email: string; password: string;  }, { rejectWithValue }) => {
+  "auth/resetTenantPassword",
+  async (
+    { data, role }: { data: ResetPasswordValues; role: string },
+    { rejectWithValue },
+  ) => {
     try {
-      const result = await authService.landlordLogin(data);  
- 
+      const result = await authService.resetPassword({ ...data, role });
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
           success: false,
-          message: error.response?.data?.message || 'Login failed'
+          message: data?.message || "Password reset failed",
         });
       }
-      return rejectWithValue({ success: false, message: 'Network error' });
+      return rejectWithValue({ success: false, message: "Network error" });
     }
-  }
+  },
 );
 
+export const loginLandlordAsync = createAsyncThunk(
+  "auth/landlordLogin",
+  async (data: { email: string; password: string }, { rejectWithValue }) => {
+    try {
+      const result = await authService.landlordLogin(data);
+
+      return result;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue({
+          success: false,
+          message: data?.message || "Login failed",
+        });
+      }
+      return rejectWithValue({ success: false, message: "Network error" });
+    }
+  },
+);
 
 export const forgotPasswordLandlordAsync = createAsyncThunk(
-  'auth/landlordForgotPassword',
+  "auth/landlordForgotPassword",
   async (data: { email: string }, { rejectWithValue }) => {
     try {
       const result = await authService.landlordForgotPassword(data);
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message || 'Failed to send reset link';
+        const data = error.response?.data as { message?: string } | undefined;
 
         return rejectWithValue({
           success: false,
-          message: errorMessage,
+          message: data?.message,
         });
       }
       return rejectWithValue({
         success: false,
-        message: 'Network error',
+        message: "Network error",
       });
     }
-  }
+  },
 );
 
 export const logoutAsync = createAsyncThunk(
-  'auth/logout',
+  "auth/logout",
   async (_, { rejectWithValue }) => {
-     try {
+    try {
       await authService.logout();
-     return { success: true };
+      return { success: true };
     } catch (error: unknown) {
       if (isAxiosError(error)) {
-        return rejectWithValue({ 
-          success: false, 
-          message: error.response?.data?.message || 'Logout failed' 
-        });
-      }
-      return rejectWithValue({ success: false, message: 'Network error' });
-    }
-  }
+        const data = error.response?.data as { message?: string } | undefined;
 
-  
-);
-
-
-export const editTenantProfileAsync = createAsyncThunk(
-  'auth/editTenantProfile',
-  async (formData: FormData,{rejectWithValue})=>{
-    try {
-      const result = await  authService.editTenantProfile(formData)
-      console.log("result from editeanntprofileasync",result.data.user)
-       return result
-
-     
-    } catch (error:unknown) {
-       if (isAxiosError(error)) {
         return rejectWithValue({
           success: false,
-          message: error.response?.data?.message || 'Profile update failed',
+          message: data?.message || "Logout failed",
         });
       }
-      return rejectWithValue({ 
-        success: false, 
-        message: 'Network error' 
-      });
-    
+      return rejectWithValue({ success: false, message: "Network error" });
     }
-  }
+  },
 );
-
-
-
-export const editLandlordProfileAsync = createAsyncThunk(
-  'auth/editLandlordProfile',
-  async (formData: FormData,{rejectWithValue})=>{
-    try {
-      const result = await  authService.editLandlordProfile(formData)
-      console.log("result from edit landlord profileasync",result.data.user)
-       return result
-
-     
-    } catch (error:unknown) {
-       if (isAxiosError(error)) {
-        return rejectWithValue({
-          success: false,
-          message: error.response?.data?.message || 'Profile update failed',
-        });
-      }
-      return rejectWithValue({ 
-        success: false, 
-        message: 'Network error' 
-      });
-    
-    }
-  }
-);
-
-
-export const changePasswordAsync = createAsyncThunk(
-  'auth/changePassword',
-  async (data: PasswordValues, { rejectWithValue }) => {
-    try {
-      const result = await authService.changePassword(data); 
-      return result;
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({
-          success: false,
-          message: error.response?.data?.message || 'Password change failed'
-        });
-      }
-      return rejectWithValue({ success: false, message: 'Network error' });
-    }
-  }
-);
-
-
-
-export const changeLandlordPasswordAsync = createAsyncThunk(
-  'auth/changeLandlordPassword',
-  async (data: PasswordValues, { rejectWithValue }) => {
-    try {
-      const result = await authService.changeLandlordPassword(data); 
-      return result;
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        return rejectWithValue({
-          success: false,
-          message: error.response?.data?.message || 'Password change failed'
-        });
-      }
-      return rejectWithValue({ success: false, message: 'Network error' });
-    }
-  }
-);
-
 
 export const loginAdminAsync = createAsyncThunk(
-  'auth/adminLogin',
+  "auth/adminLogin",
   async (data: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const result = await authService.adminLogin(data); 
-    
+      const result = await authService.adminLogin(data);
 
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+
         return rejectWithValue({
           success: false,
-          message: error.response?.data?.message || 'Admin login failed'
+          message: data?.message || "Admin login failed",
         });
       }
-      return rejectWithValue({ success: false, message: 'Network error' });
+      return rejectWithValue({ success: false, message: "Network error" });
     }
-  }
+  },
 );
-
-
-
-
-// export const fetchCurrentUserAsync = createAsyncThunk(
-//   'auth/fetchCurrentUser',
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const response = await authService.getCurrentUser()
-//       console.log("very bigdata????",response.data)
-//       return response.data;  
-//     } catch (error: unknown) {
-//       if (isAxiosError(error)) {
-//         return rejectWithValue({
-//           success: false,
-//           message: error.response?.data?.message || 'Failed to fetch user'
-//         });
-//       }
-//       return rejectWithValue({ success: false, message: 'Network error' });
-//     }
-//   }
-// );
-
-
-

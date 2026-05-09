@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    Razorpay: new (options: Record<string, unknown>) => { open: () => void };
+  }
+}
+
 export function loadRazorpayScript(): Promise<boolean> {
   return new Promise((resolve) => {
     if (document.getElementById('razorpay-script')) {
@@ -33,8 +39,8 @@ interface RazorpayOptions {
 }
 
 export function openRazorpay(options: RazorpayOptions): void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rzp = new (window as any).Razorpay({
+ 
+  const rzp = new window.Razorpay({
     key:         options.keyId,
     amount:      options.amount,
     currency:    options.currency,

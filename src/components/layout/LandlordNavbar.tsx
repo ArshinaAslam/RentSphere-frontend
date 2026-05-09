@@ -1,68 +1,44 @@
+import { useState } from "react";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
+import { Home, MessageCircle, ChevronDown, User, LogOut } from "lucide-react";
 
-import { useState } from 'react';
-
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
-import { 
-  Home, 
-  MessageCircle, 
-  Bell, 
- 
-  ChevronDown, 
-  User, 
- 
-  LogOut,
- 
-} from 'lucide-react';
-
-import { logoutAsync } from '@/features/auth/authThunks';
+import { logoutAsync } from "@/features/auth/authThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
+import NotificationBell from "../notifications/NotificationBell";
+
+import type { LucideIcon } from "lucide-react";
 
 export default function Navbar() {
-    const router = useRouter()
-    const dispatch = useAppDispatch()
-  const { userData } = useAppSelector(state => state.auth);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { userData } = useAppSelector((state) => state.auth);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const displayName = userData?.fullName || 'User';
+  const displayName = userData?.fullName || "User";
   const initials = displayName.charAt(0).toUpperCase();
 
   const toggleProfileMenu = () => {
-    setShowProfileMenu(prev => !prev);
+    setShowProfileMenu((prev) => !prev);
   };
 
-  const handleMenuItemClick = (action: string) => {
+  const handleMenuItemClick = (page: string) => {
     setShowProfileMenu(false);
-   
-    router.push('/landlord/profile') 
-    
+    router.push(`/landlord/${page}`);
   };
-
-
-
-
-
 
   const handleLogout = async () => {
-      await dispatch(logoutAsync());
-      router.replace('/landlord/login');
-      
-    
-
-     
+    await dispatch(logoutAsync());
+    router.replace("/landlord/login");
   };
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-slate-100 h-16 shadow-sm">
       <div className="px-6 h-full flex items-center justify-between w-full">
-        
-      
-
         <Link
-          href="/landlord/dashboard" 
+          href="/landlord/dashboard"
           className="flex items-center gap-3 group"
         >
           <div className="relative flex items-center justify-center w-10 h-10">
@@ -76,38 +52,17 @@ export default function Navbar() {
           </span>
         </Link>
 
-       
         <div className="flex items-center gap-9 h-full">
-          
-         
-          <button 
-            title="Home" 
-            className="text-slate-400 hover:text-emerald-600 transition-all flex items-center justify-center p-1 -m-1 rounded-lg"
-          >
-            <Home size={22} strokeWidth={1.5} />
-          </button>
-
-        
-          <button 
-            title="Messages" 
-             onClick={() => router.push('/landlord/chat')}
+          <button
+            title="Messages"
+            onClick={() => router.push("/landlord/chat")}
             className="text-slate-400 hover:text-emerald-600 transition-all flex items-center justify-center p-1 -m-1 rounded-lg"
           >
             <MessageCircle size={22} strokeWidth={1.5} />
           </button>
 
-         
-          <div className="relative flex items-center justify-center p-1 -m-1 rounded-lg">
-            <button 
-              title="Notifications" 
-              className="text-slate-400 hover:text-emerald-600 transition-all"
-            >
-              <Bell size={22} strokeWidth={1.5} />
-            </button>
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white"></span>
-          </div>
+          <NotificationBell />
 
-         
           <div className="relative">
             <button
               onClick={toggleProfileMenu}
@@ -119,75 +74,71 @@ export default function Navbar() {
               <span className="text-sm font-semibold text-slate-700 hidden sm:block">
                 {displayName}
               </span>
-              <ChevronDown 
-                size={14} 
-                className="text-slate-500 group-hover:text-emerald-600 transition-all duration-200 ml-1 flex-shrink-0" 
-                style={{ 
-                  transform: showProfileMenu ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s ease'
-                }} 
+              <ChevronDown
+                size={14}
+                className="text-slate-500 group-hover:text-emerald-600 transition-all duration-200 ml-1 flex-shrink-0"
+                style={{
+                  transform: showProfileMenu
+                    ? "rotate(180deg)"
+                    : "rotate(0deg)",
+                  transition: "transform 0.2s ease",
+                }}
               />
             </button>
 
-          
             {showProfileMenu && (
               <div className="absolute top-full right-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl shadow-slate-900/10 py-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                
-              
                 <div className="px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-slate-100/50 rounded-t-2xl">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full bg-emerald-600 text-white font-semibold flex items-center justify-center text-base shadow-lg ring-2 ring-emerald-500/30">
                       {initials}
                     </div>
                     <div>
-                      <h4 className="font-semibold text-slate-900 text-base leading-tight">{displayName}</h4>
-                      <p className="text-xs text-slate-500 font-medium tracking-wide">LANDLORD</p>
+                      <h4 className="font-semibold text-slate-900 text-base leading-tight">
+                        {displayName}
+                      </h4>
+                      <p className="text-xs text-slate-500 font-medium tracking-wide">
+                        LANDLORD
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                
                 <div className="space-y-0.5 py-3">
-                  <ProfileMenuItem 
+                  <ProfileMenuItem
                     icon={User}
-                    label="View Profile" 
-                    onClick={() => handleMenuItemClick('profile')}
+                    label="View Profile"
+                    onClick={() => handleMenuItemClick("profile")}
                   />
-                  {/* <ProfileMenuItem 
-                    icon={Settings}
-                    label="Settings" 
-                    onClick={() => handleMenuItemClick('settings')}
-                  /> */}
+
                   <div className="px-2">
                     <div className="w-full h-px bg-slate-100 my-2" />
                   </div>
-                  <ProfileMenuItem 
+                  <ProfileMenuItem
                     icon={LogOut}
-                    label="Sign Out" 
-                    onClick={handleLogout}
+                    label="Sign Out"
+                    onClick={() => void handleLogout()}
                     destructive
                   />
                 </div>
               </div>
             )}
           </div>
-
         </div>
       </div>
     </nav>
   );
 }
 
-
-function ProfileMenuItem({ 
-  icon: Icon, 
-  label, 
-  onClick, 
-  destructive = false 
-}: { 
-  icon: any; 
-  label: string; 
-  onClick: () => void; 
+function ProfileMenuItem({
+  icon: Icon,
+  label,
+  onClick,
+  destructive = false,
+}: {
+  icon: LucideIcon;
+  label: string;
+  onClick: () => void;
   destructive?: boolean;
 }) {
   return (
@@ -195,8 +146,8 @@ function ProfileMenuItem({
       onClick={onClick}
       className={`
         w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl transition-all duration-200
-        hover:bg-${destructive ? 'rose' : 'slate'}-50 hover:text-${destructive ? 'rose' : 'slate'}-900
-        ${destructive ? 'text-rose-600 hover:text-rose-700 hover:shadow-sm hover:shadow-rose-100/50' : ''}
+        hover:bg-${destructive ? "rose" : "slate"}-50 hover:text-${destructive ? "rose" : "slate"}-900
+        ${destructive ? "text-rose-600 hover:text-rose-700 hover:shadow-sm hover:shadow-rose-100/50" : ""}
       `}
     >
       <Icon size={18} strokeWidth={2.2} />

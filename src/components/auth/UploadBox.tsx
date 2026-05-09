@@ -1,26 +1,28 @@
+"use client";
 
+import React, { useState, useEffect } from "react";
 
-'use client';
-
-import React, { useState, useEffect } from 'react';
-
-import { Upload, Camera, CheckCircle, X } from 'lucide-react';
+import { Upload, CheckCircle, X } from "lucide-react";
 
 interface UploadBoxProps {
   title: string;
   subtitle: string;
   onChange: (file: File | null) => void;
   error?: boolean;
-  value?: File | null;  
+  value?: File | null;
 }
 
-const UploadBox = ({ title, subtitle, onChange, error = false, value }: UploadBoxProps) => {
+const UploadBox = ({
+  title,
+  subtitle,
+  onChange,
+  error = false,
+  value,
+}: UploadBoxProps) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
-  
-  
-  const inputId = `upload-${title.toLowerCase().replace(/\s+/g, '-')}-${Math.random().toString(36).substr(2, 9)}`;
 
+  const inputId = `upload-${title.toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).substr(2, 9)}`;
 
   useEffect(() => {
     if (value) {
@@ -34,9 +36,9 @@ const UploadBox = ({ title, subtitle, onChange, error = false, value }: UploadBo
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-    if (file && file.size <= 5 * 1024 * 1024) {  
+    if (file && file.size <= 5 * 1024 * 1024) {
       onChange(file);
-      event.target.value = '';  
+      event.target.value = "";
     }
   };
 
@@ -46,23 +48,23 @@ const UploadBox = ({ title, subtitle, onChange, error = false, value }: UploadBo
   };
 
   return (
-    <div className={`
+    <div
+      className={`
       relative border-2 border-dashed p-8 rounded-2xl text-center transition-all duration-300
-      ${dragActive ? 'bg-emerald-50 border-emerald-400 ring-4 ring-emerald-100/50' : ''}
-      ${error ? 'border-red-500 bg-red-50/50 ring-2 ring-red-200/50' : 'border-gray-200 hover:border-emerald-400 bg-gray-50/50'}
-      ${preview ? 'border-emerald-500 bg-emerald-50/80 shadow-xl ring-2 ring-emerald-200/50' : 'hover:shadow-md'}
-    `}>
-      
-     
+      ${dragActive ? "bg-emerald-50 border-emerald-400 ring-4 ring-emerald-100/50" : ""}
+      ${error ? "border-red-500 bg-red-50/50 ring-2 ring-red-200/50" : "border-gray-200 hover:border-emerald-400 bg-gray-50/50"}
+      ${preview ? "border-emerald-500 bg-emerald-50/80 shadow-xl ring-2 ring-emerald-200/50" : "hover:shadow-md"}
+    `}
+    >
       {preview ? (
         <div className="space-y-4 p-4">
           <div className="relative group">
-            <img 
-              src={preview} 
-              alt="Preview" 
+            <img
+              src={preview}
+              alt="Preview"
               className="w-full max-w-xs max-h-40 object-contain bg-white rounded-xl mx-auto shadow-lg border-4 border-white"
             />
-         
+
             <button
               type="button"
               onClick={removeFile}
@@ -81,15 +83,17 @@ const UploadBox = ({ title, subtitle, onChange, error = false, value }: UploadBo
         </div>
       ) : (
         <>
-        
           <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
             className="hidden"
-            id={inputId}  
+            id={inputId}
           />
-          <label htmlFor={inputId} className="cursor-pointer block w-full h-full">
+          <label
+            htmlFor={inputId}
+            className="cursor-pointer block w-full h-full"
+          >
             <div className="space-y-3">
               <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto shadow-lg border-2 border-dashed border-gray-300">
                 <Upload className="w-8 h-8 text-gray-400" />
@@ -101,11 +105,10 @@ const UploadBox = ({ title, subtitle, onChange, error = false, value }: UploadBo
         </>
       )}
 
-     
       <div
         className={`
           absolute inset-0 rounded-2xl pointer-events-none opacity-0 transition-all
-          ${dragActive ? 'opacity-100 pointer-events-auto bg-emerald-500/10 backdrop-blur-sm' : ''}
+          ${dragActive ? "opacity-100 pointer-events-auto bg-emerald-500/10 backdrop-blur-sm" : ""}
         `}
         onDragOver={(e) => {
           e.preventDefault();
@@ -122,7 +125,11 @@ const UploadBox = ({ title, subtitle, onChange, error = false, value }: UploadBo
           e.stopPropagation();
           setDragActive(false);
           const file = e.dataTransfer.files[0];
-          if (file && file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) {
+          if (
+            file &&
+            file.type.startsWith("image/") &&
+            file.size <= 5 * 1024 * 1024
+          ) {
             onChange(file);
           }
         }}
@@ -137,4 +144,3 @@ const UploadBox = ({ title, subtitle, onChange, error = false, value }: UploadBo
 };
 
 export default UploadBox;
-

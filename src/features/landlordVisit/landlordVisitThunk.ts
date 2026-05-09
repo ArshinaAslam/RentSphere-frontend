@@ -3,22 +3,23 @@ import { isAxiosError } from 'axios';
 
 import { landlordVisitService } from '../../services/landlordVisitService';
 
-import type { LandlordVisit, VisitStatus } from './types';
+import type { FetchVisitsParams, LandlordVisit, VisitStatus } from './types';
 
 export const fetchLandlordVisits = createAsyncThunk<
   { visits: LandlordVisit[]; total: number; page: number; totalPages: number },
-  void,
+  FetchVisitsParams,
   { rejectValue: { message: string } }
 >(
   'landlordVisit/fetchAll',
-  async ({ page = 1, limit = 10, search = '' }, { rejectWithValue }) => {
+  async ({ page = 1, limit = 2, search = '' }, { rejectWithValue }) => {
     try {
       const res = await landlordVisitService.getVisits({ page, limit, search });
       return res.data.data
     } catch (error) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to fetch visits',
+          message: data?.message as string || 'Failed to fetch visits',
         });
       }
       return rejectWithValue({ message: 'Network error' });
@@ -38,8 +39,9 @@ export const updateLandlordVisitStatus = createAsyncThunk<
       return { visitId, status };
     } catch (error) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to update status',
+          message: data?.message as string || 'Failed to update status',
         });
       }
       return rejectWithValue({ message: 'Network error' });

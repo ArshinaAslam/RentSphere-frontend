@@ -17,8 +17,9 @@ export const fetchBookedSlots = createAsyncThunk<
       return result.bookedSlots;
     } catch (error) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to fetch slots',
+          message: data?.message as string || 'Failed to fetch slots',
         });
       }
       return rejectWithValue({ message: 'Network error' });
@@ -37,8 +38,9 @@ export const bookVisit = createAsyncThunk<
       await visitService.bookVisit(params);
     } catch (error) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to book visit',
+          message: data?.message as string || 'Failed to book visit',
         });
       }
       return rejectWithValue({ message: 'Network error' });
@@ -59,8 +61,9 @@ export const fetchMyVisits = createAsyncThunk<
       return result;
     } catch (error) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to fetch visits',
+          message: data?.message as string || 'Failed to fetch visits',
         });
       }
       return rejectWithValue({ message: 'Network error' });
@@ -80,8 +83,9 @@ export const cancelMyVisit = createAsyncThunk<
       return visitId;
     } catch (error) {
       if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
         return rejectWithValue({
-          message: error.response?.data?.message as string || 'Failed to cancel visit',
+          message: data?.message as string || 'Failed to cancel visit',
         });
       }
       return rejectWithValue({ message: 'Network error' });
