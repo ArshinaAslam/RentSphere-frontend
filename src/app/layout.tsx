@@ -1,25 +1,20 @@
 import "./globals.css";
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { Toaster } from "sonner"
+import { Toaster } from "sonner";
 
 import ReduxProvider from "@/providers/ReduxProvider";
 
-export default function RootLayout({ 
-  children 
-}: { 
-  children: React.ReactNode 
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-gray-50 antialiased font-sans">
         <ReduxProvider>
-          {/* <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}> */}
-           
-              {children}
-              <Toaster position="top-right" richColors /> 
-           
-          {/* </GoogleOAuthProvider> */}
+          {children}
+          <Toaster position="top-right" richColors />
         </ReduxProvider>
       </body>
     </html>

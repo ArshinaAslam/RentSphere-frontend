@@ -1,26 +1,27 @@
+"use client";
 
+import { useEffect, useState } from "react";
 
+import { useRouter } from "next/navigation";
 
-'use client';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { GoogleLogin } from "@react-oauth/google";
+import { useForm } from "react-hook-form";
 
-import { useEffect, useState } from 'react';
+import LoginForm from "@/components/auth/LoginForm";
+import type { LoginValues } from "@/constants/authValidation";
+import { loginSchema } from "@/constants/authValidation";
+import { clearError } from "@/features/auth/authSlice";
+import {
+  googleAuthAsync,
+  loginLandlordAsync,
+  loginTenantAsync,
+} from "@/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-import { useRouter } from 'next/navigation';
+import type { CredentialResponse } from "@react-oauth/google";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { GoogleLogin } from '@react-oauth/google';
-import { useForm } from 'react-hook-form';
-
-import LoginForm from '@/components/auth/LoginForm';
-import type { LoginValues } from '@/constants/authValidation';
-import { loginSchema } from '@/constants/authValidation';
-import { clearError } from '@/features/auth/authSlice';
-import { googleAuthAsync, loginLandlordAsync, loginTenantAsync } from '@/features/auth/authThunks';  
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-
-import type { CredentialResponse } from '@react-oauth/google';
-
-export default function LandlordLogin() {  
+export default function LandlordLogin() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
@@ -29,39 +30,37 @@ export default function LandlordLogin() {
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
-      
+      email: "",
+      password: "",
     },
   });
-   useEffect(() => {
-    dispatch(clearError());  
+  useEffect(() => {
+    dispatch(clearError());
   }, [dispatch]);
   const handleLogin = async (data: LoginValues) => {
-    const result = await dispatch(loginTenantAsync({data,role:"LANDLORD"}));  
-    if (loginLandlordAsync.fulfilled.match(result)) {         
-      router.replace(result.payload.redirectTo);  
+    const result = await dispatch(loginTenantAsync({ data, role: "LANDLORD" }));
+    if (loginLandlordAsync.fulfilled.match(result)) {
+      router.replace("/landlord/dashboard");
     }
   };
 
-  
-       const handleGoogleSuccess = async (
-        credentialResponse: CredentialResponse
-      ) => {
-        if (!credentialResponse.credential) {
-          console.error('No ID token received from Google');
-          return;
-        }
-    
-       const result =  await dispatch(
-          googleAuthAsync({
-            token: credentialResponse.credential, 
-            role: 'LANDLORD',
-          })
-        );
-        
-       router.push(result.payload.redirectTo)
-      };
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse,
+  ) => {
+    if (!credentialResponse.credential) {
+      console.error("No ID token received from Google");
+      return;
+    }
+
+    await dispatch(
+      googleAuthAsync({
+        token: credentialResponse.credential,
+        role: "LANDLORD",
+      }),
+    );
+
+    router.push("/landlord/dashboard");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans pt-20 pb-20">
@@ -73,19 +72,20 @@ export default function LandlordLogin() {
             onPasswordToggle={() => setShowPassword((prev) => !prev)}
             loading={loading}
             error={error || undefined}
-            onSubmit={form.handleSubmit(handleLogin)} 
-             googleButton={
-                                      <GoogleLogin
-                                        onSuccess={handleGoogleSuccess}
-                                        onError={() => console.error('Google login failed')}
-                                      />
-                                    }
-            forgotPasswordHref="/landlord/forgot-password" 
-             signupHref="/landlord/signup" 
+            onSubmit={form.handleSubmit(handleLogin)}
+            googleButton={
+              <GoogleLogin
+                onSuccess={(credentialResponse) => {
+                  void handleGoogleSuccess(credentialResponse);
+                }}
+                onError={() => console.error("Google login failed")}
+              />
+            }
+            forgotPasswordHref="/landlord/forgot-password"
+            signupHref="/landlord/signup"
           />
         </div>
       </main>
     </div>
   );
 }
-

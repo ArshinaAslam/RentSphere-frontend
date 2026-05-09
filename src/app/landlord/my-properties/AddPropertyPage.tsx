@@ -1,38 +1,46 @@
-'use client';
+"use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ArrowLeft, Upload, Home, MapPin, IndianRupee,
-  Maximize2, FileText, Image as ImageIcon, X, Sparkles,
+  ArrowLeft,
+  Upload,
+  Home,
+  MapPin,
+  IndianRupee,
+  Maximize2,
+  FileText,
+  Image as ImageIcon,
+  X,
+  Sparkles,
 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
-import { useSelector } from 'react-redux';
-import {toast} from 'sonner'
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 import LandlordNavbar from "@/components/layout/LandlordNavbar";
 import LandlordSidebar from "@/components/layout/LandlordSidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { PropertyFormValues} from "@/constants/propertyValidation";
-import { propertySchema , amenitiesList } from "@/constants/propertyValidation";
-import { fetchLandlordProperties, submitLandlordProperty } from '@/features/property/propertyThunk';
-import { useAppDispatch } from "@/store/hooks";
+import type { PropertyFormValues } from "@/constants/propertyValidation";
+import { propertySchema } from "@/constants/propertyValidation";
+import { fetchActiveAmenities } from "@/features/landlordAmenity/landlordAmenityThunk";
+import { fetchActivePropertyTypes } from "@/features/landlordPropertyType/landlordPropertyTypeThunk";
+import {
+  fetchLandlordProperties,
+  submitLandlordProperty,
+} from "@/features/property/propertyThunk";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import type { RootState } from "@/store/index";
 
 import type { SubmitHandler } from "react-hook-form";
 
-
-const statusOptions = ["Available","Rented", "Inactive"];
+const statusOptions = ["Available", "Rented", "Inactive"];
 const bhkOptions = ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5+ BHK"];
-const propertyTypes = ["Apartment", "Villa", "House"];
+
 const furnishingOptions = ["Fully Furnished", "Semi Furnished", "Unfurnished"];
-
-
-
-
 
 interface AddPropertyPageProps {
   onBack?: () => void;
@@ -41,20 +49,32 @@ interface AddPropertyPageProps {
 export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
   const dispatch = useAppDispatch();
 
-  
   const userData = useSelector((state: RootState) => state.auth.userData);
   const { isSubmitting } = useSelector((state: RootState) => state.property);
 
   const [images, setImages] = useState<{ file: File; url: string }[]>([]);
   const [imageError, setImageError] = useState<string>("");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-  const [touched, setTouched] = useState(false)
+
+  const { activeTypes } = useAppSelector(
+    (state: RootState) => state.landlordPropertyTypes,
+  );
+  const { activeAmenities } = useAppSelector(
+    (state: RootState) => state.landlordAmenities,
+  );
+
+  useEffect(() => {
+    void dispatch(fetchActivePropertyTypes());
+  }, [dispatch]);
+  useEffect(() => {
+    void dispatch(fetchActiveAmenities());
+  }, [dispatch]);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-   
   } = useForm<PropertyFormValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
@@ -77,10 +97,9 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
     },
   });
 
-  
   const toggleAmenity = (label: string) => {
     setSelectedAmenities((prev) =>
-      prev.includes(label) ? prev.filter((a) => a !== label) : [...prev, label]
+      prev.includes(label) ? prev.filter((a) => a !== label) : [...prev, label],
     );
   };
 
@@ -102,19 +121,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
     });
   };
 
-
   const handleFormSubmit = (e: React.FormEvent) => {
-
-  if (images.length < 3) {
-    setImageError("Please upload at least 3 images");
-  } else {
-    setImageError("");
-  }
-  handleSubmit(onSubmit)(e);
-};
+    if (images.length < 3) {
+      setImageError("Please upload at least 3 images");
+    } else {
+      setImageError("");
+    }
+    void handleSubmit(onSubmit)(e);
+  };
 
   const onSubmit: SubmitHandler<PropertyFormValues> = async (data) => {
-   setTouched(true);
     if (images.length < 3) {
       setImageError("Please upload at least 3 images");
       return;
@@ -124,48 +140,46 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
 
     const formData = new FormData();
 
-    formData.append('title', data.title);
-    formData.append('type', data.type);
-    formData.append('bhk', data.bhk);
-    formData.append('address', data.address);
-    formData.append('city', data.city);
-    formData.append('state', data.state);
-    formData.append('pincode', data.pincode);
-    formData.append('price', data.price.toString());
-    formData.append('securityDeposit', data.securityDeposit.toString());
-    formData.append('vacant', data.vacant.toString());
-    formData.append('status', data.status);
-    formData.append('bedrooms', data.bedrooms.toString());
-    formData.append('bathrooms', data.bathrooms.toString());
-    formData.append('area', data.area.toString());
-    formData.append('furnishing', data.furnishing);
-    formData.append('description', data.description);
-    formData.append('amenities', JSON.stringify(selectedAmenities));
+    formData.append("title", data.title);
+    formData.append("type", data.type);
+    formData.append("bhk", data.bhk);
+    formData.append("address", data.address);
+    formData.append("city", data.city);
+    formData.append("state", data.state);
+    formData.append("pincode", data.pincode);
+    formData.append("price", data.price.toString());
+    formData.append("securityDeposit", data.securityDeposit.toString());
+    formData.append("vacant", data.vacant.toString());
+    formData.append("status", data.status);
+    formData.append("bedrooms", data.bedrooms.toString());
+    formData.append("bathrooms", data.bathrooms.toString());
+    formData.append("area", data.area.toString());
+    formData.append("furnishing", data.furnishing);
+    formData.append("description", data.description);
+    formData.append("amenities", JSON.stringify(selectedAmenities));
 
     images.forEach((img) => {
-      formData.append('images', img.file);
+      formData.append("images", img.file);
     });
 
     if (userData?.id) {
-      formData.append('landlordId', userData.id);
+      formData.append("landlordId", userData.id);
     }
-    console.log("Formdaata:",formData)
-    const result = await dispatch(submitLandlordProperty(formData) as any);
+
+    const result = await dispatch(submitLandlordProperty(formData));
 
     if (submitLandlordProperty.fulfilled.match(result)) {
-         toast.success('Property listed successfully!'); 
-        dispatch(fetchLandlordProperties({ page: 1,search: '' }));
+      toast.success("Property listed successfully!");
+      await dispatch(fetchLandlordProperties({ page: 1, search: "" }));
 
       onBack?.();
       reset();
       setImages([]);
       setSelectedAmenities([]);
     } else {
-      toast.error('Property submission failed. Please try again.');
+      toast.error("Property submission failed. Please try again.");
     }
   };
-
- 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50/30">
@@ -174,7 +188,6 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
 
       <main className="pl-64 pt-16 min-h-screen">
         <div className="max-w-4xl mx-auto px-10 py-10">
-
           {/* Header */}
           <div className="mb-8 pt-6 flex items-center gap-4">
             <button
@@ -184,13 +197,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
               <ArrowLeft size={18} />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">Add New Property</h1>
-              <p className="text-slate-500 mt-1">Fill in the details to list your property</p>
+              <h1 className="text-3xl font-bold text-slate-900">
+                Add New Property
+              </h1>
+              <p className="text-slate-500 mt-1">
+                Fill in the details to list your property
+              </p>
             </div>
           </div>
 
           <form onSubmit={handleFormSubmit} className="space-y-6" noValidate>
-
             {/* ── Basic Info ── */}
             <Section icon={<Home size={18} />} title="Basic Information">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -218,7 +234,11 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     render={({ field }) => (
                       <select {...field} className={selectClass(!!errors.type)}>
                         <option value="">Select type</option>
-                        {propertyTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+                        {activeTypes.map((t) => (
+                          <option key={t._id} value={t.name}>
+                            {t.name}
+                          </option>
+                        ))}
                       </select>
                     )}
                   />
@@ -233,7 +253,11 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     render={({ field }) => (
                       <select {...field} className={selectClass(!!errors.bhk)}>
                         <option value="">Select BHK</option>
-                        {bhkOptions.map((b) => <option key={b} value={b}>{b}</option>)}
+                        {bhkOptions.map((b) => (
+                          <option key={b} value={b}>
+                            {b}
+                          </option>
+                        ))}
                       </select>
                     )}
                   />
@@ -251,7 +275,11 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="address"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} placeholder="e.g. 12, Hill Road, Bandra West" className={inputClass(!!errors.address)} />
+                      <Input
+                        {...field}
+                        placeholder="e.g. 12, Hill Road, Bandra West"
+                        className={inputClass(!!errors.address)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.address?.message} />
@@ -262,7 +290,11 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="city"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} placeholder="e.g. Mumbai" className={inputClass(!!errors.city)} />
+                      <Input
+                        {...field}
+                        placeholder="e.g. Mumbai"
+                        className={inputClass(!!errors.city)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.city?.message} />
@@ -273,7 +305,11 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="state"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} placeholder="e.g. Maharashtra" className={inputClass(!!errors.state)} />
+                      <Input
+                        {...field}
+                        placeholder="e.g. Maharashtra"
+                        className={inputClass(!!errors.state)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.state?.message} />
@@ -284,7 +320,12 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="pincode"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} placeholder="e.g. 400050" maxLength={6} className={inputClass(!!errors.pincode)} />
+                      <Input
+                        {...field}
+                        placeholder="e.g. 400050"
+                        maxLength={6}
+                        className={inputClass(!!errors.pincode)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.pincode?.message} />
@@ -293,7 +334,10 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
             </Section>
 
             {/* ── Pricing & Availability ── */}
-            <Section icon={<IndianRupee size={18} />} title="Pricing & Availability">
+            <Section
+              icon={<IndianRupee size={18} />}
+              title="Pricing & Availability"
+            >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <FieldLabel>Monthly Rent (₹)</FieldLabel>
@@ -301,12 +345,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="price"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="text" placeholder="e.g. 45000"
-                            onChange={(e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        field.onChange(value || '');  
-      }}
-                        className={inputClass(!!errors.price)} />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="e.g. 45000"
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          field.onChange(value || "");
+                        }}
+                        className={inputClass(!!errors.price)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.price?.message} />
@@ -317,12 +365,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="securityDeposit"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="text" placeholder="e.g. 90000"
-        onChange={(e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        field.onChange(value || '');  
-      }}
-                        className={inputClass(!!errors.securityDeposit)} />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="e.g. 90000"
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          field.onChange(value || "");
+                        }}
+                        className={inputClass(!!errors.securityDeposit)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.securityDeposit?.message} />
@@ -333,12 +385,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="vacant"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="text" placeholder="e.g. 2"
-     onChange={(e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        field.onChange(value || '');  
-      }}
-                        className={inputClass(!!errors.vacant)} />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="e.g. 2"
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          field.onChange(value || "");
+                        }}
+                        className={inputClass(!!errors.vacant)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.vacant?.message} />
@@ -349,9 +405,15 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="status"
                     control={control}
                     render={({ field }) => (
-                      <select {...field} className={selectClass(!!errors.status)}>
-                        
-                        {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
+                      <select
+                        {...field}
+                        className={selectClass(!!errors.status)}
+                      >
+                        {statusOptions.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
                       </select>
                     )}
                   />
@@ -369,12 +431,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="bedrooms"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="text" placeholder="e.g. 3"
-                         onChange={(e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        field.onChange(value || '');  
-      }}
-                        className={inputClass(!!errors.bedrooms)} />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="e.g. 3"
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          field.onChange(value || "");
+                        }}
+                        className={inputClass(!!errors.bedrooms)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.bedrooms?.message} />
@@ -385,12 +451,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="bathrooms"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="text" placeholder="e.g. 2"
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="e.g. 2"
                         onChange={(e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        field.onChange(value || '');  
-      }}
-                        className={inputClass(!!errors.bathrooms)} />
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          field.onChange(value || "");
+                        }}
+                        className={inputClass(!!errors.bathrooms)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.bathrooms?.message} />
@@ -401,12 +471,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="area"
                     control={control}
                     render={({ field }) => (
-                      <Input {...field} type="text" placeholder="e.g. 1200"
-                          onChange={(e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        field.onChange(value || '');  
-      }}
-                        className={inputClass(!!errors.area)} />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="e.g. 1200"
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          field.onChange(value || "");
+                        }}
+                        className={inputClass(!!errors.area)}
+                      />
                     )}
                   />
                   <ErrorMsg msg={errors.area?.message} />
@@ -417,9 +491,16 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                     name="furnishing"
                     control={control}
                     render={({ field }) => (
-                      <select {...field} className={selectClass(!!errors.furnishing)}>
+                      <select
+                        {...field}
+                        className={selectClass(!!errors.furnishing)}
+                      >
                         <option value="">Select furnishing</option>
-                        {furnishingOptions.map((f) => <option key={f} value={f}>{f}</option>)}
+                        {furnishingOptions.map((f) => (
+                          <option key={f} value={f}>
+                            {f}
+                          </option>
+                        ))}
                       </select>
                     )}
                   />
@@ -429,40 +510,59 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
             </Section>
 
             {/* ── Amenities ── */}
+            {/* ── Amenities ── */}
             <Section icon={<Sparkles size={18} />} title="Amenities">
               <p className="text-sm text-slate-500 mb-4">
                 Select all amenities available at your property
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {amenitiesList.map(({ label, emoji }) => {
-                  const selected = selectedAmenities.includes(label);
-                  return (
-                    <button
-                      type="button"
-                      key={label}
-                      onClick={() => toggleAmenity(label)}
-                      className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium border transition-all text-left ${
-                        selected
-                          ? "bg-emerald-50 border-emerald-400 text-emerald-700 shadow-sm"
-                          : "bg-white border-slate-200 text-slate-600 hover:border-emerald-200 hover:bg-emerald-50/50"
-                      }`}
-                    >
-                      <span className="text-base">{emoji}</span>
-                      <span className="leading-tight">{label}</span>
-                      {selected && (
-                        <span className="ml-auto w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
-                          <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                            <path d="M1.5 4L3 5.5L6.5 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+
+              {activeAmenities.length === 0 ? (
+                <p className="text-sm text-slate-400">No amenities available</p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {activeAmenities.map(({ _id, label, emoji }) => {
+                    const selected = selectedAmenities.includes(label);
+                    return (
+                      <button
+                        type="button"
+                        key={_id}
+                        onClick={() => toggleAmenity(label)}
+                        className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium border transition-all text-left ${
+                          selected
+                            ? "bg-emerald-50 border-emerald-400 text-emerald-700 shadow-sm"
+                            : "bg-white border-slate-200 text-slate-600 hover:border-emerald-200 hover:bg-emerald-50/50"
+                        }`}
+                      >
+                        <span className="text-base">{emoji}</span>
+                        <span className="leading-tight">{label}</span>
+                        {selected && (
+                          <span className="ml-auto w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                            <svg
+                              width="8"
+                              height="8"
+                              viewBox="0 0 8 8"
+                              fill="none"
+                            >
+                              <path
+                                d="M1.5 4L3 5.5L6.5 2"
+                                stroke="white"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
               {selectedAmenities.length > 0 && (
                 <p className="mt-3 text-xs text-emerald-600 font-medium">
-                  ✓ {selectedAmenities.length} amenit{selectedAmenities.length === 1 ? "y" : "ies"} selected
+                  ✓ {selectedAmenities.length} amenit
+                  {selectedAmenities.length === 1 ? "y" : "ies"} selected
                 </p>
               )}
             </Section>
@@ -489,71 +589,79 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
               <ErrorMsg msg={errors.description?.message} />
             </Section>
 
-        {/* ── Images ── */}
-{/* ── Images ── */}
-<Section icon={<ImageIcon size={18} />} title="Property Images">
-  {/* Upload Area */}
-  <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200 cursor-pointer group p-4">
-    <Upload size={24} className="text-slate-400 group-hover:text-emerald-500 mb-2" />
-    <span className="text-sm font-medium text-slate-500 group-hover:text-emerald-600">
-      Click to upload images
-    </span>
-    <span className="text-xs text-slate-400 mt-1">
-      PNG, JPG, WEBP up to 10MB • Minimum 3 images required
-    </span>
-    <input
-      type="file"
-      multiple
-      accept="image/*"
-      onChange={handleImageUpload}
-      className="hidden"
-    />
-  </label>
+            {/* ── Images ── */}
+            {/* ── Images ── */}
+            <Section icon={<ImageIcon size={18} />} title="Property Images">
+              {/* Upload Area */}
+              <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-200 cursor-pointer group p-4">
+                <Upload
+                  size={24}
+                  className="text-slate-400 group-hover:text-emerald-500 mb-2"
+                />
+                <span className="text-sm font-medium text-slate-500 group-hover:text-emerald-600">
+                  Click to upload images
+                </span>
+                <span className="text-xs text-slate-400 mt-1">
+                  PNG, JPG, WEBP up to 10MB • Minimum 3 images required
+                </span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
 
-  {/* ✅ FIXED Status Row - NO TypeScript error */}
-  <div className="mt-4 flex items-center justify-between">
-    <span className={`text-sm font-semibold ${images.length >= 3 ? "text-emerald-600" : "text-slate-500"}`}>
-      {images.length} {images.length === 1 ? 'image' : 'images'} {images.length >= 3 ? '✓ Ready' : 'needed'}
-    </span>
-{imageError && (
-  <span className="text-sm font-semibold text-red-500">
-    {imageError}
-  </span>
-)}
-  </div>
+              {/* ✅ FIXED Status Row - NO TypeScript error */}
+              <div className="mt-4 flex items-center justify-between">
+                <span
+                  className={`text-sm font-semibold ${images.length >= 3 ? "text-emerald-600" : "text-slate-500"}`}
+                >
+                  {images.length} {images.length === 1 ? "image" : "images"}{" "}
+                  {images.length >= 3 ? "✓ Ready" : "needed"}
+                </span>
+                {imageError && (
+                  <span className="text-sm font-semibold text-red-500">
+                    {imageError}
+                  </span>
+                )}
+              </div>
 
-  {/* Image Previews */}
-  {images.length > 0 && (
-    <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-      {images.map((img, i) => (
-        <div key={i} className="group relative rounded-2xl overflow-hidden aspect-video shadow-md border-2 border-slate-100 hover:border-emerald-300 bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl transition-all duration-300 cursor-pointer">
-          <img 
-            src={img.url} 
-            alt={`Property image ${i + 1}`}
-            className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-          />
-          
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              removeImage(i);
-            }}
-            className="absolute top-3 right-3 z-50 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-2 group-hover:translate-y-0 w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-2xl border-2 border-slate-200 hover:border-red-300 hover:bg-red-50 hover:shadow-3xl transition-all duration-200 active:scale-95"
-            title={`Remove image ${i + 1}`}
-          >
-            <X className="h-5 w-5 text-slate-700 hover:text-red-600 stroke-width-2.5 transition-all duration-200" />
-          </button>
-          
-          <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded-full">
-            {i + 1}
-          </div>
-        </div>
-      ))}
-    </div>
-  )}
-</Section>
+              {/* Image Previews */}
+              {images.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {images.map((img, i) => (
+                    <div
+                      key={i}
+                      className="group relative rounded-2xl overflow-hidden aspect-video shadow-md border-2 border-slate-100 hover:border-emerald-300 bg-gradient-to-br from-slate-50 to-white hover:shadow-2xl transition-all duration-300 cursor-pointer"
+                    >
+                      <img
+                        src={img.url}
+                        alt={`Property image ${i + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      />
 
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage(i);
+                        }}
+                        className="absolute top-3 right-3 z-50 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-2 group-hover:translate-y-0 w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-2xl border-2 border-slate-200 hover:border-red-300 hover:bg-red-50 hover:shadow-3xl transition-all duration-200 active:scale-95"
+                        title={`Remove image ${i + 1}`}
+                      >
+                        <X className="h-5 w-5 text-slate-700 hover:text-red-600 stroke-width-2.5 transition-all duration-200" />
+                      </button>
+
+                      <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        {i + 1}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Section>
 
             {/* ── Submit ── */}
             <div className="flex items-center justify-end gap-3 pt-2 pb-10">
@@ -574,7 +682,6 @@ export default function AddPropertyPage({ onBack }: AddPropertyPageProps) {
                 {isSubmitting ? "Saving..." : "List Property"}
               </Button>
             </div>
-
           </form>
         </div>
       </main>
@@ -590,7 +697,15 @@ const inputClass = (hasError: boolean) =>
 const selectClass = (hasError: boolean) =>
   `mt-1.5 w-full h-11 rounded-md border bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 ${hasError ? "border-red-400 focus:ring-red-400" : "border-slate-200 focus:ring-emerald-500 focus:border-emerald-500"}`;
 
-function Section({ icon, title, children }: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
+function Section({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
       <div className="flex items-center gap-2 mb-5">
@@ -605,7 +720,11 @@ function Section({ icon, title, children }: { icon: React.ReactNode; title: stri
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <label className="block text-sm font-medium text-slate-700">{children}</label>;
+  return (
+    <label className="block text-sm font-medium text-slate-700">
+      {children}
+    </label>
+  );
 }
 
 function ErrorMsg({ msg }: { msg?: string }) {

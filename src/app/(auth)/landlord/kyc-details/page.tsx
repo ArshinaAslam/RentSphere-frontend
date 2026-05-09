@@ -1,25 +1,22 @@
+"use client";
 
+import { useEffect, useState } from "react";
 
-'use client';
+import { useRouter } from "next/navigation";
 
-import React, { useDebugValue, useEffect, useState } from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ShieldCheck, Info, CheckCircle2 } from "lucide-react";
+import { useForm, Controller } from "react-hook-form";
 
-import { useRouter } from 'next/navigation';
+import UploadBox from "@/components/auth/UploadBox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import type { KycFormValues } from "@/constants/authValidation";
+import { kycFormSchema } from "@/constants/authValidation";
+import { submitLandlordKYC } from "@/features/kyc/kycThunks";
+import { useAppDispatch } from "@/store/hooks";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ShieldCheck, Info, CheckCircle2 } from 'lucide-react';
-import { useForm, Controller } from 'react-hook-form';
-
-import UploadBox from '@/components/auth/UploadBox';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import type { KycFormValues } from '@/constants/authValidation';
-import { kycFormSchema } from '@/constants/authValidation';
-import { submitLandlordKYC } from '@/features/kyc/kycThunks';
-import { useAppDispatch } from '@/store/hooks';
-
-import type { SubmitHandler } from 'react-hook-form';
-
+import type { SubmitHandler } from "react-hook-form";
 
 const ReadOnlyField = ({ label, value }: { label: string; value: string }) => (
   <div className="space-y-1.5">
@@ -27,42 +24,37 @@ const ReadOnlyField = ({ label, value }: { label: string; value: string }) => (
       {label}
     </label>
     <div className="h-11 px-4 flex items-center bg-gray-50 border border-gray-200 rounded-xl text-gray-900 font-medium text-sm">
-      {value || '—'}
+      {value || "—"}
     </div>
   </div>
 );
 
 const KycVerificationPage = () => {
   const router = useRouter();
-  
+
   const dispatch = useAppDispatch();
 
-  const role =  typeof window !== 'undefined' ? sessionStorage.getItem('signupEmail') || '' : '';
-     const [userData, setUserData] = useState({
-    email: '',
-    fullName: '',
-    phone: ''
+  const [userData, setUserData] = useState({
+    email: "",
+    fullName: "",
+    phone: "",
   });
 
- 
-   useEffect(() => {
-    if (typeof window !== 'undefined') {
-     const email = sessionStorage.getItem('signupEmail') || '';
-    const fullName = sessionStorage.getItem('fullName') || '';
-    const phone = sessionStorage.getItem('phone') || '';
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const email = sessionStorage.getItem("signupEmail") || "";
+      const fullName = sessionStorage.getItem("fullName") || "";
+      const phone = sessionStorage.getItem("phone") || "";
 
-    setUserData({ email, fullName, phone });
-
-      
+      setUserData({ email, fullName, phone });
     }
   }, []);
 
   const form = useForm<KycFormValues>({
     resolver: zodResolver(kycFormSchema),
     defaultValues: {
-     
-      aadhaarNumber: '',
-      panNumber: '',
+      aadhaarNumber: "",
+      panNumber: "",
       aadhaarFront: undefined,
       aadhaarBack: undefined,
       panCard: undefined,
@@ -71,60 +63,38 @@ const KycVerificationPage = () => {
     },
   });
 
-
-  const { 
-  control, 
-  handleSubmit, 
-  formState: { errors, isSubmitting }, 
-  getValues  
-} = form;
-
-  
-
-
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = form;
 
   const onSubmit: SubmitHandler<KycFormValues> = async (data) => {
+    const formData = new FormData();
 
-  const formData = new FormData();
-  
-  
-  formData.append('email', userData.email);
-  formData.append('aadhaarNumber', data.aadhaarNumber);
-  formData.append('panNumber', data.panNumber);
-  
-  
-  const values = form.getValues();
-  console.log("values.aadhaarFront",values.aadhaarFront)
-  
-  if (values.aadhaarFront) formData.append('aadhaarFront', values.aadhaarFront);
-  if (values.aadhaarBack) formData.append('aadhaarBack', values.aadhaarBack);
-  if (values.panCard) formData.append('panCard', values.panCard);
-  // if (values.selfie) formData.append('selfie', values.selfie);
+    formData.append("email", userData.email);
+    formData.append("aadhaarNumber", data.aadhaarNumber);
+    formData.append("panNumber", data.panNumber);
 
-    for (const pair of formData.entries()) {
-    console.log(pair[0], pair[1]);
-  }
- 
+    const values = form.getValues();
 
-  const result = await dispatch(submitLandlordKYC(formData));
-  
+    if (values.aadhaarFront)
+      formData.append("aadhaarFront", values.aadhaarFront);
+    if (values.aadhaarBack) formData.append("aadhaarBack", values.aadhaarBack);
+    if (values.panCard) formData.append("panCard", values.panCard);
+
+    const result = await dispatch(submitLandlordKYC(formData));
+
     if (submitLandlordKYC.fulfilled.match(result)) {
-  
-       const { kycId,kycStatus } = result.payload;
-      sessionStorage.setItem('kycId', result.payload.data.kycId);
-      sessionStorage.setItem('kycStatus', result.payload.data.kycStatus);
-      
- 
-      router.push('/landlord/kyc-pending');
+      sessionStorage.setItem("kycId", result.payload.data.kycId);
+      sessionStorage.setItem("kycStatus", result.payload.data.kycStatus);
+
+      router.push("/landlord/kyc-pending");
     } else {
-       console.error('KYC FAILED:', result.payload || result.error);
-       alert('KYC submission failed')
+      console.error("KYC FAILED:", result.payload || result.error);
+      alert("KYC submission failed");
     }
-};
-
-
-
-
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-start justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -135,8 +105,9 @@ const KycVerificationPage = () => {
             Landlord KYC Verification
           </h1>
           <p className="mt-3 text-gray-600 max-w-2xl mx-auto">
-            Complete secure identity verification to activate your landlord account. 
-            All data is encrypted and verified against official government sources.
+            Complete secure identity verification to activate your landlord
+            account. All data is encrypted and verified against official
+            government sources.
           </p>
           <div className="mt-5 inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-5 py-2 rounded-full text-sm font-semibold border border-emerald-100 shadow-sm">
             <ShieldCheck className="w-5 h-5" />
@@ -144,35 +115,42 @@ const KycVerificationPage = () => {
           </div>
         </div>
 
-        {/* ── Single Big Card ──────────────────────────────────────── */}
+        
         <div className="bg-white rounded-3xl shadow-xl border border-gray-100/80 overflow-hidden">
           <form
-  onSubmit={handleSubmit(
-    onSubmit,
-    (errors) => {
-      debugger;
-      console.log("❌ FORM VALIDATION ERRORS:", errors);
-    }
-  )}
-  className="divide-y divide-gray-100"
->
-
+            onSubmit={(e) => {
+              e.preventDefault();
+              void handleSubmit(onSubmit)(e);
+            }}
+          >
             {/* 0. Account Information */}
             <div className="p-8 lg:p-10">
               <div className="flex items-center gap-3 mb-7">
                 <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-                <h2 className="text-xl font-semibold text-gray-900">Account Information</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Account Information
+                </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <ReadOnlyField label="Full Name" value={userData.fullName || '—'}  />
-                <ReadOnlyField label="Email Address" value={userData.email || '—'} />
-                <ReadOnlyField label="Phone Number" value={userData.phone || '—'}  />
+                <ReadOnlyField
+                  label="Full Name"
+                  value={userData.fullName || "—"}
+                />
+                <ReadOnlyField
+                  label="Email Address"
+                  value={userData.email || "—"}
+                />
+                <ReadOnlyField
+                  label="Phone Number"
+                  value={userData.phone || "—"}
+                />
               </div>
 
               <p className="mt-5 text-xs text-gray-500 flex items-center gap-2">
                 <Info className="w-4 h-4 flex-shrink-0" />
-                If any information is incorrect, please contact support before continuing.
+                If any information is incorrect, please contact support before
+                continuing.
               </p>
             </div>
 
@@ -183,7 +161,9 @@ const KycVerificationPage = () => {
                   <div className="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
                     1
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900">Aadhaar Card</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Aadhaar Card
+                  </h2>
                 </div>
                 <span className="px-3 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-full">
                   REQUIRED
@@ -208,7 +188,9 @@ const KycVerificationPage = () => {
                     )}
                   />
                   {errors.aadhaarNumber && (
-                    <p className="mt-1.5 text-xs text-red-600">{errors.aadhaarNumber.message}</p>
+                    <p className="mt-1.5 text-xs text-red-600">
+                      {errors.aadhaarNumber.message}
+                    </p>
                   )}
                 </div>
 
@@ -218,24 +200,27 @@ const KycVerificationPage = () => {
                     <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
                       Front Side
                     </label>
-                  <Controller
-  name="aadhaarFront"
-  control={control}
-  render={({ field }) => (
-    <UploadBox
-      title="Aadhaar Front"
-      subtitle="JPG / PNG • Max 5 MB"
-      onChange={field.onChange}
-      value={field.value}
-      error={!!errors.aadhaarFront}
-    />
-  )}
-/>
-                   {errors.aadhaarFront && (
-  <p className="mt-1.5 text-xs text-red-600">
-    {String(errors.aadhaarFront?.message || 'PAN card photo is required')}
-  </p>
-)}
+                    <Controller
+                      name="aadhaarFront"
+                      control={control}
+                      render={({ field }) => (
+                        <UploadBox
+                          title="Aadhaar Front"
+                          subtitle="JPG / PNG • Max 5 MB"
+                          onChange={field.onChange}
+                          value={field.value}
+                          error={!!errors.aadhaarFront}
+                        />
+                      )}
+                    />
+                    {errors.aadhaarFront && (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {String(
+                          errors.aadhaarFront?.message ||
+                            "PAN card photo is required",
+                        )}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -250,16 +235,19 @@ const KycVerificationPage = () => {
                           title="Aadhaar Back"
                           subtitle="JPG / PNG • Max 5 MB"
                           onChange={field.onChange}
-      value={field.value}
+                          value={field.value}
                           error={!!errors.aadhaarBack}
                         />
                       )}
                     />
-                   {errors.aadhaarBack && (
-  <p className="mt-1.5 text-xs text-red-600">
-    {String(errors.aadhaarBack?.message || 'PAN card photo is required')}
-  </p>
-)}
+                    {errors.aadhaarBack && (
+                      <p className="mt-1.5 text-xs text-red-600">
+                        {String(
+                          errors.aadhaarBack?.message ||
+                            "PAN card photo is required",
+                        )}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -272,7 +260,9 @@ const KycVerificationPage = () => {
                   <div className="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
                     2
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900">PAN Card</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    PAN Card
+                  </h2>
                 </div>
                 <span className="px-3 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-full">
                   REQUIRED
@@ -297,7 +287,9 @@ const KycVerificationPage = () => {
                     )}
                   />
                   {errors.panNumber && (
-                    <p className="mt-1.5 text-xs text-red-600">{errors.panNumber.message}</p>
+                    <p className="mt-1.5 text-xs text-red-600">
+                      {errors.panNumber.message}
+                    </p>
                   )}
                 </div>
 
@@ -314,56 +306,22 @@ const KycVerificationPage = () => {
                         title="Upload PAN Card"
                         subtitle="Clear front side • JPG / PNG • Max 5 MB"
                         onChange={field.onChange}
-      value={field.value}
+                        value={field.value}
                         error={!!errors.panCard}
                       />
                     )}
                   />
-{errors.panCard && (
-  <p className="mt-1.5 text-xs text-red-600">
-    {String(errors.panCard?.message || 'PAN card photo is required')}
-  </p>
-)}
-
-
+                  {errors.panCard && (
+                    <p className="mt-1.5 text-xs text-red-600">
+                      {String(
+                        errors.panCard?.message || "PAN card photo is required",
+                      )}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* 3. Selfie
-            <div className="p-8 lg:p-10">
-              <div className="flex items-center gap-3 mb-7">
-                <div className="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
-                  3
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900">Live Selfie Verification</h2>
-              </div>
-
-              <p className="text-gray-600 text-sm mb-6">
-                Upload a clear, well-lit selfie of your face. This helps us match your identity securely.
-              </p>
-
-              <Controller
-                name="selfie"
-                control={control}
-                render={({ field }) => (
-                  <UploadBox
-                    title="Take or Upload Selfie"
-                    subtitle="Face clearly visible • Max 5 MB"
-                   onChange={field.onChange}
-      value={field.value}
-                    error={!!errors.selfie}
-                  />
-                )}
-              />
-             {errors.selfie && (
-  <p className="mt-1.5 text-xs text-red-600">
-    {String(errors.selfie?.message || 'PAN card photo is required')}
-  </p>
-)}
-            </div> */}
-
-            {/* Consent + Submit */}
             <div className="p-8 lg:p-10 bg-gray-50/40">
               <div className="space-y-6 max-w-3xl mx-auto">
                 <div className="flex items-start gap-3">
@@ -380,14 +338,21 @@ const KycVerificationPage = () => {
                       />
                     )}
                   />
-                  <label htmlFor="consent" className="text-sm text-gray-600 leading-relaxed">
-                    I authorize RentSphere to verify my Aadhaar and PAN details with UIDAI and Income Tax Department 
-                    databases solely for KYC compliance and identity verification. I confirm all uploaded documents are mine.
+                  <label
+                    htmlFor="consent"
+                    className="text-sm text-gray-600 leading-relaxed"
+                  >
+                    I authorize RentSphere to verify my Aadhaar and PAN details
+                    with UIDAI and Income Tax Department databases solely for
+                    KYC compliance and identity verification. I confirm all
+                    uploaded documents are mine.
                   </label>
                 </div>
 
                 {errors.consent && (
-                  <p className="text-xs text-red-600">{errors.consent.message}</p>
+                  <p className="text-xs text-red-600">
+                    {errors.consent.message}
+                  </p>
                 )}
 
                 <Button
@@ -395,16 +360,10 @@ const KycVerificationPage = () => {
                   disabled={isSubmitting}
                   className="w-full h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-base rounded-2xl shadow-lg shadow-emerald-200/40 transition-all"
                 >
-                  {isSubmitting ? 'Verifying...' : 'Submit KYC & Start Verification'}
+                  {isSubmitting
+                    ? "Verifying..."
+                    : "Submit KYC & Start Verification"}
                 </Button>
-
-                {/* <button
-                  type="button"
-                  className="w-full text-gray-500 hover:text-gray-700 text-sm font-medium underline underline-offset-4"
-                  onClick={() => alert('Draft saved. You can continue later from your dashboard.')}
-                >
-                  Save as Draft & Complete Later
-                </button> */}
               </div>
             </div>
           </form>
@@ -412,7 +371,8 @@ const KycVerificationPage = () => {
 
         {/* Optional footer note */}
         <p className="text-center text-xs text-gray-500 mt-8">
-          Your information is encrypted and never shared without consent. © RentSphere 2026
+          Your information is encrypted and never shared without consent. ©
+          RentSphere 2026
         </p>
       </div>
     </div>

@@ -1,23 +1,26 @@
-
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 interface StatCardProps {
   title: string;
   value: string;
   icon: ReactNode;
-  iconColorClass: string; 
+  iconColorClass: string;
 }
 
-export const StatCard = ({ title, value, icon, iconColorClass }: StatCardProps) => {
+export const StatCard = ({
+  title,
+  value,
+  icon,
+  iconColorClass,
+}: StatCardProps) => {
   return (
     <div className="bg-white p-6 rounded-[24px] border border-slate-200 shadow-sm hover:shadow-md transition-all animate-in fade-in duration-500">
       <div className="flex items-center gap-4">
-    
-        <div className={`p-3 rounded-xl ${iconColorClass}`}>
-          {icon}
-        </div>
+        <div className={`p-3 rounded-xl ${iconColorClass}`}>{icon}</div>
         <div>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">{title}</p>
+          <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">
+            {title}
+          </p>
           <p className="text-2xl font-black text-slate-900 mt-0.5">{value}</p>
         </div>
       </div>

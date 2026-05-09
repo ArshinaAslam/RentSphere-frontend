@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect , useState } from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import { ArrowLeft, Check, Loader2 } from "lucide-react";
-
 
 import Navbar from "@/components/layout/Navbar";
 import { clearVisitState, clearVisitError } from "@/features/visit/visitSlice";
@@ -76,7 +75,6 @@ export default function ScheduleVisitPage() {
 
   const selectedSlotInfo = ALL_SLOTS.find((s) => s.time === selectedSlot);
 
-  // Success screen
   if (success) {
     return (
       <div className="min-h-screen bg-slate-100 pt-20 px-6 flex items-center justify-center">
@@ -137,7 +135,6 @@ export default function ScheduleVisitPage() {
             />
           </div>
 
-          {/* Time Slots */}
           {selectedDate && (
             <div>
               <h3 className="text-sm font-semibold mb-4">
@@ -194,14 +191,12 @@ export default function ScheduleVisitPage() {
             </div>
           )}
 
-          {/* Error */}
           {error && (
             <p className="text-sm text-red-500 bg-red-50 border border-red-200 px-4 py-2 rounded-lg">
               {error}
             </p>
           )}
 
-          {/* Contact Information  */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-slate-800">
               Your Contact Information
@@ -249,7 +244,6 @@ export default function ScheduleVisitPage() {
             </div>
           </div>
 
-          {/* Submit */}
           <button
             disabled={!selectedDate || !selectedSlot || isSubmitting}
             onClick={handleSubmit}

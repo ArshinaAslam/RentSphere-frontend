@@ -1,111 +1,87 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail, Lock, Eye, EyeOff, Shield, Home } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
- 
-import { Button } from '@/components/ui/button';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import type { AdminLoginValues } from '@/constants/authValidation';
-import { adminLoginSchema } from '@/constants/authValidation';
-import { loginAdminAsync } from '@/features/auth/authThunks';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Mail, Lock, Eye, EyeOff, Shield, Home } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import type { AdminLoginValues } from "@/constants/authValidation";
+import { adminLoginSchema } from "@/constants/authValidation";
+import { loginAdminAsync } from "@/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 export default function AdminLoginPage() {
-    const router  = useRouter()
-    const dispatch = useAppDispatch()
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const [showPassword, setShowPassword] = useState(false);
-  const { tokens,userData } = useAppSelector((state) => state.auth);
+  const { tokens, userData } = useAppSelector((state) => state.auth);
 
   const form = useForm<AdminLoginValues>({
     resolver: zodResolver(adminLoginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: { email: "", password: "" },
   });
 
-//   const onSubmit = async (data: AdminLoginValues) => {
-//    const result = await loginAdminAsync(data).unwrap()
-//   };
-useEffect(() => {
-    if (tokens && userData && userData?.role === 'ADMIN') {
-      router.replace('/admin/dashboard');
+  useEffect(() => {
+    if (tokens && userData && userData?.role === "ADMIN") {
+      router.replace("/admin/dashboard");
     }
   }, [tokens, userData, router]);
 
-  // const onSubmit = async (data: AdminLoginValues) => {
-  //   try {
-  
-  //     const result = await dispatch(loginAdminAsync(data)).unwrap();
-      
-      
-  //     router.push('/admin/dashboard');
-      
-      
-      
-  //   } catch (err: any) {
-      
-  //     console.error('Admin login failed:', err);
-      
-      
-  //     form.reset();
-  //   }
-  // };
-const onSubmit = async (data: AdminLoginValues) => {
-  try {
-    const result = await dispatch(loginAdminAsync(data)).unwrap();
-    router.push('/admin/dashboard');
-  } catch (err: any) {
-   
-    console.error('Admin login failed:', err);
-    
-    let errorMessage = 'Login failed. Please try again.';
-    
-    if (err && typeof err === 'object' && err.message) {
-      errorMessage = err.message;  
-    } else if (err && typeof err === 'string') {
-      errorMessage = err;  
-    }
-    
-  
-    toast.error(errorMessage, {
-      description: "Please check your email and password.",
-      duration: 5000,
-      className: "rounded-xl border shadow-lg",
-    });
-    
-    
-    form.setError('root', { message: errorMessage });
-    form.reset();
+  const onSubmit = async (data: AdminLoginValues) => {
+    try {
+      await dispatch(loginAdminAsync(data)).unwrap();
+      router.push("/admin/dashboard");
+    } catch (err: unknown) {
+      console.error("Admin login failed:", err);
 
-}
-}
+      let errorMessage = "Login failed. Please try again.";
+
+      if (
+        err &&
+        typeof err === "object" &&
+        "message" in err &&
+        typeof err.message === "string"
+      ) {
+        errorMessage = err.message;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
+
+      toast.error(errorMessage, {
+        description: "Please check your email and password.",
+        duration: 5000,
+        className: "rounded-xl border shadow-lg",
+      });
+
+      form.setError("root", { message: errorMessage });
+      form.reset();
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-20">
       <div className="w-full max-w-md">
-        
         <div className="bg-card rounded-[32px] shadow-2xl border border-border p-10 animate-in fade-in zoom-in duration-500">
-          
-       
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-[#6A5ACD] rounded-2xl flex items-center justify-center shadow-xl shadow-[#6A5ACD]/20">
               <Home className="w-9 h-9 text-white stroke-[2.5]" />
             </div>
           </div>
 
-          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-card-foreground mb-2">
               Admin Login
@@ -116,9 +92,10 @@ const onSubmit = async (data: AdminLoginValues) => {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              
-              {/* Email Field */}
+            <form
+              onSubmit={(e) => void form.handleSubmit(onSubmit)(e)}
+              className="space-y-5"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -130,9 +107,9 @@ const onSubmit = async (data: AdminLoginValues) => {
                     <FormControl>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input 
-                          placeholder="Enter your email" 
-                          {...field} 
+                        <Input
+                          placeholder="Enter your email"
+                          {...field}
                           className="h-12 pl-10 bg-secondary border-border focus-visible:ring-[#6A5ACD] rounded-xl"
                         />
                       </div>
@@ -142,7 +119,6 @@ const onSubmit = async (data: AdminLoginValues) => {
                 )}
               />
 
-              {/* Password Field */}
               <FormField
                 control={form.control}
                 name="password"
@@ -154,10 +130,10 @@ const onSubmit = async (data: AdminLoginValues) => {
                     <FormControl>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input 
-                          type={showPassword ? "text" : "password"} 
-                          placeholder="Enter your password" 
-                          {...field} 
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          {...field}
                           className="h-12 pl-10 pr-10 bg-secondary border-border focus-visible:ring-[#6A5ACD] rounded-xl"
                         />
                         <button
@@ -165,13 +141,20 @@ const onSubmit = async (data: AdminLoginValues) => {
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 hover:bg-background rounded-full text-muted-foreground transition-colors"
                         >
-                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                          {showPassword ? (
+                            <EyeOff size={16} />
+                          ) : (
+                            <Eye size={16} />
+                          )}
                         </button>
                       </div>
                     </FormControl>
-                    
+
                     <div className="flex justify-end">
-                      <a href="#" className="text-xs font-bold text-[#6A5ACD] hover:opacity-80 transition-colors">
+                      <a
+                        href="#"
+                        className="text-xs font-bold text-[#6A5ACD] hover:opacity-80 transition-colors"
+                      >
                         Forgot password?
                       </a>
                     </div>
@@ -180,7 +163,6 @@ const onSubmit = async (data: AdminLoginValues) => {
                 )}
               />
 
-              {/* Login Button */}
               <Button
                 type="submit"
                 className="w-full h-12 bg-[#6A5ACD] hover:bg-[#6A5ACD]/90 text-white font-bold rounded-xl shadow-lg shadow-[#6A5ACD]/20 active:scale-[0.98] transition-all text-base"
@@ -189,16 +171,16 @@ const onSubmit = async (data: AdminLoginValues) => {
                 Log In
               </Button>
 
-              {/* Security Badge */}
               <div className="flex items-center justify-center gap-2 text-muted-foreground pt-2">
                 <Shield className="w-4 h-4" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Protected by enterprise-grade security</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest">
+                  Protected by enterprise-grade security
+                </span>
               </div>
             </form>
           </Form>
         </div>
 
-        {/* Support Footer */}
         <p className="text-center text-sm text-muted-foreground mt-8">
           Need help? Contact support at{" "}
           <a

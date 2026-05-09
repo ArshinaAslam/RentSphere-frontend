@@ -37,3 +37,28 @@ export interface ChatState {
   isTyping:           boolean;
   error:              string | null;
 }
+
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+
+export interface GetMessagesResult {
+  messages: Message[];
+  total:    number;
+  page:     number;
+  limit:    number;
+}
+
+
+export interface UploadResult {
+  url: string;
+}
+
+export interface AttachmentResult {
+  url:          string;
+  originalName: string;
+}

@@ -1,8 +1,3 @@
-
-
-
-
-
 export interface User {
   id: string;
   email: string;
@@ -10,7 +5,7 @@ export interface User {
   fullName: string;
   avatar:string; 
   phone : string; 
-  // kycStatus?: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
+
 
   aadharNumber?:string;
     panNumber?:string;
@@ -18,6 +13,8 @@ export interface User {
     aadharFrontUrl?: string;
     aadharBackUrl?: string;
     panFrontUrl?: string;
+
+    kycStatus?: 'NOT_SUBMITTED' | 'PENDING' | 'APPROVED' | 'REJECTED';
   
   
 }
@@ -37,4 +34,46 @@ export interface AuthState {
 export interface ErrorPayload {
   success: boolean;
   message: string;
+}
+
+
+
+export interface Tokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+
+export interface SignupResult {
+  email: string;
+  otpSent: boolean;
+}
+
+
+export interface LoginResult {
+  user: User;
+  tokens: Tokens;
+}
+
+
+export interface OtpVerifyResult {
+  kycData: {
+    fullName: string;
+    email: string;
+    phone: string;
+  };
+  redirectTo: string;
+}
+
+export interface ForgotPasswordResult {
+  email: string;
+}
+
+export interface ResetPasswordResult {
+  redirectTo: string;
+}
+
+export interface GoogleAuthResult {
+  user: User;
+  redirectTo: string;
 }

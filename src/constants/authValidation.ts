@@ -1,4 +1,3 @@
-// Zod schemas for forms
 import { z } from "zod";
 
 export const signupSchema = z
@@ -6,7 +5,9 @@ export const signupSchema = z
     firstName: z.string().min(1, "First name is required").max(50),
     lastName: z.string().min(1, "Last name is required").max(50),
     email: z.string().email("Please enter a valid email address"),
-    phone: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+    phone: z
+      .string()
+      .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
     agreeToTerms: z.boolean().refine((val) => val === true, {
@@ -21,68 +22,17 @@ export const signupSchema = z
 export const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  
 });
 
 export type SignupValues = z.infer<typeof signupSchema>;
 export type LoginValues = z.infer<typeof loginSchema>;
 
-
 export const adminLoginSchema = z.object({
-  email: z.string().email('Please enter a valid admin email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  
+  email: z.string().email("Please enter a valid admin email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export type AdminLoginValues = z.infer<typeof adminLoginSchema>;
-
-
-const fileSchema = z
-  .instanceof(File)
-  .refine((file) => {
-    const acceptedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-    return acceptedTypes.includes(file.type);
-  }, 'Only JPG, PNG, PDF allowed')
-  .refine((file) => file.size <= 5 * 1024 * 1024, 'File must be less than 5MB');
-
-// export const kycFormSchema = z.object({
-//    email: z.string().email('Invalid email'),
-//   aadhaarNumber: z.string()
-//     .regex(/^\d{12}$/, 'Aadhaar must be 12 digits')
-//     .transform((val) => val.trim()),
-//   panNumber: z.string()
-//     .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i, 'PAN must be 10 characters (e.g. ABCDE1234F)')
-//     .transform((val) => val.toUpperCase().trim()),
-//   aadhaarFront: fileSchema ,
-//   aadhaarBack: fileSchema ,
-//   panCard: fileSchema,
-//   selfie: fileSchema,
-//   consent: z.boolean().refine((val) => val === true, {
-//     message: 'You must agree to KYC consent',
-//   }),
-// });
-
-// const requiredFile = (label: string) =>
-//   z
-//     .any()
-//     .refine((file) => file instanceof File, {
-//       message: `${label} is required`,
-//     })
-//     .refine(
-//       (file) =>
-//         file instanceof File &&
-//         ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type),
-//       {
-//         message: 'Only JPG or PNG images are allowed',
-//       }
-//     )
-//     .refine(
-//       (file) => file instanceof File && file.size <= 5 * 1024 * 1024,
-//       {
-//         message: 'File must be less than 5MB',
-//       }
-//     );
-
 
 export const requiredFile = (label: string) =>
   z
@@ -90,118 +40,91 @@ export const requiredFile = (label: string) =>
       message: `${label} is required`,
     })
     .refine((file) => !file || file.size <= 5 * 1024 * 1024, {
-      message: 'File must be under 5MB',
+      message: "File must be under 5MB",
     })
     .refine(
       (file) =>
-        !file ||
-        ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type),
+        !file || ["image/jpeg", "image/png", "image/jpg"].includes(file.type),
       {
-        message: 'Only JPG or PNG allowed',
-      }
+        message: "Only JPG or PNG allowed",
+      },
     );
 
-
-    export const kycFormSchema = z.object({
-  
+export const kycFormSchema = z.object({
   aadhaarNumber: z
     .string()
-    .regex(/^\d{12}$/, 'Aadhaar must be exactly 12 digits'),
+    .regex(/^\d{12}$/, "Aadhaar must be exactly 12 digits"),
 
-  panNumber: z
-    .string()
-    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, 'Invalid PAN format'),
+  panNumber: z.string().regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN format"),
 
-  aadhaarFront: requiredFile('Aadhaar front image'),
-  aadhaarBack: requiredFile('Aadhaar back image'),
-  panCard: requiredFile('PAN card photo'),
+  aadhaarFront: requiredFile("Aadhaar front image"),
+  aadhaarBack: requiredFile("Aadhaar back image"),
+  panCard: requiredFile("PAN card photo"),
   // selfie: requiredFile('Selfie'),
-consent: z
-  .boolean()
-  .refine((val) => val === true, {
-    message: 'You must agree to KYC consent',
+  consent: z.boolean().refine((val) => val === true, {
+    message: "You must agree to KYC consent",
   }),
-
 });
-
-
-
-
-
 
 export type KycFormValues = z.infer<typeof kycFormSchema>;
 
-
 export const forgotPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  email: z.string().email("Please enter a valid email address"),
 });
 
 export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
-
-
-export const resetPasswordSchema = z.object({
-  password: z.string()
-    .min(8, 'At least 8 characters')
-    .regex(/[0-9]/, 'Include at least 1 number')
-    .regex(/[^A-Za-z0-9]/, 'Include at least 1 special character'),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "At least 8 characters")
+      .regex(/[0-9]/, "Include at least 1 number")
+      .regex(/[^A-Za-z0-9]/, "Include at least 1 special character"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 
-
-export const editProfileSchema = z.object({
-  firstName: z.string().min(2, 'First name must be at least 2 characters').max(50),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters').max(50),
-  phone: z.string()
-    .min(10, 'Phone number must be at least 10 digits')
-    .max(11, 'Phone number too long')
-    .regex(/^[+]?[0-9\s\-\(\)]{10,15}$/, 'Invalid phone format'),
-}).refine((data) => data.firstName.trim() && data.lastName.trim(), {
-  message: 'Both names required',
-  path: ['firstName'],
-});
+export const editProfileSchema = z
+  .object({
+    firstName: z
+      .string()
+      .min(2, "First name must be at least 2 characters")
+      .max(50),
+    lastName: z
+      .string()
+      .min(1, "Last name must be at least 1 characters")
+      .max(50),
+    phone: z
+      .string()
+      .min(10, "Phone number must be at least 10 digits")
+      .max(11, "Phone number too long")
+      .regex(/^[+]?[0-9\s\-()]{10,15}$/, "Invalid phone format"),
+  })
+  .refine((data) => data.firstName.trim() && data.lastName.trim(), {
+    message: "Both names required",
+    path: ["firstName"],
+  });
 
 export type EditProfileValues = z.infer<typeof editProfileSchema>;
 
-
-
-export const passwordSchema = z.object({
-  currentPassword: z.string().min(6, "Current password cannot be empty"),
-  newPassword: z.string()
-  .regex(/[^a-zA-Z0-9]/, { 
-      message: "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character" 
+export const passwordSchema = z
+  .object({
+    currentPassword: z.string().min(6, "Current password cannot be empty"),
+    newPassword: z.string().regex(/[^a-zA-Z0-9]/, {
+      message:
+        "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character",
     }),
-  confirmPassword: z.string()
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match", path: ["confirmPassword"]
-});
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export type PasswordValues = z.infer<typeof passwordSchema>;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

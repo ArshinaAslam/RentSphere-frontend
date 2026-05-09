@@ -3,16 +3,24 @@ export interface LeaseSignature {
   signedAt: string;
 }
 
+
+
+interface PopulatedProperty {
+  _id:         string;
+  title:       string;
+  address:     string;
+  city:        string;
+  state:       string;
+  images:      string[];
+  bedrooms?:   number;  
+  bathrooms?:  number;  
+  area?:       number; 
+  furnishing?: string;  
+  amenities?:  string[]; 
+}
 export interface Lease {
   _id:                string;
-  propertyId: string | {
-    _id:     string;
-    title:   string;
-    address: string;
-    city:    string;
-    state:   string;
-    images:  string[];
-  };
+  propertyId: PopulatedProperty;
   landlordId: string | {
     _id:       string;
     firstName: string;
@@ -60,6 +68,18 @@ export interface LeaseState {
   isSubmitting:  boolean;
   error:         string | null;
    pagination: { total: number; page: number; totalPages: number };
+    preFill: {
+    tenantId: string;
+    propertyId: string;
+    rentAmount: string;
+    securityDeposit: string;
+    tenantName: string;
+    tenantEmail?: string;
+    tenantPhone?: string;
+    tenantAvatar?: string;
+    propertyTitle: string;
+     amenities?:       string[];
+  } | null;
 }
 
 
@@ -71,6 +91,9 @@ export interface PropertyResult {
   images: string[];
   price:  number;
   status: string;
+    securityDeposit?: number;  
+  amenities?:       string[]; 
+
 }
 export interface TenantSearchResult {
   _id:       string;
@@ -115,3 +138,38 @@ export interface UpdateLeasePayload {
   termsAndConditions?: string;
 }
 
+export interface PaginatedLeasesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    leases: Lease[];
+    total: number;
+    page: number;
+    totalPages: number;
+  };
+}
+export interface SingleLeaseResponse {
+  success: boolean;
+  message: string;
+  data: {
+    lease: Lease;
+  };
+}
+
+export interface LeasesListResponse {
+  data: {
+    leases: Lease[];
+  };
+}
+
+export interface PropertiesResponse {
+  success: boolean;
+  message: string;
+  data: {
+    properties: PropertyResult[];
+  };
+}
+
+export interface TenantsResponse {
+  tenants: TenantSearchResult[];
+}

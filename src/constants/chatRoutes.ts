@@ -6,5 +6,6 @@ export const CHAT_ROUTES = {
   MESSAGES:               '/chat/messages',
   MARK_READ:              '/chat/read',
   SEND_VOICE :            '/chat/send-voice',
-  CALL_HISTORY:            '/chat/call-history'
+  CALL_HISTORY:            '/chat/call-history',
+  UPLOAD_ATTACHMENT:'/chat/upload-attachment',
 };

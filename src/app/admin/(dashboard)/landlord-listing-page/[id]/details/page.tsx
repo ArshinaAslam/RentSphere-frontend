@@ -1,51 +1,49 @@
+"use client";
 
+import { useEffect, useState } from "react";
 
-'use client';
-
-import { useEffect, useState } from 'react';
-
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter } from "next/navigation";
 
 import {
   ArrowLeft,
   Mail,
   Phone,
   ShieldCheck,
-  Clock,
   AlertCircle,
   Ban,
   CheckCircle,
   Eye,
- Loader2 } from 'lucide-react';
+  Loader2,
+} from "lucide-react";
 
 import {
   approveLandlordKycAsync,
   rejectLandlordKycAsync,
   fetchSingleLandlordAsync,
-} from '@/features/admin/adminThunks';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+} from "@/features/admin/adminThunks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 const LandlordDetailsPage = () => {
   const params = useParams();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const landlordId = params.id as string;
-  const [rejectModal, setRejectModal] = useState(false);     
-const [rejectReason, setRejectReason] = useState('');
+  const [rejectModal, setRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
   const { singleLandlord, singleLoading } = useAppSelector(
-    (state) => state.admin
+    (state) => state.admin,
   );
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (landlordId) {
-      dispatch(fetchSingleLandlordAsync(landlordId));
+      void dispatch(fetchSingleLandlordAsync(landlordId));
     }
   }, [dispatch, landlordId]);
 
   const handleApprove = () => {
-    dispatch(approveLandlordKycAsync({ id: landlordId }));
+    void dispatch(approveLandlordKycAsync({ id: landlordId }));
 
     // console.log("idRi",result.payload.data.id)
     //   console.log("statusRi",result.data.status)
@@ -55,22 +53,18 @@ const [rejectReason, setRejectReason] = useState('');
     router.back();
   };
 
-  // const handleReject = () => {
-  //   dispatch(rejectKycAsync({ id: landlordId }));
-  //   router.back();
-  // };
-
   const handleReject = () => {
-  setRejectModal(true);  
-};
+    setRejectModal(true);
+  };
 
-const handleConfirmReject = () => {
-  dispatch(rejectLandlordKycAsync({ id: landlordId, reason: rejectReason }));
-  setRejectModal(false);
-  setRejectReason('');
-  router.back();
-};
-
+  const handleConfirmReject = () => {
+    void dispatch(
+      rejectLandlordKycAsync({ id: landlordId, reason: rejectReason }),
+    );
+    setRejectModal(false);
+    setRejectReason("");
+    router.back();
+  };
 
   if (singleLoading) {
     return (
@@ -91,7 +85,6 @@ const handleConfirmReject = () => {
   return (
     <div className="min-h-screen bg-slate-100 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-
         {/* Header */}
         <div className="flex items-center gap-4">
           <button
@@ -133,23 +126,23 @@ const handleConfirmReject = () => {
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Phone size={16} />
-              {singleLandlord.phone || '—'}
+              {singleLandlord.phone || "—"}
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
             <StatusBadge
               label={singleLandlord.status}
-              type={singleLandlord.status === 'active' ? 'success' : 'danger'}
+              type={singleLandlord.status === "active" ? "success" : "danger"}
             />
             <StatusBadge
               label={singleLandlord.kycStatus}
               type={
-                singleLandlord.kycStatus === 'APPROVED'
-                  ? 'success'
-                  : singleLandlord.kycStatus === 'REJECTED'
-                  ? 'danger'
-                  : 'warning'
+                singleLandlord.kycStatus === "APPROVED"
+                  ? "success"
+                  : singleLandlord.kycStatus === "REJECTED"
+                    ? "danger"
+                    : "warning"
               }
             />
           </div>
@@ -196,111 +189,107 @@ const handleConfirmReject = () => {
           </div>
         </div>
 
- {singleLandlord.kycStatus === 'PENDING' && (
-  <div className="mt-8 flex flex-col sm:flex-row gap-4">
-  <button
-    onClick={handleApprove}
-    className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors"
-  >
-    <CheckCircle size={18} />
-    Approve KYC
-  </button>
+        {singleLandlord.kycStatus === "PENDING" && (
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={handleApprove}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-colors"
+            >
+              <CheckCircle size={18} />
+              Approve KYC
+            </button>
 
-  <button
-    onClick={handleReject}
-    className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
-  >
-    <Ban size={18} />
-    Reject KYC
-  </button>
-</div>
-)}
-
-
-
- {rejectModal && (
-      <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6">
-        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-          {/* Header */}
-          <div className="p-6 border-b">
-            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <AlertCircle size={24} className="text-red-500" />
+            <button
+              onClick={handleReject}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
+            >
+              <Ban size={18} />
               Reject KYC
-            </h3>
-            <p className="text-sm text-slate-500 mt-1">
-              Please provide reason for rejection
-            </p>
+            </button>
           </div>
+        )}
 
-          {/* Reason Selection */}
-          <div className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Rejection Reason
-              </label>
-              
-              {/* Preset Reasons */}
-              <div className="space-y-2 mb-4">
-                {[
-                  'Documents unclear/illegible',
-                  'Information mismatch',
-                  'Expired documents',
-                  'Invalid address proof',
-                  'Photo quality issues'
-                ].map((reason) => (
+        {rejectModal && (
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6">
+            <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+              {/* Header */}
+              <div className="p-6 border-b">
+                <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                  <AlertCircle size={24} className="text-red-500" />
+                  Reject KYC
+                </h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  Please provide reason for rejection
+                </p>
+              </div>
+
+              {/* Reason Selection */}
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Rejection Reason
+                  </label>
+
+                  <div className="space-y-2 mb-4">
+                    {[
+                      "Documents unclear/illegible",
+                      "Information mismatch",
+                      "Expired documents",
+                      "Invalid address proof",
+                      "Photo quality issues",
+                    ].map((reason) => (
+                      <button
+                        key={reason}
+                        onClick={() => setRejectReason(reason)}
+                        className={`w-full p-3 rounded-xl border-2 text-left transition-all ${
+                          rejectReason === reason
+                            ? "border-red-500 bg-red-50 text-red-800 shadow-md"
+                            : "border-slate-200 hover:border-slate-300"
+                        }`}
+                      >
+                        {reason}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Custom Reason */}
+                  <div>
+                    <label className="block text-xs font-medium text-slate-500 mb-1">
+                      Or type custom reason
+                    </label>
+                    <textarea
+                      value={rejectReason}
+                      onChange={(e) => setRejectReason(e.target.value)}
+                      placeholder="Enter custom rejection reason..."
+                      rows={3}
+                      className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4">
                   <button
-                    key={reason}
-                    onClick={() => setRejectReason(reason)}
-                    className={`w-full p-3 rounded-xl border-2 text-left transition-all ${
-                      rejectReason === reason
-                        ? 'border-red-500 bg-red-50 text-red-800 shadow-md'
-                        : 'border-slate-200 hover:border-slate-300'
-                    }`}
+                    onClick={() => {
+                      setRejectModal(false);
+                      setRejectReason("");
+                    }}
+                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 px-4 rounded-xl font-medium transition-colors"
                   >
-                    {reason}
+                    Cancel
                   </button>
-                ))}
+                  <button
+                    onClick={handleConfirmReject}
+                    disabled={!rejectReason.trim()}
+                    className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Ban size={18} />
+                    Confirm Reject
+                  </button>
+                </div>
               </div>
-
-              {/* Custom Reason */}
-              <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1">
-                  Or type custom reason
-                </label>
-                <textarea
-                  value={rejectReason}
-                  onChange={(e) => setRejectReason(e.target.value)}
-                  placeholder="Enter custom rejection reason..."
-                  rows={3}
-                  className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
-                />
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={() => {
-                  setRejectModal(false);
-                  setRejectReason('');
-                }}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 px-4 rounded-xl font-medium transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmReject}
-                disabled={!rejectReason.trim()}
-                className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed text-white py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
-              >
-                <Ban size={18} />
-                Confirm Reject
-              </button>
             </div>
           </div>
-        </div>
-      </div>
-    )}
+        )}
       </div>
 
       {/* Image Preview Modal */}
@@ -332,12 +321,12 @@ const StatusBadge = ({
   type,
 }: {
   label: string;
-  type: 'success' | 'warning' | 'danger';
+  type: "success" | "warning" | "danger";
 }) => {
   const styles = {
-    success: 'bg-emerald-100 text-emerald-700',
-    warning: 'bg-amber-100 text-amber-700',
-    danger: 'bg-rose-100 text-rose-700',
+    success: "bg-emerald-100 text-emerald-700",
+    warning: "bg-amber-100 text-amber-700",
+    danger: "bg-rose-100 text-rose-700",
   };
 
   return (
@@ -365,7 +354,7 @@ const DocumentCard = ({
         alt={title}
         className="w-full h-full object-cover"
         onError={(e) => {
-          e.currentTarget.src = '/api/placeholder/300/200';
+          e.currentTarget.src = "/api/placeholder/300/200";
         }}
       />
     </div>

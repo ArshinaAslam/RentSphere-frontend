@@ -1,5 +1,5 @@
 export interface TenantInfo {
-  _id:       string;
+  id:       string;
   firstName: string;
   lastName:  string;
   email:     string;
@@ -8,11 +8,14 @@ export interface TenantInfo {
 }
 
 export interface PropertyInfo {
-  _id:     string;
+  id:     string;
   title:   string;
   address: string;
   city:    string;
   images:  string[];
+  price:number;
+  securityDeposit:number;
+  amenities: string[];
 }
 
 export interface LandlordVisit {
@@ -26,4 +29,21 @@ export interface LandlordVisit {
   createdAt:  string;
 }
 
+
+export interface FetchVisitsParams  {
+  page?: number;
+  limit?: number;
+  search?: string;
+};
+
 export type VisitStatus = 'confirmed' | 'cancelled' | 'completed';
+
+
+export interface LandlordVisitsApiResponse {
+  data: {
+    visits: LandlordVisit[];
+    total: number;
+    page: number;
+    totalPages: number;
+  };
+}

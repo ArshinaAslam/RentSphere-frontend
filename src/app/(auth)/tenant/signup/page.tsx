@@ -1,88 +1,82 @@
+"use client";
 
+import { useState } from "react";
 
-'use client';
+import { useRouter } from "next/navigation";
 
-import { useState } from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { GoogleLogin } from "@react-oauth/google";
+import { useForm } from "react-hook-form";
 
-import { useRouter } from 'next/navigation';
+import SignupForm from "@/components/auth/SignupForm";
+import type { SignupValues } from "@/constants/authValidation";
+import { signupSchema } from "@/constants/authValidation";
+import { googleAuthAsync, signupAsync } from "@/features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useGoogleLogin , GoogleLogin } from '@react-oauth/google';
-import { useForm } from 'react-hook-form';
-
-import SignupForm from '@/components/auth/SignupForm';
-import type { SignupValues } from '@/constants/authValidation';
-import { signupSchema } from '@/constants/authValidation';
-import { googleAuthAsync, signupAsync } from '@/features/auth/authThunks';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-
-import type { CredentialResponse } from '@react-oauth/google';
+import type { CredentialResponse } from "@react-oauth/google";
 
 export default function TenantSignup() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<SignupValues>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      password: '',
-      confirmPassword: '',
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
       agreeToTerms: false,
     },
   });
 
-  const handlePasswordToggle = (type: 'password' | 'confirmPassword') => {
-    if (type === 'password') setShowPassword(prev => !prev);
-    else setShowConfirmPassword(prev => !prev);
+  const handlePasswordToggle = (type: "password" | "confirmPassword") => {
+    if (type === "password") setShowPassword((prev) => !prev);
+    else setShowConfirmPassword((prev) => !prev);
   };
 
-
-
-
-   const handleGoogleSuccess = async (
-    credentialResponse: CredentialResponse
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse,
   ) => {
     if (!credentialResponse.credential) {
-      console.error('No ID token received from Google');
+      console.error("No ID token received from Google");
       return;
     }
 
-   const result =  await dispatch(
+    await dispatch(
       googleAuthAsync({
-        token: credentialResponse.credential, 
-        role: 'TENANT',
-      })
+        token: credentialResponse.credential,
+        role: "TENANT",
+      }),
     );
-    
-   router.push(result.payload.redirectTo)
+
+    router.push("/tenant/dashboard");
   };
-  
 
   const onSubmit = async (data: SignupValues) => {
-    const result = await dispatch(signupAsync({ data, role: 'TENANT' })).unwrap();
+    const result = await dispatch(
+      signupAsync({ data, role: "TENANT" }),
+    ).unwrap();
+
     
-    
-    sessionStorage.setItem('signupEmail', result.data.email);
-    sessionStorage.setItem('signupRole', 'TENANT');
-    
-    router.push('/tenant/verify-otp');
+
+    sessionStorage.setItem("signupEmail", result.email);
+    sessionStorage.setItem("signupRole", "TENANT");
+
+    router.push("/tenant/verify-otp");
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans pt-20 pb-20">
-      
-      
       <main className="flex-1 flex flex-col items-center justify-start py-1 px-4">
         <div className="w-full max-w-lg">
-          
           <SignupForm
             form={form}
             showPassword={showPassword}
@@ -91,12 +85,14 @@ export default function TenantSignup() {
             role="Tenant"
             googleButton={
               <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => console.error('Google login failed')}
+                onSuccess={(credentialResponse) => {
+                  void handleGoogleSuccess(credentialResponse);
+                }}
+                onError={() => console.error("Google login failed")}
               />
             }
             loading={loading}
-            error={error || undefined} 
+            error={error || undefined}
             onSubmit={form.handleSubmit(onSubmit)}
           />
         </div>

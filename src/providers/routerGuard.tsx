@@ -1,20 +1,22 @@
+"use client";
 
+import { useEffect, useState } from "react";
 
-'use client';
+import { useRouter } from "next/navigation";
 
-import { useEffect, useState } from 'react';
-
-import { useRouter } from 'next/navigation';
-
-import { useAppSelector } from '@/store/hooks';
+import { useAppSelector } from "@/store/hooks";
 
 interface RouteGuardProps {
   children: React.ReactNode;
-  allowedRoles: ('TENANT' | 'LANDLORD' | 'ADMIN')[];
+  allowedRoles: ("TENANT" | "LANDLORD" | "ADMIN")[];
   loginPath: string;
 }
 
-export default function RouteGuard({ children, allowedRoles, loginPath }: RouteGuardProps) {
+export default function RouteGuard({
+  children,
+  allowedRoles,
+  loginPath,
+}: RouteGuardProps) {
   const router = useRouter();
   const { userData } = useAppSelector((state) => state.auth);
   const [isAuthorized, setIsAuthorized] = useState(false);

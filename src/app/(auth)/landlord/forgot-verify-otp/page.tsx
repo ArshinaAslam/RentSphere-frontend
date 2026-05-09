@@ -1,32 +1,37 @@
-'use client';
+"use client";
 
-import React from "react";
 
 import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 
 import OtpForm from "@/components/auth/otpFrom";
-import { resendOtpAsync, verifyLandlordOtpAsync, verifyTenantOtpAsync} from "@/features/auth/authThunks";  
+import {
+  resendOtpAsync,
+  verifyOtpAsync,
+} from "@/features/auth/authThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
-export default function LandlordForgotOtpVerification() {  
+export default function LandlordForgotOtpVerification() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  const email = typeof window !== 'undefined' ? sessionStorage.getItem('Email') || '' : '';
+  const email =
+    typeof window !== "undefined" ? sessionStorage.getItem("Email") || "" : "";
 
   const handleVerify = async (otp: string) => {
     if (otp.length !== 6) return;
-    
-    const result = await dispatch(verifyTenantOtpAsync({ email, otp,role:"LANDLORD" })).unwrap();  
+
+    await dispatch(
+      verifyOtpAsync({ email, otp, role: "LANDLORD" }),
+    ).unwrap();
     toast.success("OTP Verified Successfully!");
-    router.replace("/landlord/reset-password");  
+    router.replace("/landlord/reset-password");
   };
 
   const handleResend = async () => {
-    await dispatch(resendOtpAsync({ email,role:"LANDLORD" })).unwrap();
+    await dispatch(resendOtpAsync({ email, role: "LANDLORD" })).unwrap();
     toast.success("OTP resent! Check your email.");
   };
 
@@ -34,12 +39,12 @@ export default function LandlordForgotOtpVerification() {
     <div className="min-h-screen bg-[#F8F9FB] flex flex-col font-sans">
       <main className="flex-1 flex items-center justify-center px-4 py-20">
         <div className="w-full max-w-md">
-          <OtpForm 
+          <OtpForm
             email={email}
             loading={loading}
             error={error || null}
-            onVerify={handleVerify}
-            onResend={handleResend}
+            onVerify={(otp) => void handleVerify(otp)}
+            onResend={() => void handleResend()}
           />
         </div>
       </main>

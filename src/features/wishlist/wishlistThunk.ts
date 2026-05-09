@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { isAxiosError } from "axios";
 
 import { wishlistService }  from "@/services/wishlistService";
+
 
 export const fetchWishlist = createAsyncThunk(
   "wishlist/fetch",
@@ -10,10 +12,13 @@ export const fetchWishlist = createAsyncThunk(
   ) => {
     try {
       const res = await wishlistService.getWishlist(tenantId, page, limit);
-     
-      return res.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch wishlist");
+      return res;
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to fetch wishlist");
+      }
+      return rejectWithValue("Network error");
     }
   }
 );
@@ -32,8 +37,12 @@ export const toggleWishlist = createAsyncThunk(
         await wishlistService.addToWishlist(tenantId, propertyId);
         return { propertyId, added: true };
       }
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to update wishlist");
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const data = error.response?.data as { message?: string } | undefined;
+        return rejectWithValue(data?.message || "Failed to update wishlist");
+      }
+      return rejectWithValue("Network error");
     }
   }
 );
