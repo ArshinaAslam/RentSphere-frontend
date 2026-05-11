@@ -72,7 +72,7 @@ export default function ChatPage() {
     toggleMic,
     toggleCamera,
     setupCallListeners,
-  } = useCall(userData?.id ?? "");
+  } = useCall();
 
   const {
     recordingState,

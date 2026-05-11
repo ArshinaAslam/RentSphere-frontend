@@ -72,7 +72,7 @@ export default function TenantChatPage() {
     toggleMic,
     toggleCamera,
     setupCallListeners,
-  } = useCall(userData?.id ?? "");
+  } = useCall();
 
   const {
     recordingState,

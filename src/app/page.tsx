@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,13 +21,27 @@ import {
 import type { RootState } from "@/store";
 import { useAppSelector } from "@/store/hooks";
 
-export default function Home() {
+export default function LandingPage() {
   const router = useRouter();
   const { userData, loading } = useAppSelector(
     (state: RootState) => state.auth,
   );
 
-  const [showLoginMenu, setShowLoginMenu] = useState(false);
+ const [showLoginMenu, setShowLoginMenu] = useState(false);
+const dropdownRef = useRef<HTMLDivElement>(null);
+
+
+useEffect(() => {
+  const handleClickOutside = (e: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      setShowLoginMenu(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+
   useEffect(() => {
     if (!loading && userData) {
       const rolePath = userData.role?.toLowerCase();
@@ -73,20 +87,23 @@ export default function Home() {
               <button className="hover:text-emerald-600 transition-colors flex items-center gap-1">
                 Login <ChevronDown className="w-3 h-3" />
               </button>
+
               {showLoginMenu && (
-                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg py-2 z-50">
-                  <Link
-                    href="/landlord/login"
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-emerald-600"
-                  >
-                    <ShieldCheck className="w-4 h-4" /> Landlord Login
-                  </Link>
-                  <Link
-                    href="/tenant/login"
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-emerald-600"
-                  >
-                    <HomeIcon className="w-4 h-4" /> Tenant Login
-                  </Link>
+                <div className="absolute top-full left-0 pt-2 w-48 z-50">
+                  <div className="bg-white border border-slate-100 rounded-xl shadow-lg py-2">
+                    <Link
+                      href="/landlord/login"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-emerald-600"
+                    >
+                      <ShieldCheck className="w-4 h-4" /> Landlord Login
+                    </Link>
+                    <Link
+                      href="/tenant/login"
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-emerald-600"
+                    >
+                      <HomeIcon className="w-4 h-4" /> Tenant Login
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -396,17 +413,17 @@ export default function Home() {
             {[
               {
                 title: "Set your location",
-                img: "https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop",
+                img: "/images/set-location.jpg",
                 desc: "Pinpoint your preferred neighborhood with our interactive map search.",
               },
               {
                 title: "Browse verified homes",
-                img: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=800&auto=format&fit=crop",
+                img: "/images/verified-homes.jpg",
                 desc: "Scroll through high-quality, pre-vetted listings with detailed virtual tours.",
               },
               {
                 title: "Pay rent online",
-                img: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=800&auto=format&fit=crop",
+                img: "/images/online-payment.jpg",
                 desc: "Secure one-click payments with automated receipts and payment history.",
               },
             ].map((a) => (
