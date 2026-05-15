@@ -86,6 +86,18 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     console.warn("API Request:", config.method?.toUpperCase(), config.url);
+    
+    if (typeof document !== "undefined") {
+      const token = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("accessToken="))
+        ?.split("=")[1];
+      
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
