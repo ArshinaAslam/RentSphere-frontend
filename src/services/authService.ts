@@ -123,6 +123,9 @@ export const authService = {
 
   async logout(): Promise<void> {
     await axiosInstance.post(AUTH_ROUTES.LOGOUT, {}, { withCredentials: true });
+
+     document.cookie = "accessToken=; path=/; secure; samesite=strict; max-age=0";
+  document.cookie = "refreshToken=; path=/; secure; samesite=strict; max-age=0";
   },
 
   async adminLogin(data: {
