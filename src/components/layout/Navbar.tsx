@@ -28,7 +28,7 @@ export default function Navbar() {
   const handleMenuItemClick = () => {
     setShowProfileMenu(false);
 
-    router.push("/tenant/profilepage");
+    router.push("/tenant/profile");
   };
 
   const handleLogout = async () => {
