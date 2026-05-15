@@ -2,7 +2,6 @@ export interface CreateInquiryParams {
   propertyId: string;
   landlordId: string;
   questions: string[];
-  message: string;
 }
 
 export interface TenantInfo {

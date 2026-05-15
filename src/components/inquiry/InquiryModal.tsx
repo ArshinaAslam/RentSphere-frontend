@@ -33,7 +33,7 @@ export default function InquiryModal({
     useAppSelector((s: RootState) => s.inquiry);
 
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
-  const [message,           setMessage]           = useState('');
+  // const [message,           setMessage]           = useState('');
   const [validationError,   setValidationError]   = useState('');
 
 
@@ -60,8 +60,7 @@ export default function InquiryModal({
     void dispatch(createInquiry({
       propertyId,
       landlordId,
-      questions: selectedQuestions,
-      message,
+      questions: selectedQuestions
     }));
   };
 
@@ -155,7 +154,7 @@ export default function InquiryModal({
             </div>
 
           
-            <div className="mb-5">
+            {/* <div className="mb-5">
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                 Additional message (optional)
               </p>
@@ -166,7 +165,7 @@ export default function InquiryModal({
                 rows={3}
                 className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none"
               />
-            </div>
+            </div> */}
 
           
             {(validationError || error) && (
