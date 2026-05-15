@@ -157,6 +157,8 @@ export interface SingleLeaseResponse {
 }
 
 export interface LeasesListResponse {
+  success: boolean;
+  message: string;
   data: {
     leases: Lease[];
   };
