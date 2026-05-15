@@ -22,10 +22,10 @@ export default function TenantOtpVerification() {
     typeof window !== "undefined"
       ? sessionStorage.getItem("signupEmail") || ""
       : "";
-  const role =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("signupEmail") || ""
-      : "";
+const role =
+  typeof window !== "undefined"
+    ? sessionStorage.getItem("signupRole") || ""  
+    : "";
   const handleVerify = async (otp: string) => {
     if (otp.length !== 6) return;
 
