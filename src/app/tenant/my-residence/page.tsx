@@ -175,7 +175,7 @@ function ResidenceCard({
       }`}
     >
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+        <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
           {property?.images?.[0] ? (
             // <img src={property.images[0]} alt="" className="w-full h-full object-cover" />
             <Image
