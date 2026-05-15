@@ -69,6 +69,9 @@ const AMENITY_ICONS: Record<string, React.ElementType> = {
 
 export default function PropertyDetailPage() {
   const { propertyId } = useParams<{ propertyId: string }>();
+    const params = useParams();
+  console.log("All params:", params);
+  console.log("PropertyId:", propertyId);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { selectedProperty: property, isLoading } = useAppSelector(
@@ -90,6 +93,9 @@ export default function PropertyDetailPage() {
     ? wishlisted.includes(property._id)
     : false;
   const isToggling = property?._id ? togglingId === property._id : false;
+
+
+console.log("Selected property:", property);
 
   useEffect(() => {
     if (propertyId) void dispatch(fetchTenantPropertyById(propertyId));
