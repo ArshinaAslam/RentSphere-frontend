@@ -81,27 +81,7 @@ export const verifyOtpAsync = createAsyncThunk(
   },
 );
 
-// export const verifyLandlordOtpAsync = createAsyncThunk(
-//   "auth/verifyLandlordOtp",
-//   async (
-//     { email, otp }: { email: string; otp: string },
-//     { rejectWithValue },
-//   ) => {
-//     try {
-//       const result = await authService.verifyLandlordOtp({ email, otp });
-//       return result;
-//     } catch (error: unknown) {
-//       if (isAxiosError(error)) {
-//         const data = error.response?.data as { message?: string } | undefined;
-//         return rejectWithValue({
-//           success: false,
-//           message: data?.message || "Verification failed",
-//         });
-//       }
-//       return rejectWithValue({ success: false, message: "Network error" });
-//     }
-//   },
-// );
+
 
 export const resendOtpAsync = createAsyncThunk(
   "auth/resendOtp",

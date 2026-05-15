@@ -76,4 +76,5 @@ export interface ResetPasswordResult {
 export interface GoogleAuthResult {
   user: User;
   redirectTo: string;
+  tokens: Tokens;
 }

@@ -38,6 +38,14 @@ export const authService = {
       AUTH_ROUTES.GOOGLE_AUTH,
       { token, role },
     );
+        const { tokens } = response.data.data;
+    if (tokens?.accessToken) {
+      document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=1800`;
+    }
+    if (tokens?.refreshToken) {
+      document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
+    }
+    
     return response.data.data;
   },
 
