@@ -136,6 +136,14 @@ export const authService = {
       AUTH_ROUTES.ADMIN_LOGIN,
       data,
     );
+
+      const { tokens } = response.data.data;
+  if (tokens?.accessToken) {
+    document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=900`;
+  }
+  if (tokens?.refreshToken) {
+    document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
+  }
     return response.data.data;
   },
 };
