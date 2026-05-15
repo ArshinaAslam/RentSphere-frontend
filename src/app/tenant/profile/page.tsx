@@ -32,15 +32,16 @@ export default function ProfileSettingsPage() {
     defaultValues: { firstName: "", lastName: "", phone: "" },
   });
 
-  useEffect(() => {
-    if (userData) {
-      editForm.reset({
-        firstName: userData.fullName?.split(" ")[0] || "",
-        lastName: userData.fullName?.split(" ")[1] || "",
-        phone: userData.phone || "",
-      });
-    }
-  }, [userData, editForm]);
+useEffect(() => {
+  if (userData) {
+    const parts = userData.fullName?.trim().split(" ") ?? [];
+    editForm.reset({
+      firstName: parts[0] || "",
+      lastName: parts.slice(1).join(" ") || "",
+      phone: userData.phone || "",
+    });
+  }
+}, [userData, editForm]);
 
   const handleEditSubmit = async (
     data: EditProfileValues,
@@ -146,6 +147,10 @@ function ProfileOverview({ user }: { user: ProfileOverviewUser | null }) {
       : `${user.avatar}?t=${new Date().getTime()}`
     : undefined;
 
+  const nameParts = user?.fullName?.trim().split(" ") ?? [];
+  const firstName = nameParts[0] || "—";
+  const lastName = nameParts.slice(1).join(" ") || "—";
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex items-center gap-6 pb-6 border-b border-slate-100">
@@ -175,8 +180,8 @@ function ProfileOverview({ user }: { user: ProfileOverviewUser | null }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Info label="First Name" value={user?.fullName?.split(" ")[0] || "—"} />
-        <Info label="Last Name" value={user?.fullName?.split(" ")[1] || "—"} />
+        <Info label="First Name" value={firstName} />
+        <Info label="Last Name" value={lastName} />
         <Info label="Email Address" value={user?.email} />
         <Info label="Phone Number" value={user?.phone || "_"} />
       </div>
