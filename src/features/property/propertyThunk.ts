@@ -180,7 +180,6 @@ export const fetchTenantPropertyById = createAsyncThunk<
   async (propertyId, { rejectWithValue }) => {
     try {
       const result = await propertyService.getTenantPropertyById(propertyId);
-      console.log("Property result:", result.data);
       return result.data.data.property;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
