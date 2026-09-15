@@ -18,10 +18,10 @@ export default function TenantForgotPassword() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
-  const role =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("signupEmail") || ""
-      : "";
+  // const role =
+  //   typeof window !== "undefined"
+  //     ? sessionStorage.getItem("signupEmail") || ""
+  //     : "";
 
   const form = useForm<ForgotPasswordValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -34,7 +34,7 @@ export default function TenantForgotPassword() {
 
   const onSubmit = async (data: ForgotPasswordValues) => {
     const result = await dispatch(
-      forgotPasswordTenantAsync({ data, role }),
+      forgotPasswordTenantAsync({ data, role:"TENANT" }),
     ).unwrap();
 
     sessionStorage.setItem("Email", result.email);

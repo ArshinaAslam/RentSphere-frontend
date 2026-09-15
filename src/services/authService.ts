@@ -38,14 +38,14 @@ export const authService = {
       AUTH_ROUTES.GOOGLE_AUTH,
       { token, role },
     );
-        const { tokens } = response.data.data;
+    const { tokens } = response.data.data;
     if (tokens?.accessToken) {
       document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=1800`;
     }
     if (tokens?.refreshToken) {
       document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
     }
-    
+
     return response.data.data;
   },
 
@@ -69,14 +69,14 @@ export const authService = {
       AUTH_ROUTES.LOGIN,
       data,
     );
-      const { tokens } = response.data.data;
-  if (tokens?.accessToken) {
-    document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=1800`;
-  }
-  if (tokens?.refreshToken) {
-    document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
-  }
-    
+    const { tokens } = response.data.data;
+    if (tokens?.accessToken) {
+      document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=1800`;
+    }
+    if (tokens?.refreshToken) {
+      document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
+    }
+
     return response.data.data;
   },
 
@@ -89,13 +89,13 @@ export const authService = {
       data,
     );
 
-      const { tokens } = response.data.data;
-  if (tokens?.accessToken) {
-    document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=1800`;
-  }
-  if (tokens?.refreshToken) {
-    document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
-  }
+    const { tokens } = response.data.data;
+    if (tokens?.accessToken) {
+      document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=1800`;
+    }
+    if (tokens?.refreshToken) {
+      document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
+    }
     return response.data.data;
   },
 
@@ -132,8 +132,10 @@ export const authService = {
   async logout(): Promise<void> {
     await axiosInstance.post(AUTH_ROUTES.LOGOUT, {}, { withCredentials: true });
 
-     document.cookie = "accessToken=; path=/; secure; samesite=strict; max-age=0";
-  document.cookie = "refreshToken=; path=/; secure; samesite=strict; max-age=0";
+    document.cookie =
+      "accessToken=; path=/; secure; samesite=strict; max-age=0";
+    document.cookie =
+      "refreshToken=; path=/; secure; samesite=strict; max-age=0";
   },
 
   async adminLogin(data: {
@@ -145,13 +147,13 @@ export const authService = {
       data,
     );
 
-      const { tokens } = response.data.data;
-  if (tokens?.accessToken) {
-    document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=900`;
-  }
-  if (tokens?.refreshToken) {
-    document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
-  }
+    const { tokens } = response.data.data;
+    if (tokens?.accessToken) {
+      document.cookie = `accessToken=${tokens.accessToken}; path=/; secure; samesite=strict; max-age=900`;
+    }
+    if (tokens?.refreshToken) {
+      document.cookie = `refreshToken=${tokens.refreshToken}; path=/; secure; samesite=strict; max-age=604800`;
+    }
     return response.data.data;
   },
 };

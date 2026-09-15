@@ -16,6 +16,7 @@ import type { ProfileOverviewUser } from "@/types/user";
 
 import LandlordChangePasswordModal from "./LandlordChangePasswordModal";
 import LandlordEditProfile from "./LandlordEditProfile";
+import { setUser } from "@/features/auth/authSlice";
 
 export type LandlordProfileTab = "basic" | "edit" | "settings" | "kyc";
 
@@ -51,7 +52,8 @@ export default function LandlordProfilePage() {
       formData.append("phone", data.phone);
       if (avatar) formData.append("avatar", avatar);
 
-      await dispatch(editLandlordProfileAsync(formData)).unwrap();
+     const res = await dispatch(editLandlordProfileAsync(formData)).unwrap();
+     dispatch(setUser(res.data.user));
       toast.success("Profile updated", {
         description: "Your changes have been saved successfully.",
         duration: 3000,
