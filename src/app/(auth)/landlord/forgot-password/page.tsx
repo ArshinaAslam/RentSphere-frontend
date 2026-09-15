@@ -29,11 +29,18 @@ export default function LandlordForgotPassword() {
   }, [dispatch]);
 
   const onSubmit = async (data: ForgotPasswordValues) => {
-    const result = (await dispatch(
-      forgotPasswordTenantAsync({ data, role: "LANDLORD" }),
-    ).unwrap()) as unknown as { data: { email: string } };
+    // const result = (await dispatch(
+    //   forgotPasswordTenantAsync({ data, role: "LANDLORD" }),
+    // ).unwrap()) as unknown as { data: { email: string } };
 
-    sessionStorage.setItem("Email", result.data.email);
+    const result = await dispatch(
+  forgotPasswordTenantAsync({
+    data,
+    role: "LANDLORD",
+  }),
+).unwrap();
+
+    sessionStorage.setItem("Email", result.email);
     router.push("/landlord/forgot-verify-otp");
   };
 
