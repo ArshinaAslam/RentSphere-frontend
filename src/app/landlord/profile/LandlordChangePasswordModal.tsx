@@ -58,10 +58,15 @@ export default function ChangePasswordModal({
       form.reset();
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Password change failed";
-      toast.error("❌ " + errorMessage, {
-        description: "Please check your inputs and try again.",
-      });
+    error instanceof Error
+      ? error.message
+      : typeof error === "object" && error !== null && "message" in error
+        ? String((error as { message: unknown }).message)
+        : "Password change failed";
+
+  toast.error("❌ " + errorMessage, {
+    description: "Please check your inputs and try again.",
+  });
     }
   };
 
