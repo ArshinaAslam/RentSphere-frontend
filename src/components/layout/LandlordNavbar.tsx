@@ -68,8 +68,17 @@ export default function Navbar() {
               onClick={toggleProfileMenu}
               className="group flex items-center gap-2.5 pl-2 pr-4 py-1.5 bg-slate-50/80 rounded-full border border-slate-200/70 hover:bg-slate-100 transition-all duration-200 hover:shadow-sm hover:border-slate-300"
             >
-              <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-semibold flex items-center justify-center text-sm shadow-sm ring-1 ring-emerald-700/30 group-hover:scale-[1.02] transition-transform">
-                {initials}
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-600 text-white font-semibold flex items-center justify-center text-sm shadow-sm ring-1 ring-emerald-700/30 group-hover:scale-[1.02] transition-transform">
+                {userData?.avatar &&
+                !userData.avatar.includes("googleusercontent.com") ? (
+                  <img
+                    src={`${userData.avatar}?t=${new Date().getTime()}`}
+                    alt="profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span>{initials}</span>
+                )}
               </div>
               <span className="text-sm font-semibold text-slate-700 hidden sm:block">
                 {displayName}

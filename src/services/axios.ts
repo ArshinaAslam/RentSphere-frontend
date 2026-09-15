@@ -112,7 +112,14 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest?._retry) {
+
+    const isLoginRequest =
+  originalRequest?.url?.includes("/auth/login");
+
+  
+    if (error.response?.status === 401 &&
+      !originalRequest?._retry &&
+      !isLoginRequest) {
       if (originalRequest) {
         originalRequest._retry = true;
       }

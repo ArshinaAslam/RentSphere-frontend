@@ -14,7 +14,6 @@ import { loginSchema } from "@/constants/authValidation";
 import { clearError } from "@/features/auth/authSlice";
 import {
   googleAuthAsync,
-  loginLandlordAsync,
   loginTenantAsync,
 } from "@/features/auth/authThunks";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -39,7 +38,7 @@ export default function LandlordLogin() {
   }, [dispatch]);
   const handleLogin = async (data: LoginValues) => {
     const result = await dispatch(loginTenantAsync({ data, role: "LANDLORD" }));
-    if (loginLandlordAsync.fulfilled.match(result)) {
+    if (loginTenantAsync.fulfilled.match(result)) {
       router.replace("/landlord/dashboard");
     }
   };
