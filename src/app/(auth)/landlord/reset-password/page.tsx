@@ -30,9 +30,16 @@ export default function LandlordResetPasswordPage() {
     },
   });
 
+
+  const email =
+  typeof window !== "undefined"
+    ? sessionStorage.getItem("Email") || ""
+    : "";
+
+
   const onSubmit = (data: ResetPasswordValues) => {
     setError("");
-    dispatch(resetPasswordAsync({ data, role: "LANDLORD" }))
+    dispatch(resetPasswordAsync({ data, role: "LANDLORD", email, }))
       .unwrap()
       .then(() => {
         toast.success("Password reset successful!");
