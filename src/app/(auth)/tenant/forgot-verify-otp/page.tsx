@@ -18,10 +18,9 @@ export default function TenantOtpVerification() {
 
   const email =
     typeof window !== "undefined" ? sessionStorage.getItem("Email") || "" : "";
-  const role =
-    typeof window !== "undefined"
-      ? sessionStorage.getItem("signupRole") || ""
-      : "";
+
+
+  const role = "TENANT";
 
   const handleVerify = (otp: string) => {
     void (async () => {
