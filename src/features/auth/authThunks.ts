@@ -157,7 +157,11 @@ export const resetPasswordAsync = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const result = await authService.resetPassword({ ...data, role, email });
+     const result = await authService.resetPassword({
+  newPassword: data.password,
+  email,
+  role,
+});
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {
