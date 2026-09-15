@@ -42,6 +42,7 @@ import {
   signLeaseAsLandlordThunk,
 } from "@/features/lease/leaseThunk";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchLandlordPayments } from "@/features/payment/paymentThunk";
 
 const STATUS_CONFIG = {
   draft: {
@@ -113,6 +114,7 @@ export default function LandlordLeaseDetailPage() {
   const [signatureName, setSignatureName] = useState("");
   const [signatureError, setSignatureError] = useState("");
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [depositPaid, setDepositPaid] = useState(false);
 
   const propertyData =
     typeof activeLease?.propertyId === "object" &&
@@ -131,13 +133,44 @@ export default function LandlordLeaseDetailPage() {
       ? activeLease.tenantId
       : null;
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   dispatch(clearActiveLease());
+  //   if (leaseId) void dispatch(fetchLeaseById(leaseId));
+  //   return () => {
+  //     dispatch(clearActiveLease());
+  //   };
+  // }, [leaseId, dispatch]);
+
+useEffect(() => {
+  dispatch(clearActiveLease());
+
+  if (leaseId) {
+    void dispatch(fetchLeaseById(leaseId));
+
+    void dispatch(
+      fetchLandlordPayments({
+        type: "deposit",
+        status: "completed",
+        limit: 100,
+      }),
+    ).then((result) => {
+      if (fetchLandlordPayments.fulfilled.match(result)) {
+        const payments = result.payload.payments ?? [];
+
+        const deposit = payments.find(
+          (payment) => payment.leaseId === leaseId,
+        );
+
+        setDepositPaid(!!deposit);
+      }
+    });
+  }
+
+  return () => {
     dispatch(clearActiveLease());
-    if (leaseId) void dispatch(fetchLeaseById(leaseId));
-    return () => {
-      dispatch(clearActiveLease());
-    };
-  }, [leaseId, dispatch]);
+    setDepositPaid(false);
+  };
+}, [leaseId, dispatch]);
 
   const handleSend = async () => {
     if (!activeLease) return;
@@ -807,7 +840,8 @@ export default function LandlordLeaseDetailPage() {
           )}
 
           {activeLease.status === "signed" &&
-            !activeLease.landlordSignature && (
+            !activeLease.landlordSignature && 
+            depositPaid &&(
               <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center">
