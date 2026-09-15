@@ -404,7 +404,7 @@ export default function TenantLeaseDetailPage() {
         const termsLines = pdf.splitTextToSize(
           activeLease.termsAndConditions,
           w - 50,
-        )as string[];
+        ) as string[];
         const termsH = termsLines.length * 5 + 10;
         pdf.roundedRect(20, y, w - 40, termsH, 2, 2, "F");
         pdf.setFontSize(9);
@@ -566,18 +566,20 @@ export default function TenantLeaseDetailPage() {
               </div>
             </div>
 
-            <button
-              onClick={() => void handleDownloadPDF()}
-              disabled={isGeneratingPDF}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition disabled:opacity-50"
-            >
-              {isGeneratingPDF ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Download className="w-4 h-4" />
-              )}
-              Download PDF
-            </button>
+            {activeLease.status === "active" && (
+              <button
+                onClick={() => void handleDownloadPDF()}
+                disabled={isGeneratingPDF}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition disabled:opacity-50"
+              >
+                {isGeneratingPDF ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                Download PDF
+              </button>
+            )}
           </div>
 
           {canSign && (

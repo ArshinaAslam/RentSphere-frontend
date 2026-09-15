@@ -594,18 +594,20 @@ export default function LandlordLeaseDetailPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => void handleDownloadPDF()}
-                disabled={isGeneratingPDF}
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition disabled:opacity-50"
-              >
-                {isGeneratingPDF ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Download className="w-4 h-4" />
-                )}
-                Download PDF
-              </button>
+              {activeLease.status === "active" && (
+                <button
+                  onClick={() => void handleDownloadPDF()}
+                  disabled={isGeneratingPDF}
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition disabled:opacity-50"
+                >
+                  {isGeneratingPDF ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  Download PDF
+                </button>
+              )}
               {activeLease.status === "draft" && (
                 <>
                   <button
