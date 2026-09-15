@@ -153,11 +153,11 @@ export const forgotPasswordTenantAsync = createAsyncThunk(
 export const resetPasswordAsync = createAsyncThunk(
   "auth/resetTenantPassword",
   async (
-    { data, role }: { data: ResetPasswordValues; role: string },
+    { data, role, email }: { data: ResetPasswordValues; role: string; email: string; },
     { rejectWithValue },
   ) => {
     try {
-      const result = await authService.resetPassword({ ...data, role });
+      const result = await authService.resetPassword({ ...data, role, email });
       return result;
     } catch (error: unknown) {
       if (isAxiosError(error)) {

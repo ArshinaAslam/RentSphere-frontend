@@ -31,9 +31,14 @@ export default function TenantResetPasswordPage() {
     },
   });
 
+  const email =
+  typeof window !== "undefined"
+    ? sessionStorage.getItem("Email") || ""
+    : "";
+
   const onSubmit = (data: ResetPasswordValues) => {
     setError("");
-    dispatch(resetPasswordAsync({ data, role: "TENANT" }))
+    dispatch(resetPasswordAsync({ data, role: "TENANT", email }))
       .unwrap()
       .then(() => {
         toast.success("Password reset successful!");

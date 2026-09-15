@@ -120,7 +120,7 @@ export const authService = {
   },
 
   async resetPassword(
-    data: ResetPasswordValues & { role: string },
+    data: ResetPasswordValues & { role: string; email: string },
   ): Promise<ResetPasswordResult> {
     const response = await axiosInstance.post<{ data: ResetPasswordResult }>(
       AUTH_ROUTES.RESET_PASSWORD,
